@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Front Desk Operations Console | Sugo Grand Palace Hotel</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --desk-dark: #0F172A;
+      --desk-slate: #1E293B;
+      --desk-gold: #B45309;
+      --desk-border: #E2E8F0;
+    }
+
+    body {
+      background: #F8FAFC;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Front Desk Top Bar */
+    .desk-header {
+      background: var(--desk-dark);
+      color: #FFFFFF;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--desk-slate);
+    }
+    .desk-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .desk-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #FFFFFF;
+    }
+    .desk-brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .desk-hotel-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #FEF3C7;
+      letter-spacing: 0.5px;
+      margin: 0;
+      line-height: 1.1;
+    }
+    .desk-subtitle {
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .desk-user-status {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .duty-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6EE7B7;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .duty-dot {
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+    }
+    .btn-desk-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FEF3C7;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-desk-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+    }
+
+    /* Desk Navigation Tabs */
+    .desk-subnav {
+      background: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 6px 0;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .subnav-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE / Edge */
+      align-items: center;
+    }
+    .subnav-tabs::-webkit-scrollbar {
+      display: none; /* Chrome, Edge, Safari, PyWebView */
+    }
+    .desk-tab-btn {
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      background: #F8FAFC;
+      color: #64748B;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .desk-tab-btn:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+    }
+    .desk-tab-btn.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-color: #0F172A;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+    }
+    .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 9999px;
+      background: #E2E8F0;
+      color: #475569;
+      line-height: 1;
+    }
+    .desk-tab-btn.active .tab-badge {
+      background: rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+    }
+
+    /* KPI Summary Cards: Balanced 6-Column Layout (No Orphaned Cards) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin: 20px 0 26px;
+    }
+    @media (max-width: 1120px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .kpi-tile {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .kpi-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px -2px rgba(15, 23, 42, 0.08);
+    }
+    .kpi-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .kpi-tile.kpi-total::before { background: #3B82F6; }
+    .kpi-tile.kpi-available::before { background: #16A34A; }
+    .kpi-tile.kpi-occupied::before { background: #DC2626; }
+    .kpi-tile.kpi-stays::before { background: #6366F1; }
+    .kpi-tile.kpi-revenue::before { background: #D97706; }
+    .kpi-tile.kpi-profiles::before { background: #0D9488; }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .kpi-title {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748B;
+      font-weight: 700;
+    }
+    .kpi-icon-pill {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .kpi-number {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .kpi-footer {
+      font-size: 11.5px;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Room Rack Tiles */
+    .rack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .rack-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .rack-card.is-occupied {
+      border-left: 4px solid #DC2626;
+    }
+    .rack-card.is-available {
+      border-left: 4px solid #16A34A;
+    }
+    .rack-img-wrap {
+      height: 160px;
+      position: relative;
+      background: #0F172A;
+    }
+    .rack-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .rack-room-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #FFFFFF;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .rack-change-photo-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #FFFFFF;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .rack-card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .rack-type-label {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 600;
+    }
+    .rack-rate-label {
+      font-size: 16px;
+      font-weight: 800;
+      color: #B45309;
+      margin-top: 2px;
+    }
+    .rack-occupant-box {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+    .rack-vacant-box {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 12px 0;
+      font-size: 12px;
+      color: #166534;
+      font-weight: 600;
+    }
+
+    /* Print styles */
+    @media print {
+      body * { visibility: hidden; }
+      #deskReceiptModal, #deskReceiptModal * { visibility: visible; }
+      #deskReceiptModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Front Desk Strip -->
+  <header class="desk-header">
+    <div class="container desk-header-inner">
+      <a href="/receptionist" class="desk-brand-group">
+        <img src="/assets/logo.png" alt="Sugo Logo" class="desk-brand-logo"
+             onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+        <div>
+          <h1 class="desk-hotel-title">SUGO GRAND PALACE</h1>
+          <div class="desk-subtitle">Front Desk Operations Console</div>
+        </div>
+      </a>
+
+      <div class="desk-user-status">
+        <div class="duty-badge">
+          <span class="duty-dot"></span>
+          <span>Receptionist on Duty</span>
+        </div>
+        <a href="/guest" class="btn-desk-action">Guest Portal</a>
+        <a href="/login/receptionist" class="btn-desk-action" style="color: #F87171; border-color: rgba(239,68,68,0.3);">Sign Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Operations Navigation Tabs (Scrollbar Hidden, Fully Responsive) -->
+  <div class="desk-subnav">
+    <div class="container">
+      <div class="subnav-tabs">
+        <button type="button" class="desk-tab-btn active" onclick="switchDeskTab('rack', this)">
+          <span>Live Room Rack &amp; Housekeeping</span>
+        </button>
+        <button type="button" class="desk-tab-btn" onclick="switchDeskTab('folios', this)">
+          <span>Guest Folios &amp; Reservations</span>
+          <span class="tab-badge">{{ bookings|length }}</span>
+        </button>
+        <button type="button" class="desk-tab-btn" onclick="switchDeskTab('directory', this)">
+          <span>Guest Directory &amp; Loyalty</span>
+          <span class="tab-badge">{{ customers|length }}</span>
+        </button>
+        <button type="button" class="desk-tab-btn" onclick="switchDeskTab('transactions', this)">
+          <span>Transactions Ledger</span>
+          <span class="tab-badge">{{ transactions|length }}</span>
+        </button>
+        <button type="button" class="desk-tab-btn" onclick="switchDeskTab('branding', this)">
+          <span>Property &amp; Room Photos</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash Alerts -->
+  <div class="container" style="padding-top: 14px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" style="margin-bottom: 12px;">
+            <span class="alert-icon">
+              {% if category == 'success' %}✔{% elif category == 'danger' %}✖{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
+            </span>
+            <div class="alert-text">{{ message }}</div>
+            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="container" style="flex: 1; padding-bottom: 48px;">
+
+    <!-- KPI Metric Strip (Balanced 6 Cards Grid - Accurate & Dynamically Synchronized) -->
+    <div class="kpi-grid">
+      <div class="kpi-tile kpi-total">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Rooms</span>
+          <span class="kpi-icon-pill" style="background: #EFF6FF; color: #2563EB;">🏨</span>
+        </div>
+        <div class="kpi-number">{{ metrics.total_rooms }}</div>
+        <div class="kpi-footer">Property Capacity</div>
+      </div>
+
+      <div class="kpi-tile kpi-available">
+        <div class="kpi-header">
+          <span class="kpi-title">Available Clean</span>
+          <span class="kpi-icon-pill" style="background: #F0FDF4; color: #16A34A;">✓</span>
+        </div>
+        <div class="kpi-number" style="color: #16A34A;">{{ metrics.available_rooms }}</div>
+        <div class="kpi-footer">Ready for Check-In</div>
+      </div>
+
+      <div class="kpi-tile kpi-occupied">
+        <div class="kpi-header">
+          <span class="kpi-title">Occupied Rooms</span>
+          <span class="kpi-icon-pill" style="background: #FEF2F2; color: #DC2626;">🔒</span>
+        </div>
+        <div class="kpi-number" style="color: #DC2626;">{{ metrics.occupied_rooms }}</div>
+        <div class="kpi-footer">{{ metrics.occupancy_rate }}% Current Occupancy</div>
+      </div>
+
+      <div class="kpi-tile kpi-stays">
+        <div class="kpi-header">
+          <span class="kpi-title">Active Stays</span>
+          <span class="kpi-icon-pill" style="background: #EEF2FF; color: #4F46E5;">👤</span>
+        </div>
+        <div class="kpi-number" style="color: #4F46E5;">{{ metrics.active_bookings_count }}</div>
+        <div class="kpi-footer">Registered Guests</div>
+      </div>
+
+      <div class="kpi-tile kpi-revenue">
+        <div class="kpi-header">
+          <span class="kpi-title">Gross Folio Revenue</span>
+          <span class="kpi-icon-pill" style="background: #FEF3C7; color: #B45309;">₱</span>
+        </div>
+        <div class="kpi-number" style="color: #B45309;">₱{{ "{:,.2f}".format(metrics.total_revenue) }}</div>
+        <div class="kpi-footer">Active Folios Billed</div>
+      </div>
+
+      <div class="kpi-tile kpi-profiles">
+        <div class="kpi-header">
+          <span class="kpi-title">Guest Profiles</span>
+          <span class="kpi-icon-pill" style="background: #F0FDFA; color: #0D9488;">★</span>
+        </div>
+        <div class="kpi-number" style="color: #0D9488;">{{ metrics.total_customers }}</div>
+        <div class="kpi-footer">In CRM Directory</div>
+      </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: ROOM RACK & HOUSEKEEPING                          -->
+    <!-- ======================================================== -->
+    <section id="paneRack" style="display: block;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Live Room Rack &amp; Housekeeping Inventory</h3>
+        <div style="font-size: 13px; color: #64748B;">
+          <span style="color: #16A34A; font-weight: 700;">● {{ metrics.available_rooms }} Ready</span> &bull; 
+          <span style="color: #DC2626; font-weight: 700;">● {{ metrics.occupied_rooms }} Occupied</span>
+        </div>
+      </div>
+
+      <div class="rack-grid">
+        {% for r in rooms %}
+          {% set occ_booking = None %}
+          {% for b in bookings %}
+            {% if b.room_number|string == r.room_number|string and b.status != 'Checked Out' and b.status != 'Cancelled' %}
+              {% set occ_booking = b %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="rack-card {% if r.is_available %}is-available{% else %}is-occupied{% endif %}">
+            <div class="rack-img-wrap">
+              <img src="{{ r.image_url }}" alt="Room {{ r.room_number }}" class="rack-img"
+                   onerror="this.src='/assets/room_single.svg'">
+              <div class="rack-room-tag">Room {{ r.room_number }}</div>
+              <button type="button" class="rack-change-photo-btn"
+                      onclick="openPhotoEditor('{{ r.room_number }}', '{{ r.type }}', '{{ r.image_url }}')">
+                Change Photo
+              </button>
+            </div>
+
+            <div class="rack-card-body">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span class="rack-type-label">{{ r.type }} (Max {{ r.capacity }})</span>
+                <span class="rack-rate-label">₱{{ "{:,.2f}".format(r.price_per_night) }}</span>
+              </div>
+
+              {% if occ_booking %}
+              <div class="rack-occupant-box">
+                <strong style="color: #991B1B; display: block;">In-House Guest:</strong>
+                <div style="font-weight: 700; color: #0F172A;">{{ occ_booking.guest_name }}</div>
+                <div style="color: #64748B; font-size: 11px; margin-top: 2px;">
+                  Folio: {{ occ_booking.booking_id }} &bull; Out: {{ occ_booking.check_out }}
+                </div>
+              </div>
+              <div style="margin-top: auto; display: flex; gap: 8px;">
+                <form action="/admin/checkout" method="POST" style="flex: 1;" onsubmit="return confirm('Process check-out for Room {{ r.room_number }}?')">
+                  <input type="hidden" name="booking_id" value="{{ occ_booking.booking_id }}">
+                  <button type="submit" class="btn btn-outline-danger btn-sm" style="width: 100%;">
+                    Check-Out
+                  </button>
+                </form>
+                <button type="button" class="btn btn-outline btn-sm"
+                        onclick="showDeskFolioReceipt('{{ occ_booking.booking_id }}', '{{ occ_booking.guest_name }}', '{{ occ_booking.room_number }}', '{{ occ_booking.room_type }}', {{ occ_booking.nights }}, '{{ occ_booking.check_in }}', '{{ occ_booking.check_out }}', {{ occ_booking.total_cost }}, {{ occ_booking.price_per_night }}, '{{ occ_booking.phone }}', '{{ occ_booking.email }}', '{{ occ_booking.created_at }}')">
+                  Folio
+                </button>
+              </div>
+              {% else %}
+              <div class="rack-vacant-box">
+                Vacant &amp; Clean &bull; Ready for Check-In
+              </div>
+              <div style="margin-top: auto;">
+                <button type="button" class="btn btn-primary btn-sm" style="width: 100%;"
+                        onclick="openWalkInCheckIn('{{ r.room_number }}', '{{ r.type }}', {{ r.price_per_night }}, {{ r.capacity }})">
+                  Walk-In Check-In
+                </button>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: GUEST FOLIOS & RESERVATIONS LEDGER                -->
+    <!-- ======================================================== -->
+    <section id="paneFolios" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Folios &amp; Master Reservations Ledger</h3>
+        <input type="text" id="ledgerSearchInput" class="search-box" style="width: 280px;" 
+               placeholder="Search folio #, guest, or room..." oninput="filterLedgerTable()">
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="ledgerTable">
+          <thead>
+            <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+              <th style="padding: 12px 16px;">Folio #</th>
+              <th style="padding: 12px 16px;">Guest Name</th>
+              <th style="padding: 12px 16px;">Room</th>
+              <th style="padding: 12px 16px;">Stay Dates</th>
+              <th style="padding: 12px 16px;">Duration</th>
+              <th style="padding: 12px 16px;">Total Folio</th>
+              <th style="padding: 12px 16px;">Status</th>
+              <th style="padding: 12px 16px; text-align: right;">Front Desk Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in bookings %}
+            <tr style="border-bottom: 1px solid #E2E8F0;" class="ledger-row"
+                data-search="{{ b.booking_id }} {{ b.guest_name }} {{ b.room_number }} {{ b.status }}">
+              <td style="padding: 12px 16px; font-family: monospace; font-weight: 700; color: #B45309;">
+                {{ b.booking_id }}
+              </td>
+              <td style="padding: 12px 16px;">
+                <strong>{{ b.guest_name }}</strong>
+                <div style="font-size: 11px; color: #64748B;">{{ b.phone|default('No phone') }}</div>
+              </td>
+              <td style="padding: 12px 16px;">
+                <strong>Room {{ b.room_number }}</strong>
+                <div style="font-size: 11px; color: #64748B;">{{ b.room_type }}</div>
+              </td>
+              <td style="padding: 12px 16px;">
+                {{ b.check_in }} &rarr; {{ b.check_out }}
+              </td>
+              <td style="padding: 12px 16px;">
+                {{ b.nights }} Night(s)
+              </td>
+              <td style="padding: 12px 16px; font-weight: 700; color: #0F172A;">
+                ₱{{ "{:,.2f}".format(b.total_cost) }}
+              </td>
+              <td style="padding: 12px 16px;">
+                {% if b.status == 'Confirmed' %}
+                  <span class="badge badge-success">In-House</span>
+                {% elif b.status == 'Checked Out' %}
+                  <span class="badge badge-secondary">Checked Out</span>
+                {% else %}
+                  <span class="badge badge-danger">{{ b.status }}</span>
+                {% endif %}
+              </td>
+              <td style="padding: 12px 16px; text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <button type="button" class="btn btn-outline btn-xs"
+                          onclick="showDeskFolioReceipt('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', '{{ b.room_type }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.check_out }}', {{ b.total_cost }}, {{ b.price_per_night }}, '{{ b.phone }}', '{{ b.email }}', '{{ b.created_at }}')">
+                    View Folio
+                  </button>
+                  {% if b.status == 'Confirmed' %}
+                  <form action="/admin/checkout" method="POST" style="display: inline;" onsubmit="return confirm('Confirm check-out for folio {{ b.booking_id }}?')">
+                    <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
+                    <button type="submit" class="btn btn-outline-danger btn-xs">Check-Out</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: GUEST DIRECTORY & LOYALTY CRM                     -->
+    <!-- ======================================================== -->
+    <section id="paneDirectory" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Directory &amp; CRM Profiles</h3>
+        <input type="text" id="custSearchInput" class="search-box" style="width: 280px;" 
+               placeholder="Search guest name or contact..." oninput="filterCustomerTable()">
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="custTable">
+          <thead>
+            <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+              <th style="padding: 12px 16px;">Profile ID</th>
+              <th style="padding: 12px 16px;">Guest Name</th>
+              <th style="padding: 12px 16px;">Contact Phone</th>
+              <th style="padding: 12px 16px;">Email</th>
+              <th style="padding: 12px 16px;">Loyalty Status</th>
+              <th style="padding: 12px 16px;">Stays Completed</th>
+              <th style="padding: 12px 16px; text-align: right;">Lifetime Spend</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in customers %}
+            <tr style="border-bottom: 1px solid #E2E8F0;" class="cust-row"
+                data-search="{{ c.customer_id }} {{ c.name }} {{ c.phone }} {{ c.email }} {{ c.tier }}">
+              <td style="padding: 12px 16px; font-family: monospace; color: #64748B;">{{ c.customer_id }}</td>
+              <td style="padding: 12px 16px; font-weight: 700; color: #0F172A;">{{ c.name }}</td>
+              <td style="padding: 12px 16px; color: #475569;">{{ c.phone|default('—') }}</td>
+              <td style="padding: 12px 16px; color: #475569;">{{ c.email|default('—') }}</td>
+              <td style="padding: 12px 16px;">
+                {% if 'VIP' in c.tier or 'Platinum' in c.tier %}
+                  <span class="badge" style="background: #FEF3C7; color: #92400E; font-weight: 700;">{{ c.tier }}</span>
+                {% elif 'Gold' in c.tier %}
+                  <span class="badge" style="background: #FEF9C3; color: #854D0E; font-weight: 700;">{{ c.tier }}</span>
+                {% else %}
+                  <span class="badge" style="background: #F1F5F9; color: #475569;">{{ c.tier }}</span>
+                {% endif %}
+              </td>
+              <td style="padding: 12px 16px;">{{ c.total_stays }} Stay(s)</td>
+              <td style="padding: 12px 16px; text-align: right; font-weight: 700; color: #B45309;">
+                ₱{{ "{:,.2f}".format(c.total_spent) }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: IN-MEMORY TRANSACTIONS LEDGER                     -->
+    <!-- ======================================================== -->
+    <section id="paneTransactions" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h3 style="font-size: 18px; color: #0F172A; margin: 0;">In-Memory Transaction Ledger &amp; Audit Trail</h3>
+          <p style="font-size: 12px; color: #64748B; margin-top: 2px;">
+            High-speed in-memory datastore with O(1) multi-hashing indexes (by Transaction ID, Booking Ref, Guest, and Suite).
+          </p>
+        </div>
+        <input type="text" id="txnSearchInput" class="search-box" style="width: 280px;" 
+               placeholder="Search TXN #, Folio, Guest, or Type..." oninput="filterTxnTable()">
+      </div>
+
+      <!-- Transaction Metrics Strip -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px;">
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+          <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Transactions Stored</span>
+          <div style="font-size: 20px; font-weight: 800; color: #0F172A; margin-top: 4px;">{{ txn_metrics.total_count }}</div>
+          <span style="font-size: 11px; color: #16A34A;">● Active in memory</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+          <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Gross Invoiced</span>
+          <div style="font-size: 20px; font-weight: 800; color: #B45309; margin-top: 4px;">₱{{ "{:,.2f}".format(txn_metrics.gross_volume) }}</div>
+          <span style="font-size: 11px; color: #64748B;">Total bookings</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+          <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Total Refunds</span>
+          <div style="font-size: 20px; font-weight: 800; color: #DC2626; margin-top: 4px;">₱{{ "{:,.2f}".format(txn_metrics.total_refunds) }}</div>
+          <span style="font-size: 11px; color: #64748B;">Cancellations processed</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+          <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Net Revenue Settled</span>
+          <div style="font-size: 20px; font-weight: 800; color: #16A34A; margin-top: 4px;">₱{{ "{:,.2f}".format(txn_metrics.net_revenue) }}</div>
+          <span style="font-size: 11px; color: #64748B;">Net balance</span>
+        </div>
+      </div>
+
+      <!-- Transactions Data Table -->
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="txnTable">
+          <thead>
+            <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+              <th style="padding: 12px 14px;">Transaction ID</th>
+              <th style="padding: 12px 14px;">Timestamp</th>
+              <th style="padding: 12px 14px;">Type</th>
+              <th style="padding: 12px 14px;">Folio Ref</th>
+              <th style="padding: 12px 14px;">Guest Name</th>
+              <th style="padding: 12px 14px;">Suite</th>
+              <th style="padding: 12px 14px;">Amount</th>
+              <th style="padding: 12px 14px;">Status</th>
+              <th style="padding: 12px 14px;">Audit Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in transactions %}
+            <tr style="border-bottom: 1px solid #E2E8F0;" class="txn-row"
+                data-search="{{ t.transaction_id }} {{ t.booking_id }} {{ t.guest_name }} {{ t.room_number }} {{ t.transaction_type }} {{ t.status }}">
+              <td style="padding: 12px 14px; font-family: monospace; font-weight: 700; color: #B45309;">
+                {{ t.transaction_id }}
+              </td>
+              <td style="padding: 12px 14px; color: #64748B; font-size: 12px; white-space: nowrap;">
+                {{ t.timestamp }}
+              </td>
+              <td style="padding: 12px 14px;">
+                {% if 'BOOKING' in t.transaction_type %}
+                  <span class="badge badge-success" style="font-size: 11px;">RESERVATION</span>
+                {% elif 'CHECKOUT' in t.transaction_type %}
+                  <span class="badge" style="background: #DBEAFE; color: #1E40AF; font-size: 11px;">CHECK-OUT</span>
+                {% elif 'REFUND' in t.transaction_type or 'CANCEL' in t.transaction_type %}
+                  <span class="badge badge-danger" style="font-size: 11px;">REFUND</span>
+                {% else %}
+                  <span class="badge" style="background: #F1F5F9; color: #475569; font-size: 11px;">{{ t.transaction_type }}</span>
+                {% endif %}
+              </td>
+              <td style="padding: 12px 14px; font-family: monospace; font-weight: 600;">
+                {{ t.booking_id }}
+              </td>
+              <td style="padding: 12px 14px; font-weight: 700; color: #0F172A;">
+                {{ t.guest_name }}
+              </td>
+              <td style="padding: 12px 14px;">
+                Suite {{ t.room_number }}
+              </td>
+              <td style="padding: 12px 14px; font-weight: 800; color: {% if 'REFUND' in t.transaction_type %}#DC2626{% else %}#0F172A{% endif %};">
+                {% if 'REFUND' in t.transaction_type %}-{% endif %}₱{{ "{:,.2f}".format(t.amount) }}
+              </td>
+              <td style="padding: 12px 14px;">
+                <span style="font-size: 12px; font-weight: 600; color: {% if t.status == 'Refunded' %}#DC2626{% else %}#16A34A{% endif %};">
+                  ● {{ t.status }}
+                </span>
+              </td>
+              <td style="padding: 12px 14px; color: #64748B; font-size: 12px;">
+                {{ t.notes }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ======================================================== -->
+    <!-- TAB 5: PROPERTY & BRANDING ASSETS                        -->
+    <!-- ======================================================== -->
+    <section id="paneBranding" style="display: none;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px;">
+          <h3 style="font-size: 16px; color: #0F172A; margin-bottom: 6px;">Hotel Crest &amp; Logo Settings</h3>
+          <p style="font-size: 13px; color: #64748B; margin-bottom: 18px;">
+            Update the property crest displayed on guest folios, confirmation vouchers, and navigation headers.
+          </p>
+
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 18px;">
+            <img src="/assets/logo.png" alt="Current Logo" style="width: 64px; height: 64px; border-radius: 10px; border: 1px solid #E2E8F0;"
+                 onerror="this.src='/assets/logo_transparent.png'">
+            <div>
+              <strong style="display: block; font-size: 14px;">Current Property Emblem</strong>
+              <span style="font-size: 12px; color: #64748B;">Supported: PNG, JPG, SVG, WebP</span>
+            </div>
+          </div>
+
+          <form action="/admin/upload-logo" method="POST" enctype="multipart/form-data">
+            <div class="form-group mb-3">
+              <label class="form-label">Upload New Emblem File</label>
+              <input type="file" name="logo_file" class="form-control" accept="image/*">
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Or Provide Web Image URL</label>
+              <input type="text" name="logo_url" class="form-control" placeholder="https://example.com/crest.png">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              Save Property Logo
+            </button>
+          </form>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px;">
+          <h3 style="font-size: 16px; color: #0F172A; margin-bottom: 6px;">Room Photography Guidelines</h3>
+          <p style="font-size: 13px; color: #64748B; margin-bottom: 18px;">
+            To update individual suite photos, navigate to the <strong>Room Rack &amp; Housekeeping</strong> tab and click the <strong>Change Photo</strong> button on any suite card.
+          </p>
+
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; font-size: 13px; color: #475569;">
+            <p><strong>Photography Standards:</strong></p>
+            <ul style="padding-left: 18px; margin-top: 6px; line-height: 1.6;">
+              <li>Landscape orientation (16:9 or 4:3 aspect ratio).</li>
+              <li>Bright natural ambient lighting showing full bedding.</li>
+              <li>Images are stored locally inside the <code>views/assets/</code> directory.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: WALK-IN CHECK-IN (With Letters-Only Validation)   -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="walkInModal" style="display: none;">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Walk-In Guest Check-In</h3>
+          <p class="modal-subtitle" id="wiRoomSubtitle">Room 101 - Single</p>
+        </div>
+        <button type="button" class="modal-close" onclick="closeWalkIn()">&times;</button>
+      </div>
+
+      <form action="/book" method="POST" id="walkInForm" onsubmit="return verifyWalkInForm()">
+        <input type="hidden" name="room_number" id="wiRoomInput">
+        <input type="hidden" id="wiRateInput" value="1200">
+
+        <div class="modal-body">
+          <!-- Guest Name (Letters Only) -->
+          <div class="form-group mb-3">
+            <label class="form-label">Guest Full Name <span class="required">*</span></label>
+            <input type="text" name="guest_name" id="wiGuestName" class="form-control" 
+                   placeholder="e.g. Gabriel Santos" required 
+                   oninput="checkWalkInName(this)">
+            <div class="name-error-hint" id="wiNameError" style="color: #DC2626; font-size: 12px; font-weight: 600; margin-top: 4px; display: none;">
+              Numbers are not allowed in guest names. Letters and spaces only.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label">Contact Phone</label>
+              <input type="text" name="phone" class="form-control" placeholder="0917-555-0199">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="guest@example.ph">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label class="form-label">Check-In</label>
+              <input type="date" name="check_in" id="wiCheckIn" class="form-control" value="{{ today_str }}" required>
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Nights</label>
+              <input type="number" name="nights" id="wiNights" class="form-control" value="1" min="1" max="30" required oninput="calcWalkInTotal()">
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Guests</label>
+              <input type="number" name="guests_count" id="wiCapacity" class="form-control" value="1" min="1" max="6">
+            </div>
+          </div>
+
+          <div style="background: #FEF3C7; border: 1px solid rgba(180,83,9,0.3); border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <span style="font-size: 12px; color: #92400E; font-weight: 700;">TOTAL BILLED</span>
+            <strong style="font-size: 18px; color: #92400E;" id="wiTotalDisplay">₱1,200.00</strong>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeWalkIn()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="wiSubmitBtn">Check-In Guest</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: PHOTO EDITOR                                      -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="photoModal" style="display: none;">
+    <div class="modal-window modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title" id="photoModalTitle">Update Suite Photo</h3>
+        <button type="button" class="modal-close" onclick="closePhotoModal()">&times;</button>
+      </div>
+      <form id="photoModalForm" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div style="text-align: center; margin-bottom: 16px;">
+            <img id="photoModalPreview" src="" alt="Suite Preview" 
+                 style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #0F172A;">
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Upload Image File</label>
+            <input type="file" name="room_image_file" class="form-control" accept="image/*" onchange="previewPhotoFile(this)">
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Or Image URL</label>
+            <input type="text" name="room_image_url" id="photoUrlInput" class="form-control" placeholder="https://..." oninput="previewPhotoUrl(this)">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closePhotoModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: FRONT DESK OFFICIAL FOLIO RECEIPT                 -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="deskReceiptModal" style="display: none;">
+    <div class="modal-window modal-lg">
+      <div class="modal-header no-print">
+        <h3 class="modal-title">Official Guest Folio Voucher</h3>
+        <button type="button" class="modal-close" onclick="closeDeskReceipt()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #E2E8F0; padding-bottom: 14px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="/assets/logo.png" alt="Logo" style="width: 44px; height: 44px; border-radius: 8px;"
+                   onerror="this.src='/assets/logo_transparent.png'">
+              <div>
+                <h3 style="font-family: 'Playfair Display', serif; margin: 0; color: #0F172A;">SUGO GRAND PALACE</h3>
+                <div style="font-size: 11px; color: #64748B;">Front Desk Operations &bull; Official Folio Invoice</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: monospace; font-size: 16px; font-weight: 800; color: #B45309;" id="dRcptId">SH-1024</div>
+              <div style="font-size: 11px; color: #64748B;" id="dRcptDate">Issued: 2026-11-09</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px; margin-bottom: 16px;">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">GUEST</span>
+              <div style="font-weight: 700; color: #0F172A;" id="dRcptName">Gabriel Santos</div>
+              <div style="color: #64748B;" id="dRcptContact">0917-555-0199</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">STAY PARTICULARS</span>
+              <div style="font-weight: 700; color: #0F172A;" id="dRcptRoom">Room 201 (Double)</div>
+              <div style="color: #64748B;" id="dRcptDates">2026-11-09 to 2026-11-11</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;">
+            <thead>
+              <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+                <th style="padding: 8px;">Description</th>
+                <th style="padding: 8px;">Rate</th>
+                <th style="padding: 8px;">Nights</th>
+                <th style="padding: 8px; text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 8px;" id="dRcptDesc">Room 201 Accommodations</td>
+                <td style="padding: 8px;" id="dRcptRate">₱1,800.00</td>
+                <td style="padding: 8px;" id="dRcptNights">2</td>
+                <td style="padding: 8px; text-align: right; font-weight: 700;" id="dRcptSubtotal">₱3,600.00</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="font-size: 18px; font-weight: 800; color: #B45309; text-align: right;" id="dRcptTotal">
+            Grand Total: ₱3,600.00
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer no-print">
+        <button type="button" class="btn btn-outline" onclick="closeDeskReceipt()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Print Folio</button>
+      </div>
+    </div>
+  </div>
+
+
+  <footer style="background: #0F172A; color: #94A3B8; padding: 20px 0; font-size: 12px; text-align: center; border-top: 1px solid #1E293B; margin-top: auto;">
+    <div class="container">
+      &copy; 2026 Sugo Grand Palace Hotel &bull; Front Desk &amp; Reception Operations Console
+    </div>
+  </footer>
+
+
+  <script>
+    function switchDeskTab(tab, btn) {
+      document.querySelectorAll('.desk-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.getElementById('paneRack').style.display = (tab === 'rack') ? 'block' : 'none';
+      document.getElementById('paneFolios').style.display = (tab === 'folios') ? 'block' : 'none';
+      document.getElementById('paneDirectory').style.display = (tab === 'directory') ? 'block' : 'none';
+      document.getElementById('paneTransactions').style.display = (tab === 'transactions') ? 'block' : 'none';
+      document.getElementById('paneBranding').style.display = (tab === 'branding') ? 'block' : 'none';
+    }
+
+    function filterLedgerTable() {
+      const q = document.getElementById('ledgerSearchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.ledger-row').forEach(row => {
+        const text = row.getAttribute('data-search').toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function filterCustomerTable() {
+      const q = document.getElementById('custSearchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.cust-row').forEach(row => {
+        const text = row.getAttribute('data-search').toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function filterTxnTable() {
+      const q = document.getElementById('txnSearchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.txn-row').forEach(row => {
+        const text = row.getAttribute('data-search').toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // Walk-In Modal
+    function openWalkInCheckIn(roomNo, type, price, cap) {
+      document.getElementById('wiRoomInput').value = roomNo;
+      document.getElementById('wiRateInput').value = price;
+      document.getElementById('wiRoomSubtitle').textContent = `Room ${roomNo} - ${type}`;
+      document.getElementById('wiCapacity').max = cap;
+
+      const nameInput = document.getElementById('wiGuestName');
+      nameInput.value = '';
+      nameInput.classList.remove('is-invalid');
+      document.getElementById('wiNameError').style.display = 'none';
+      document.getElementById('wiSubmitBtn').disabled = false;
+
+      calcWalkInTotal();
+      document.getElementById('walkInModal').style.display = 'flex';
+    }
+
+    function closeWalkIn() {
+      document.getElementById('walkInModal').style.display = 'none';
+    }
+
+    function checkWalkInName(input) {
+      const val = input.value;
+      const errorEl = document.getElementById('wiNameError');
+      const submitBtn = document.getElementById('wiSubmitBtn');
+      const letterPattern = /^[A-Za-z\s\.\-']*$/;
+      const hasDigits = /\d/.test(val);
+
+      if (hasDigits || (val.length > 0 && !letterPattern.test(val))) {
+        errorEl.style.display = 'block';
+        input.classList.add('is-invalid');
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        errorEl.style.display = 'none';
+        input.classList.remove('is-invalid');
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    function verifyWalkInForm() {
+      const input = document.getElementById('wiGuestName');
+      return checkWalkInName(input);
+    }
+
+    function calcWalkInTotal() {
+      const price = parseFloat(document.getElementById('wiRateInput').value) || 0;
+      const nights = parseInt(document.getElementById('wiNights').value) || 1;
+      const total = price * nights;
+      document.getElementById('wiTotalDisplay').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    }
+
+    // Photo Editor
+    function openPhotoEditor(roomNo, type, currentUrl) {
+      document.getElementById('photoModalTitle').textContent = `Update Room ${roomNo} Photo`;
+      document.getElementById('photoModalPreview').src = currentUrl || '/assets/room_single.svg';
+      document.getElementById('photoUrlInput').value = currentUrl.startsWith('http') ? currentUrl : '';
+      document.getElementById('photoModalForm').action = `/admin/room/${roomNo}/update-image`;
+      document.getElementById('photoModal').style.display = 'flex';
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photoModal').style.display = 'none';
+    }
+
+    function previewPhotoFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('photoModalPreview').src = e.target.result;
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function previewPhotoUrl(input) {
+      if (input.value.trim()) {
+        document.getElementById('photoModalPreview').src = input.value.trim();
+      }
+    }
+
+    // Desk Receipt
+    function showDeskFolioReceipt(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date) {
+      document.getElementById('dRcptId').textContent = id;
+      document.getElementById('dRcptDate').textContent = `Issued: ${date || 'Today'}`;
+      document.getElementById('dRcptName').textContent = name;
+      document.getElementById('dRcptContact').textContent = `${phone || 'No phone'} | ${email || 'No email'}`;
+      document.getElementById('dRcptRoom').textContent = `Room ${room} (${type})`;
+      document.getElementById('dRcptDates').textContent = `${inDate} to ${outDate} (${nights} night(s))`;
+      document.getElementById('dRcptDesc').textContent = `Room ${room} (${type}) Stay`;
+      document.getElementById('dRcptRate').textContent = `₱${Number(rate).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('dRcptNights').textContent = nights;
+      document.getElementById('dRcptSubtotal').textContent = `₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('dRcptTotal').textContent = `Grand Total: ₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      document.getElementById('deskReceiptModal').style.display = 'flex';
+    }
+
+    function closeDeskReceipt() {
+      document.getElementById('deskReceiptModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

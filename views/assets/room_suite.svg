@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="wallGradSuite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451A03" />
+      <stop offset="50%" stop-color="#78350F" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="floorGradSuite" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350F" />
+      <stop offset="100%" stop-color="#451A03" />
+    </linearGradient>
+    <radialGradient id="chandelierGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FEF3C7" stop-opacity="0.95" />
+      <stop offset="40%" stop-color="#F59E0B" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#D97706" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Accent Wall & Living Separator -->
+  <rect width="800" height="340" fill="url(#wallGradSuite)" />
+  <rect y="340" width="800" height="160" fill="url(#floorGradSuite)" />
+
+  <!-- Massive Balcony Skyline Glass Doors -->
+  <g transform="translate(420, 20)">
+    <rect width="340" height="310" fill="#020617" rx="8" stroke="#D97706" stroke-width="4" />
+    <!-- City Sunset & Skyline -->
+    <rect x="0" y="0" width="340" height="140" fill="linear-gradient(to bottom, #1E1B4B, #9A3412)" />
+    <!-- Golden Sunset Sun -->
+    <circle cx="270" cy="90" r="32" fill="#F59E0B" opacity="0.85" />
+    <!-- High-rise Buildings Silhouette -->
+    <rect x="20" y="80" width="45" height="230" fill="#0F172A" />
+    <rect x="80" y="45" width="60" height="265" fill="#1E293B" />
+    <rect x="155" y="100" width="45" height="210" fill="#0F172A" />
+    <rect x="215" y="60" width="55" height="250" fill="#1E293B" />
+    <rect x="285" y="110" width="45" height="200" fill="#0F172A" />
+    <!-- Balcony Railing -->
+    <line x1="0" y1="260" x2="340" y2="260" stroke="#CBD5E1" stroke-width="6" />
+    <line x1="40" y1="260" x2="40" y2="310" stroke="#94A3B8" stroke-width="3" />
+    <line x1="120" y1="260" x2="120" y2="310" stroke="#94A3B8" stroke-width="3" />
+    <line x1="200" y1="260" x2="200" y2="310" stroke="#94A3B8" stroke-width="3" />
+    <line x1="280" y1="260" x2="280" y2="310" stroke="#94A3B8" stroke-width="3" />
+    <!-- Glass Pane Divider -->
+    <line x1="170" y1="0" x2="170" y2="310" stroke="#D97706" stroke-width="3" />
+  </g>
+
+  <!-- Chandelier Centerpiece -->
+  <circle cx="230" cy="90" r="120" fill="url(#chandelierGlow)" />
+  <g transform="translate(190, 0)">
+    <line x1="40" y1="0" x2="40" y2="45" stroke="#D97706" stroke-width="3" />
+    <path d="M 10 45 Q 40 60 70 45" stroke="#F59E0B" stroke-width="3" fill="none" />
+    <circle cx="10" cy="45" r="5" fill="#FEF3C7" />
+    <circle cx="40" cy="55" r="6" fill="#FEF3C7" />
+    <circle cx="70" cy="45" r="5" fill="#FEF3C7" />
+  </g>
+
+  <!-- Master King Bed Section -->
+  <g transform="translate(60, 160)">
+    <!-- Headboard -->
+    <rect x="0" y="0" width="280" height="150" fill="#292524" rx="10" stroke="#F59E0B" stroke-width="2.5" />
+    <line x1="140" y1="0" x2="140" y2="150" stroke="#78350F" stroke-width="2" />
+    <!-- Pillows -->
+    <rect x="25" y="70" width="100" height="48" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+    <rect x="155" y="70" width="100" height="48" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
+    <rect x="90" y="95" width="100" height="32" rx="6" fill="#D97706" />
+    <!-- Duvet -->
+    <rect x="10" y="125" width="260" height="175" fill="#FFFFFF" rx="8" stroke="#CBD5E1" stroke-width="1" />
+    <rect x="10" y="240" width="260" height="45" fill="#92400E" rx="4" />
+  </g>
+
+  <!-- Executive Lounge Velvet Sofa & Coffee Table -->
+  <g transform="translate(420, 270)">
+    <!-- Sofa Base & Cushions -->
+    <rect x="0" y="20" width="200" height="65" fill="#92400E" rx="12" stroke="#D97706" stroke-width="2" />
+    <rect x="15" y="10" width="80" height="50" rx="8" fill="#78350F" />
+    <rect x="105" y="10" width="80" height="50" rx="8" fill="#78350F" />
+    <!-- Armrests -->
+    <rect x="-10" y="15" width="20" height="60" rx="8" fill="#B45309" />
+    <rect x="190" y="15" width="20" height="60" rx="8" fill="#B45309" />
+    <!-- Glass Coffee Table with Champagne Flutes -->
+    <rect x="50" y="80" width="100" height="10" rx="4" fill="rgba(255,255,255,0.7)" stroke="#CBD5E1" stroke-width="1" />
+    <line x1="65" y1="90" x2="65" y2="105" stroke="#475569" stroke-width="3" />
+    <line x1="135" y1="90" x2="135" y2="105" stroke="#475569" stroke-width="3" />
+  </g>
+
+  <!-- Badge Overlay -->
+  <rect x="25" y="25" width="190" height="36" rx="18" fill="rgba(69, 26, 3, 0.9)" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="120" y="48" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" 
+        fill="#FFFFFF" text-anchor="middle">🛋️✨ EXECUTIVE SUITE</text>
+</svg>
+

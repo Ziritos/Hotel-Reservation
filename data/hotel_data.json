@@ -1,0 +1,181 @@
+{
+  "rooms": [
+    {
+      "room_number": "101",
+      "type": "Single",
+      "price_per_night": 1200.0,
+      "is_available": true,
+      "capacity": 1,
+      "bed_type": "1 Single Bed",
+      "size": "20 sqm",
+      "image_url": "/assets/room_single.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Flat-screen TV",
+        "Work Desk"
+      ],
+      "description": "Cozy and comfortable private room perfect for solo travelers, business trips, or students."
+    },
+    {
+      "room_number": "102",
+      "type": "Single",
+      "price_per_night": 1200.0,
+      "is_available": true,
+      "capacity": 1,
+      "bed_type": "1 Single Bed",
+      "size": "20 sqm",
+      "image_url": "/assets/room_single_2.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Flat-screen TV",
+        "Work Desk"
+      ],
+      "description": "Quiet inner-wing single room designed for maximum relaxation, privacy, and restful sleep."
+    },
+    {
+      "room_number": "103",
+      "type": "Single",
+      "price_per_night": 1200.0,
+      "is_available": true,
+      "capacity": 1,
+      "bed_type": "1 Single Bed",
+      "size": "22 sqm",
+      "image_url": "/assets/room_single.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Flat-screen TV",
+        "Work Desk",
+        "Window View"
+      ],
+      "description": "Bright single room with natural sunlight, ergonomic desk, and fast optical internet."
+    },
+    {
+      "room_number": "201",
+      "type": "Double",
+      "price_per_night": 1800.0,
+      "is_available": true,
+      "capacity": 2,
+      "bed_type": "1 Queen Bed",
+      "size": "32 sqm",
+      "image_url": "/assets/room_double.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Smart TV",
+        "Mini Refrigerator",
+        "City View"
+      ],
+      "description": "Spacious double bedroom featuring premium orthopedic mattress, city panorama, and mini fridge."
+    },
+    {
+      "room_number": "202",
+      "type": "Double",
+      "price_per_night": 1800.0,
+      "is_available": true,
+      "capacity": 2,
+      "bed_type": "2 Twin Beds",
+      "size": "32 sqm",
+      "image_url": "/assets/room_double_2.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Smart TV",
+        "Mini Refrigerator",
+        "Coffee Maker"
+      ],
+      "description": "Modern twin bed setup ideal for companions, colleagues, or siblings visiting the city."
+    },
+    {
+      "room_number": "203",
+      "type": "Double",
+      "price_per_night": 1800.0,
+      "is_available": true,
+      "capacity": 2,
+      "bed_type": "1 Queen Bed",
+      "size": "34 sqm",
+      "image_url": "/assets/room_double.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Air Conditioning",
+        "Hot & Cold Shower",
+        "Smart TV",
+        "Mini Refrigerator",
+        "Corner View"
+      ],
+      "description": "Premium corner double room with dual windows, ambient warm lighting, and seating area."
+    },
+    {
+      "room_number": "301",
+      "type": "Suite",
+      "price_per_night": 3500.0,
+      "is_available": true,
+      "capacity": 4,
+      "bed_type": "1 King Bed + Sofa Bed",
+      "size": "55 sqm",
+      "image_url": "/assets/room_suite.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Smart TV & Soundbar",
+        "Private Balcony",
+        "Kitchenette & Mini Bar",
+        "Complimentary Breakfast",
+        "Bathtub"
+      ],
+      "description": "Luxurious executive suite with separated living room, deep soaking bathtub, and skyline balcony."
+    },
+    {
+      "room_number": "302",
+      "type": "Suite",
+      "price_per_night": 3500.0,
+      "is_available": true,
+      "capacity": 4,
+      "bed_type": "1 King Bed + Daybed",
+      "size": "58 sqm",
+      "image_url": "/assets/room_suite.jpg",
+      "amenities": [
+        "High-speed Wi-Fi",
+        "Smart TV & Soundbar",
+        "Private Balcony",
+        "Kitchenette & Mini Bar",
+        "Complimentary Breakfast",
+        "Bathtub"
+      ],
+      "description": "Grand family suite with dining corner, premium streaming entertainment, and complimentary breakfast."
+    },
+    {
+      "room_number": "401",
+      "type": "Presidential Suite",
+      "price_per_night": 7500.0,
+      "is_available": true,
+      "capacity": 6,
+      "bed_type": "2 Master King Beds",
+      "size": "110 sqm",
+      "image_url": "/assets/room_presidential.jpg",
+      "amenities": [
+        "Private Elevator Access",
+        "Panoramic Skyline View",
+        "Personal Butler Service",
+        "Jacuzzi & Spa Bath",
+        "Complimentary Gourmet Breakfast",
+        "Private Bar & Lounge"
+      ],
+      "description": "The pinnacle of luxury: penthouse floor, full jacuzzi spa bath, 360-degree city view, and VIP concierge."
+    }
+  ],
+  "bookings": [],
+  "customers": [],
+  "hotel_settings": {
+    "hotel_name": "Sugo Grand Palace Hotel",
+    "logo_url": "/assets/logo.png"
+  },
+  "transactions": [],
+  "last_updated": "2026-11-10T01:03:17.865168"
+}

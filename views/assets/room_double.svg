@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="wallGradDouble" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F766E" />
+      <stop offset="50%" stop-color="#134E4A" />
+      <stop offset="100%" stop-color="#042F2E" />
+    </linearGradient>
+    <linearGradient id="floorGradDouble" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="duvetDouble" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+    <radialGradient id="lampGlowDouble" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FEF3C7" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#D97706" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Accent Wall (Emerald Luxury) -->
+  <rect width="800" height="340" fill="url(#wallGradDouble)" />
+
+  <!-- Hardwood Floor -->
+  <rect y="340" width="800" height="160" fill="url(#floorGradDouble)" />
+  <line x1="0" y1="340" x2="800" y2="340" stroke="#042F2E" stroke-width="4" />
+
+  <!-- Dual Windows Overlooking Bay / City -->
+  <g transform="translate(60, 40)">
+    <rect width="180" height="210" fill="#022C22" rx="4" stroke="#94A3B8" stroke-width="4" />
+    <!-- City lights -->
+    <rect x="20" y="80" width="35" height="130" fill="#115E59" />
+    <rect x="65" y="50" width="45" height="160" fill="#134E4A" />
+    <rect x="120" y="90" width="40" height="120" fill="#115E59" />
+    <circle cx="140" cy="50" r="16" fill="#FBBF24" opacity="0.6" />
+    <line x1="90" y1="0" x2="90" y2="210" stroke="#94A3B8" stroke-width="2" />
+    <line x1="0" y1="105" x2="180" y2="105" stroke="#94A3B8" stroke-width="2" />
+  </g>
+
+  <g transform="translate(560, 40)">
+    <rect width="180" height="210" fill="#022C22" rx="4" stroke="#94A3B8" stroke-width="4" />
+    <rect x="25" y="60" width="40" height="150" fill="#134E4A" />
+    <rect x="80" y="90" width="35" height="120" fill="#115E59" />
+    <rect x="125" y="40" width="40" height="170" fill="#134E4A" />
+    <line x1="90" y1="0" x2="90" y2="210" stroke="#94A3B8" stroke-width="2" />
+    <line x1="0" y1="105" x2="180" y2="105" stroke="#94A3B8" stroke-width="2" />
+  </g>
+
+  <!-- Dual Nightstand Lamps Glow -->
+  <circle cx="230" cy="220" r="80" fill="url(#lampGlowDouble)" />
+  <circle cx="570" cy="220" r="80" fill="url(#lampGlowDouble)" />
+
+  <!-- Left Nightstand & Sconce -->
+  <g transform="translate(200, 270)">
+    <rect width="60" height="80" fill="#134E4A" rx="4" stroke="#D97706" stroke-width="1.5" />
+    <line x1="5" y1="26" x2="55" y2="26" stroke="#2DD4BF" stroke-width="1" />
+    <!-- Lamp -->
+    <rect x="25" y="-45" width="10" height="45" fill="#E2E8F0" />
+    <polygon points="12,-45 48,-45 40,-75 20,-75" fill="#FEF3C7" stroke="#D97706" stroke-width="1" />
+  </g>
+
+  <!-- Right Nightstand & Sconce -->
+  <g transform="translate(540, 270)">
+    <rect width="60" height="80" fill="#134E4A" rx="4" stroke="#D97706" stroke-width="1.5" />
+    <line x1="5" y1="26" x2="55" y2="26" stroke="#2DD4BF" stroke-width="1" />
+    <rect x="25" y="-45" width="10" height="45" fill="#E2E8F0" />
+    <polygon points="12,-45 48,-45 40,-75 20,-75" fill="#FEF3C7" stroke="#D97706" stroke-width="1" />
+  </g>
+
+  <!-- Queen Bed (Centerpiece) -->
+  <g transform="translate(260, 160)">
+    <!-- Grand Upholstered Headboard -->
+    <rect x="0" y="0" width="280" height="150" fill="#042F2E" rx="12" stroke="#D97706" stroke-width="2.5" />
+    <!-- Gold Inlay Geometry -->
+    <rect x="15" y="15" width="250" height="120" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="6,4" />
+
+    <!-- 4 Fluffy Hotel Pillows -->
+    <rect x="25" y="80" width="105" height="48" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+    <rect x="150" y="80" width="105" height="48" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" />
+    <rect x="35" y="100" width="90" height="38" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1" />
+    <rect x="155" y="100" width="90" height="38" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1" />
+
+    <!-- Silk Emerald Throw Pillows -->
+    <polygon points="80,120 100,105 120,120 100,135" fill="#0D9488" stroke="#D97706" stroke-width="1" />
+    <polygon points="160,120 180,105 200,120 180,135" fill="#0D9488" stroke="#D97706" stroke-width="1" />
+
+    <!-- Queen Mattress & Crisp White Duvet -->
+    <rect x="10" y="130" width="260" height="170" fill="url(#duvetDouble)" rx="10" stroke="#CBD5E1" stroke-width="1" />
+
+    <!-- Emerald & Gold Silk Bed Runner -->
+    <rect x="10" y="235" width="260" height="50" fill="#0F766E" rx="4" stroke="#D97706" stroke-width="1.5" />
+  </g>
+
+  <!-- Wall Sconces Ambient Light -->
+  <g transform="translate(360, 60)">
+    <circle cx="40" cy="30" r="28" fill="#042F2E" stroke="#D97706" stroke-width="2" />
+    <path d="M 40 10 L 40 50 M 20 30 L 60 30" stroke="#D97706" stroke-width="1.5" />
+    <circle cx="40" cy="30" r="10" fill="#F59E0B" />
+  </g>
+
+  <!-- Badge Overlay -->
+  <rect x="25" y="25" width="180" height="36" rx="18" fill="rgba(4, 47, 46, 0.9)" stroke="#D97706" stroke-width="1.5" />
+  <text x="115" y="48" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" 
+        fill="#FFFFFF" text-anchor="middle">🛏️🛏️ DOUBLE ROOM</text>
+</svg>
+

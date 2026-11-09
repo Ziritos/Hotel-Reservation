@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Accommodations &amp; Reservations | Sugo Grand Palace Hotel</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hotel-navy: #0F172A;
+      --hotel-gold: #B45309;
+      --hotel-gold-light: #FEF3C7;
+      --hotel-surface: #FFFFFF;
+      --hotel-border: #E2E8F0;
+      --hotel-text-primary: #1E293B;
+      --hotel-text-muted: #64748B;
+    }
+
+    body {
+      background-color: #F8FAFC;
+      color: var(--hotel-text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Utility Strip */
+    .hospitality-top-bar {
+      background: #0F172A;
+      color: #94A3B8;
+      font-size: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .top-bar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-bar-left span {
+      color: #E2E8F0;
+      font-weight: 500;
+    }
+    .top-bar-right {
+      display: flex;
+      gap: 18px;
+    }
+    .top-bar-right span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Main Navigation Bar */
+    .hotel-navbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .brand-crest {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #0F172A;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+    .brand-tagline {
+      font-size: 11px;
+      color: #B45309;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .nav-tabs-wrapper {
+      display: flex;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+    }
+    .portal-tab-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: #64748B;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .portal-tab-btn.active {
+      background: #FFFFFF;
+      color: #0F172A;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+    .staff-switch-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      transition: all 0.2s ease;
+    }
+    .staff-switch-link:hover {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-color: #0F172A;
+    }
+
+    /* Guest Hero */
+    .guest-hero {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: #FFFFFF;
+      padding: 48px 0 40px;
+      text-align: center;
+    }
+    .hero-pretitle {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #FBBF24;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 10px;
+    }
+    .hero-subtext {
+      font-size: 15px;
+      color: #94A3B8;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+    .hero-stats-row {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px 24px;
+      gap: 32px;
+    }
+    .hero-stat-item {
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FEF3C7;
+      display: block;
+    }
+    .stat-lbl {
+      font-size: 11px;
+      color: #CBD5E1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Filter Toolbar */
+    .catalog-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 32px 0 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .category-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cat-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #475569;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cat-btn.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-color: #0F172A;
+    }
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-box {
+      padding: 8px 14px;
+      font-size: 13px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      outline: none;
+      width: 220px;
+    }
+    .search-box:focus {
+      border-color: #B45309;
+    }
+
+    /* Room Cards */
+    .rooms-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .room-tile {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .room-tile:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.12);
+    }
+    .room-tile-img-box {
+      height: 220px;
+      position: relative;
+      background: #0F172A;
+      overflow: hidden;
+    }
+    .room-tile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .room-tile:hover .room-tile-img {
+      transform: scale(1.06);
+    }
+    .room-tile-pill {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .room-status-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .status-available {
+      background: #DCFCE7;
+      color: #166534;
+    }
+    .status-occupied {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+    .room-tile-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .room-tile-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+    .room-rate-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #B45309;
+    }
+    .room-rate-unit {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 500;
+    }
+    .room-capacity-info {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 600;
+    }
+    .room-tile-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .room-spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #F8FAFC;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+    .spec-label {
+      color: #64748B;
+      display: block;
+    }
+    .spec-value {
+      color: #1E293B;
+      font-weight: 600;
+    }
+    .amenities-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .amenity-chip {
+      background: #F1F5F9;
+      color: #475569;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .btn-reserve {
+      width: 100%;
+      padding: 11px;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 13px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-reserve:hover {
+      background: #B45309;
+    }
+    .btn-occupied {
+      width: 100%;
+      padding: 11px;
+      background: #F1F5F9;
+      color: #94A3B8;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      text-align: center;
+      cursor: not-allowed;
+    }
+
+    /* Name validation feedback */
+    .validation-feedback-text {
+      color: #DC2626;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* Print styles */
+    @media print {
+      body * { visibility: hidden; }
+      #guestReceiptModal, #guestReceiptModal * { visibility: visible; }
+      #guestReceiptModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Hospitality Status Bar -->
+  <div class="hospitality-top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span>Sugo Grand Palace Hotel &amp; Luxury Residences</span> &bull; Metro Manila, Philippines
+      </div>
+      <div class="top-bar-right">
+        <span>Reception Desk: +63 (02) 8888-7846</span>
+        <span>Concierge: 24/7 Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <nav class="hotel-navbar">
+    <div class="container nav-inner">
+      <a href="/guest" class="brand-identity">
+        <img src="/assets/logo.png" alt="Sugo Palace" class="brand-crest"
+             onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+        <div>
+          <div class="brand-name">SUGO GRAND PALACE</div>
+          <div class="brand-tagline">Guest Accommodations Portal</div>
+        </div>
+      </a>
+
+      <!-- Guest Portal Tabs -->
+      <div class="nav-tabs-wrapper">
+        <button type="button" class="portal-tab-btn {% if active_tab != 'lookup' %}active{% endif %}" 
+                id="tabRoomsBtn" onclick="toggleGuestTab('rooms')">
+          Browse Suites &amp; Rooms
+        </button>
+        <button type="button" class="portal-tab-btn {% if active_tab == 'lookup' %}active{% endif %}" 
+                id="tabLookupBtn" onclick="toggleGuestTab('lookup')">
+          Find My Reservation
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="/login" class="staff-switch-link" style="color: #64748B;">Portal Login</a>
+        <a href="/login/receptionist" class="staff-switch-link">Reception Desk Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash Alerts -->
+  <div class="container" style="padding-top: 14px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" style="margin-bottom: 12px;">
+            <span class="alert-icon">
+              {% if category == 'success' %}✔{% elif category == 'danger' %}✖{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
+            </span>
+            <div class="alert-text">{{ message }}</div>
+            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Hero Section -->
+  <section class="guest-hero">
+    <div class="container">
+      <div class="hero-pretitle">Boutique Accommodations</div>
+      <h1 class="hero-headline">Uncompromising Comfort, Designed for You</h1>
+      <p class="hero-subtext">
+        Select from our collection of single, double, executive, and presidential suites. Transparent nightly rates, zero booking fees, and direct hotel verification.
+      </p>
+
+      <div class="hero-stats-row">
+        <div class="hero-stat-item">
+          <span class="stat-val">{{ metrics.available_rooms }} of {{ metrics.total_rooms }}</span>
+          <span class="stat-lbl">Suites Available</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-val">₱1,200</span>
+          <span class="stat-lbl">Starting Rate / Night</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-val">Complimentary</span>
+          <span class="stat-lbl">Wi-Fi &amp; Breakfast</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- TAB 1: BROWSE SUITES & ROOMS (AVAILABLE ONLY)            -->
+  <!-- ======================================================== -->
+  <main class="container" id="roomsViewPane" style="{% if active_tab == 'lookup' %}display: none;{% endif %} flex: 1;">
+    
+    {% set avail_single = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Single') | list | length %}
+    {% set avail_double = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Double') | list | length %}
+    {% set avail_suite = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Suite') | list | length %}
+    {% set avail_pres = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Presidential Suite') | list | length %}
+
+    <!-- Filter Toolbar -->
+    <div class="catalog-bar">
+      <div class="category-pills">
+        <button type="button" class="cat-btn active" onclick="setCategoryFilter('all', this)">
+          All Available Suites ({{ metrics.available_rooms }})
+        </button>
+        <button type="button" class="cat-btn" onclick="setCategoryFilter('Single', this)">
+          Single Suites ({{ avail_single }})
+        </button>
+        <button type="button" class="cat-btn" onclick="setCategoryFilter('Double', this)">
+          Double Suites ({{ avail_double }})
+        </button>
+        <button type="button" class="cat-btn" onclick="setCategoryFilter('Suite', this)">
+          Executive Suites ({{ avail_suite }})
+        </button>
+        <button type="button" class="cat-btn" onclick="setCategoryFilter('Presidential Suite', this)">
+          Presidential ({{ avail_pres }})
+        </button>
+      </div>
+
+      <div class="filter-controls">
+        <input type="text" id="suiteSearch" class="search-box" placeholder="Search suite # or feature..." oninput="runFilters()">
+      </div>
+    </div>
+
+    <!-- Rooms Grid: Only Available Rooms are rendered for guests -->
+    <div class="rooms-layout" id="suitesGrid">
+      {% for room in rooms %}
+        {% if room.is_available %}
+        <div class="room-tile room-card-item" 
+             data-type="{{ room.type }}" 
+             data-room-no="{{ room.room_number }}">
+          
+          <div class="room-tile-img-box">
+            <img src="{{ room.image_url }}" alt="Suite {{ room.room_number }}" class="room-tile-img"
+                 onerror="this.src='/assets/room_single.svg'">
+            <div class="room-tile-pill">Suite {{ room.room_number }}</div>
+            <span class="room-status-badge status-available">Available Now</span>
+          </div>
+
+          <div class="room-tile-body">
+            <div class="room-tile-price-row">
+              <div>
+                <span class="room-rate-val">₱{{ "{:,.2f}".format(room.price_per_night) }}</span>
+                <span class="room-rate-unit">/ night</span>
+              </div>
+              <div class="room-capacity-info">
+                Max {{ room.capacity }} Guest{% if room.capacity > 1 %}s{% endif %}
+              </div>
+            </div>
+
+            <p class="room-tile-desc">{{ room.description }}</p>
+
+            <div class="room-spec-grid">
+              <div>
+                <span class="spec-label">Bedding</span>
+                <span class="spec-value">{{ room.bed_type }}</span>
+              </div>
+              <div>
+                <span class="spec-label">Floor Space</span>
+                <span class="spec-value">{{ room.size }}</span>
+              </div>
+            </div>
+
+            <div class="amenities-badges">
+              {% for amenity in room.amenities %}
+              <span class="amenity-chip">{{ amenity }}</span>
+              {% endfor %}
+            </div>
+
+            <div style="margin-top: auto;">
+              <button type="button" class="btn-reserve"
+                      onclick="openReservationModal('{{ room.room_number }}', '{{ room.type }}', {{ room.price_per_night }}, {{ room.capacity }})">
+                Reserve Suite {{ room.room_number }}
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if metrics.available_rooms == 0 %}
+    <div style="text-align: center; padding: 60px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 40px;">
+      <div style="font-size: 38px; margin-bottom: 12px;">🏨</div>
+      <h3 style="color: #0F172A; margin-bottom: 6px;">All Suites Currently Occupied</h3>
+      <p style="color: #64748B; font-size: 14px; margin-bottom: 20px;">
+        All rooms at Sugo Grand Palace are currently reserved by in-house guests. Please check back later or retrieve your existing reservation below.
+      </p>
+      <button type="button" class="btn btn-primary" onclick="toggleGuestTab('lookup')">
+        Find Existing Reservation
+      </button>
+    </div>
+    {% endif %}
+
+    <!-- Empty Filter Notice -->
+    <div id="noMatchNotice" style="display: none; text-align: center; padding: 48px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 40px;">
+      <h3 style="color: #0F172A; margin-bottom: 6px;">No Matching Available Suites Found</h3>
+      <p style="color: #64748B; font-size: 14px; margin-bottom: 16px;">Try selecting another category or clearing your search term.</p>
+      <button type="button" class="cat-btn" onclick="resetSuiteFilters()">Show All Available Suites</button>
+    </div>
+
+  </main>
+
+
+  <!-- ======================================================== -->
+  <!-- TAB 2: FIND MY RESERVATION (SELF-SERVICE)                -->
+  <!-- ======================================================== -->
+  <main class="container" id="lookupViewPane" style="{% if active_tab != 'lookup' %}display: none;{% endif %} flex: 1; padding: 32px 0 48px;">
+    
+    <div style="max-width: 680px; margin: 0 auto 36px; text-align: center;">
+      <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; color: #0F172A; margin-bottom: 8px;">
+        Retrieve Your Guest Folio
+      </h2>
+      <p style="color: #64748B; font-size: 14px; margin-bottom: 24px;">
+        Enter your Booking Confirmation Code (e.g. <code>SH-1024</code>) or the Guest Full Name used during reservation.
+      </p>
+
+      <form action="/guest" method="GET" style="display: flex; gap: 10px;">
+        <input type="hidden" name="tab" value="lookup">
+        <input type="text" name="query" value="{{ query|default('') }}" class="form-control" 
+               placeholder="Confirmation Code (e.g. SH-1024) or Guest Name..." required style="flex: 1; padding: 12px 16px; font-size: 14px;">
+        <button type="submit" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700;">
+          Search Folio
+        </button>
+      </form>
+    </div>
+
+    {% if query %}
+      <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 18px; color: #0F172A;">Results for: <span style="color: #B45309;">"{{ query }}"</span></h3>
+        <span style="font-size: 13px; color: #64748B;">{{ results|length }} folio(s) found</span>
+      </div>
+
+      {% if results %}
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          {% for b in results %}
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
+              <div>
+                <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700; letter-spacing: 0.5px;">CONFIRMATION CODE</span>
+                <div style="font-size: 20px; font-weight: 800; color: #B45309; font-family: monospace;">{{ b.booking_id }}</div>
+              </div>
+              <span class="badge badge-success" style="padding: 6px 14px; border-radius: 9999px; font-weight: 700; font-size: 12px;">
+                {{ b.status }}
+              </span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; font-size: 13px;">
+              <div>
+                <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Registered Guest</span>
+                <div style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 2px;">{{ b.guest_name }}</div>
+                <div style="color: #64748B; margin-top: 4px;">{{ b.phone|default('No phone') }} &bull; {{ b.email|default('No email') }}</div>
+              </div>
+
+              <div>
+                <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Reserved Suite</span>
+                <div style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 2px;">Suite {{ b.room_number }}</div>
+                <div style="color: #64748B; margin-top: 4px;">{{ b.room_type }} ({{ b.guests_count }} Guest(s))</div>
+              </div>
+
+              <div>
+                <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Stay Dates</span>
+                <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-top: 2px;">{{ b.check_in }} &rarr; {{ b.check_out }}</div>
+                <div style="color: #B45309; font-weight: 600; margin-top: 4px;">{{ b.nights }} Night(s) Duration</div>
+              </div>
+
+              <div>
+                <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Folio Total</span>
+                <div style="font-size: 20px; font-weight: 800; color: #B45309; margin-top: 2px;">₱{{ "{:,.2f}".format(b.total_cost) }}</div>
+                <div style="color: #64748B; font-size: 11px;">₱{{ "{:,.2f}".format(b.price_per_night) }} / night</div>
+              </div>
+            </div>
+
+            {% if b.special_requests %}
+            <div style="background: #F8FAFC; border-left: 3px solid #B45309; padding: 10px 14px; border-radius: 4px; margin-top: 16px; font-size: 13px;">
+              <strong>Special Instructions:</strong> {{ b.special_requests }}
+            </div>
+            {% endif %}
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F1F5F9; padding-top: 16px; margin-top: 18px; flex-wrap: wrap; gap: 12px;">
+              <span style="font-size: 12px; color: #64748B;">Booked on: {{ b.created_at }}</span>
+              <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn btn-outline btn-sm"
+                        onclick="showGuestVoucher('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', '{{ b.room_type }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.check_out }}', {{ b.total_cost }}, {{ b.price_per_night }}, '{{ b.phone }}', '{{ b.email }}', '{{ b.created_at }}')">
+                  Print Confirmation Voucher
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm"
+                        onclick="openGuestCancel('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}')">
+                  Cancel Reservation
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="text-align: center; padding: 48px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0;">
+          <h4 style="color: #0F172A; margin-bottom: 8px;">No Reservation Found</h4>
+          <p style="color: #64748B; font-size: 14px; margin-bottom: 20px;">
+            We could not find an active folio matching "{{ query }}". Please verify your booking reference or name.
+          </p>
+          <button type="button" class="btn btn-primary" onclick="toggleGuestTab('rooms')">Browse Available Suites</button>
+        </div>
+      {% endif %}
+
+    {% else %}
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #B45309; margin-bottom: 8px;">01</div>
+          <h4 style="margin-bottom: 6px;">Confirmation Code</h4>
+          <p style="font-size: 13px; color: #64748B;">Locate your reservation code (e.g. <code>SH-1024</code>) provided upon initial booking.</p>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #B45309; margin-bottom: 8px;">02</div>
+          <h4 style="margin-bottom: 6px;">Guest Name Lookup</h4>
+          <p style="font-size: 13px; color: #64748B;">Search using the full name registered during the reservation process.</p>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #B45309; margin-bottom: 8px;">03</div>
+          <h4 style="margin-bottom: 6px;">Voucher &amp; Self-Service</h4>
+          <p style="font-size: 13px; color: #64748B;">Print an official hotel confirmation slip or release your reservation anytime.</p>
+        </div>
+      </div>
+    {% endif %}
+
+  </main>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: GUEST RESERVATION                                 -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="reserveModal" style="display: none;">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Suite Reservation Form</h3>
+          <p class="modal-subtitle" id="reserveSuiteSubtitle">Suite 101 - Single</p>
+        </div>
+        <button type="button" class="modal-close" onclick="closeReservationModal()">&times;</button>
+      </div>
+
+      <form action="/book" method="POST" id="guestBookForm" onsubmit="return verifyGuestForm()">
+        <input type="hidden" name="room_number" id="resSuiteInput">
+        <input type="hidden" id="resRateInput" value="1200">
+
+        <div class="modal-body">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Selected Accommodation</span>
+              <div style="font-size: 15px; font-weight: 700; color: #0F172A;" id="resSuiteSummary">Suite 101 (Single)</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Rate Per Night</span>
+              <div style="font-size: 16px; font-weight: 800; color: #B45309;" id="resRateSummary">₱1,200.00</div>
+            </div>
+          </div>
+
+          <!-- Guest Name with Real-Time Letters-Only Validation -->
+          <div class="form-group mb-3">
+            <label class="form-label">Guest Full Name <span class="required">*</span></label>
+            <input type="text" name="guest_name" id="resGuestName" class="form-control" 
+                   placeholder="e.g. Maria Clara Santos" required 
+                   oninput="checkGuestNameLettersOnly(this)">
+            <div class="validation-feedback-text" id="guestNameFeedback">
+              Numbers are not permitted in guest names. Please use letters and spaces only.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label">Contact Phone</label>
+              <input type="text" name="phone" class="form-control" placeholder="0917-555-0199">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="guest@example.ph">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label class="form-label">Check-In Date <span class="required">*</span></label>
+              <input type="date" name="check_in" id="resCheckIn" class="form-control" 
+                     value="{{ today_str }}" required onchange="recalculateFolio()">
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Nights <span class="required">*</span></label>
+              <input type="number" name="nights" id="resNights" class="form-control" 
+                     value="1" min="1" max="30" required oninput="recalculateFolio()">
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Guests Count</label>
+              <input type="number" name="guests_count" id="resCapacity" class="form-control" 
+                     value="1" min="1" max="6">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Special Inquiries or Preferences</label>
+            <textarea name="special_requests" class="form-control" rows="2" 
+                      placeholder="Airport pick-up, quiet wing, extra linens..."></textarea>
+          </div>
+
+          <div style="background: #FEF3C7; border: 1px solid rgba(180, 83, 9, 0.3); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Estimated Check-Out</div>
+              <strong id="calcOutDate" style="color: #0F172A; font-size: 14px;">Tomorrow</strong>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Total Estimate</div>
+              <div style="font-size: 18px; font-weight: 800; color: #92400E;" id="calcFolioTotal">₱1,200.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeReservationModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitReservation">
+            Confirm Reservation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: PRINTABLE CONFIRMATION VOUCHER                    -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="guestReceiptModal" style="display: none;">
+    <div class="modal-window modal-lg">
+      <div class="modal-header no-print">
+        <h3 class="modal-title">Official Hotel Confirmation Voucher</h3>
+        <button type="button" class="modal-close" onclick="closeGuestVoucher()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; padding: 28px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #E2E8F0; padding-bottom: 16px; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="/assets/logo.png" alt="Sugo Crest" style="width: 44px; height: 44px; border-radius: 8px;"
+                   onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+              <div>
+                <h3 style="font-family: 'Playfair Display', serif; margin: 0; color: #0F172A;">SUGO GRAND PALACE</h3>
+                <div style="font-size: 12px; color: #64748B;">Metro Manila, Philippines &bull; Front Desk: +63 (02) 8888-7846</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span class="badge badge-success" style="padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700;">CONFIRMED</span>
+              <div style="font-family: monospace; font-size: 15px; font-weight: 800; color: #B45309; margin-top: 4px;" id="vouchCode">SH-1024</div>
+              <div style="font-size: 11px; color: #64748B;" id="vouchDate">Issued: 2026-11-09</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px; margin-bottom: 18px;">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">GUEST INFORMATION</span>
+              <div style="font-weight: 700; font-size: 15px; color: #0F172A;" id="vouchGuestName">Maria Clara Santos</div>
+              <div style="color: #64748B;" id="vouchContact">0917-555-0199</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">STAY PARTICULARS</span>
+              <div style="font-weight: 700; color: #0F172A;" id="vouchSuite">Suite 201 (Double)</div>
+              <div style="color: #64748B;" id="vouchDates">2026-11-09 to 2026-11-11 (2 Nights)</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;">
+            <thead>
+              <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+                <th style="padding: 10px;">Item</th>
+                <th style="padding: 10px;">Rate / Night</th>
+                <th style="padding: 10px;">Duration</th>
+                <th style="padding: 10px; text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #E2E8F0;">
+                <td style="padding: 10px;"><strong id="vouchTableSuite">Suite 201</strong><br><small style="color: #64748B;">Standard Hospitality Accommodations</small></td>
+                <td style="padding: 10px;" id="vouchTableRate">₱1,800.00</td>
+                <td style="padding: 10px;" id="vouchTableNights">2 Nights</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700;" id="vouchTableTotal">₱3,600.00</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="font-size: 18px; font-weight: 800; color: #B45309; text-align: right; margin-bottom: 18px;" id="vouchGrandTotal">
+            Grand Total: ₱3,600.00
+          </div>
+
+          <div style="font-size: 11px; color: #64748B; text-align: center; border-top: 1px solid #E2E8F0; padding-top: 14px;">
+            Check-in time: 2:00 PM &bull; Check-out time: 12:00 PM &bull; Please present a valid ID upon arrival.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer no-print">
+        <button type="button" class="btn btn-outline" onclick="closeGuestVoucher()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Print Voucher</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: GUEST CANCELLATION                                -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="guestCancelModal" style="display: none;">
+    <div class="modal-window modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Release Reservation</h3>
+        <button type="button" class="modal-close" onclick="closeGuestCancel()">&times;</button>
+      </div>
+      <form action="/my-booking/cancel" method="POST">
+        <input type="hidden" name="booking_id" id="gcModalCode">
+        <input type="hidden" name="guest_name" id="gcModalGuest">
+        <div class="modal-body text-center" style="padding: 24px 16px;">
+          <h4 style="margin-bottom: 8px; color: #0F172A;">Confirm Reservation Release</h4>
+          <p style="font-size: 13px; color: #64748B;" id="gcModalMessage">
+            This action will release reservation <strong id="gcCodeDisplay">SH-XXXX</strong> and make the suite available for other guests.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeGuestCancel()">Keep Reservation</button>
+          <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Global Footer -->
+  <footer style="background: #0F172A; color: #94A3B8; padding: 28px 0; font-size: 12px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06);">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <strong style="color: #FEF3C7; font-size: 14px;">SUGO GRAND PALACE HOTEL</strong> &bull; &copy; 2026 All Rights Reserved
+      </div>
+      <div>
+        <span>Metro Manila, Philippines</span> &bull; 
+        <span>Reception Desk: +63 (02) 8888-7846</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Interactive Client-side Script -->
+  <script>
+    function toggleGuestTab(tab) {
+      const btnRooms = document.getElementById('tabRoomsBtn');
+      const btnLookup = document.getElementById('tabLookupBtn');
+      const paneRooms = document.getElementById('roomsViewPane');
+      const paneLookup = document.getElementById('lookupViewPane');
+
+      if (tab === 'lookup') {
+        btnRooms.classList.remove('active');
+        btnLookup.classList.add('active');
+        paneRooms.style.display = 'none';
+        paneLookup.style.display = 'block';
+      } else {
+        btnRooms.classList.add('active');
+        btnLookup.classList.remove('active');
+        paneRooms.style.display = 'block';
+        paneLookup.style.display = 'none';
+      }
+    }
+
+    let activeSuiteCat = 'all';
+
+    function setCategoryFilter(cat, btn) {
+      activeSuiteCat = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      runFilters();
+    }
+
+    function runFilters() {
+      const q = (document.getElementById('suiteSearch').value || '').toLowerCase().trim();
+      const tiles = document.querySelectorAll('.room-card-item');
+      let count = 0;
+
+      tiles.forEach(tile => {
+        const type = tile.getAttribute('data-type');
+        const num = tile.getAttribute('data-room-no') || '';
+        const text = tile.textContent.toLowerCase();
+
+        let okCat = (activeSuiteCat === 'all' || type === activeSuiteCat);
+        let okSearch = (!q || num.includes(q) || text.includes(q));
+
+        if (okCat && okSearch) {
+          tile.style.display = 'flex';
+          count++;
+        } else {
+          tile.style.display = 'none';
+        }
+      });
+
+      const notice = document.getElementById('noMatchNotice');
+      if (notice) {
+        notice.style.display = (count === 0 && tiles.length > 0) ? 'block' : 'none';
+      }
+    }
+
+    function resetSuiteFilters() {
+      activeSuiteCat = 'all';
+      const searchBox = document.getElementById('suiteSearch');
+      if (searchBox) searchBox.value = '';
+      document.querySelectorAll('.cat-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      runFilters();
+    }
+
+    // Reservation Modal
+    function openReservationModal(roomNo, type, price, cap) {
+      document.getElementById('resSuiteInput').value = roomNo;
+      document.getElementById('resRateInput').value = price;
+      document.getElementById('reserveSuiteSubtitle').textContent = `Suite ${roomNo} - ${type}`;
+      document.getElementById('resSuiteSummary').textContent = `Suite ${roomNo} (${type})`;
+      document.getElementById('resRateSummary').textContent = `₱${price.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('resCapacity').max = cap;
+
+      const nameInput = document.getElementById('resGuestName');
+      nameInput.value = '';
+      nameInput.classList.remove('is-invalid');
+      document.getElementById('guestNameFeedback').style.display = 'none';
+      document.getElementById('btnSubmitReservation').disabled = false;
+
+      recalculateFolio();
+      document.getElementById('reserveModal').style.display = 'flex';
+    }
+
+    function closeReservationModal() {
+      document.getElementById('reserveModal').style.display = 'none';
+    }
+
+    // Strict Letters-Only Guest Name Validation
+    function checkGuestNameLettersOnly(input) {
+      const val = input.value;
+      const feedback = document.getElementById('guestNameFeedback');
+      const submitBtn = document.getElementById('btnSubmitReservation');
+      const letterPattern = /^[A-Za-z\s\.\-']*$/;
+      const hasNumbers = /\d/.test(val);
+
+      if (hasNumbers || (val.length > 0 && !letterPattern.test(val))) {
+        feedback.style.display = 'block';
+        input.classList.add('is-invalid');
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        feedback.style.display = 'none';
+        input.classList.remove('is-invalid');
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    function verifyGuestForm() {
+      const input = document.getElementById('resGuestName');
+      return checkGuestNameLettersOnly(input);
+    }
+
+    function recalculateFolio() {
+      const rate = parseFloat(document.getElementById('resRateInput').value) || 0;
+      const nights = parseInt(document.getElementById('resNights').value) || 1;
+      const total = rate * nights;
+      document.getElementById('calcFolioTotal').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      const checkInVal = document.getElementById('resCheckIn').value;
+      if (checkInVal) {
+        const d = new Date(checkInVal);
+        d.setDate(d.getDate() + nights);
+        document.getElementById('calcOutDate').textContent = d.toISOString().split('T')[0];
+      }
+    }
+
+    // Voucher Print Modal
+    function showGuestVoucher(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date) {
+      document.getElementById('vouchCode').textContent = id;
+      document.getElementById('vouchDate').textContent = `Issued: ${date || 'Today'}`;
+      document.getElementById('vouchGuestName').textContent = name;
+      document.getElementById('vouchContact').textContent = `${phone || 'No phone'} | ${email || 'No email'}`;
+      document.getElementById('vouchSuite').textContent = `Suite ${room} (${type})`;
+      document.getElementById('vouchDates').textContent = `${inDate} to ${outDate} (${nights} night(s))`;
+
+      document.getElementById('vouchTableSuite').textContent = `Suite ${room} - ${type}`;
+      document.getElementById('vouchTableRate').textContent = `₱${Number(rate).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('vouchTableNights').textContent = `${nights} Night(s)`;
+      document.getElementById('vouchTableTotal').textContent = `₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('vouchGrandTotal').textContent = `Grand Total: ₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      document.getElementById('guestReceiptModal').style.display = 'flex';
+    }
+
+    function closeGuestVoucher() {
+      document.getElementById('guestReceiptModal').style.display = 'none';
+    }
+
+    // Cancellation
+    function openGuestCancel(code, name, room) {
+      document.getElementById('gcModalCode').value = code;
+      document.getElementById('gcModalGuest').value = name;
+      document.getElementById('gcCodeDisplay').textContent = code;
+      document.getElementById('gcModalMessage').innerHTML = `This will cancel reservation <strong>${code}</strong> for Suite <strong>${room}</strong> and release the suite back to inventory.`;
+      document.getElementById('guestCancelModal').style.display = 'flex';
+    }
+
+    function closeGuestCancel() {
+      document.getElementById('guestCancelModal').style.display = 'none';
+    }
+
+    // Check URL parameters
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'lookup' || params.get('query')) {
+        toggleGuestTab('lookup');
+      }
+    });
+  </script>
+</body>
+</html>
+
