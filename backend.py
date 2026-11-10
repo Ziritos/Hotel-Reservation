@@ -563,7 +563,7 @@ def checkout_booking(booking_or_id_or_room: str) -> tuple[bool, str, dict]:
         room_number=target_booking.get("room_number", ""),
         amount=float(target_booking.get("total_cost", 0.0)),
         status="Settled",
-        payment_method="Folio Settlement",
+        payment_method="Booking Settlement",
         notes=f"Checked out from Suite {target_booking.get('room_number')}. Room cleared.",
         timestamp=now_ts,
     )
@@ -915,7 +915,7 @@ def receptionist_reset_system_route():
 def receptionist_checkout_route():
     booking_id = request.form.get("booking_id", "").strip()
     if not booking_id:
-        flash("No folio specified for checkout.", "danger")
+        flash("No reservation specified for checkout.", "danger")
         return redirect(url_for("receptionist_dashboard"))
 
     success, msg, _ = checkout_booking(booking_id)
