@@ -13,7 +13,7 @@ import threading
 import time
 import webbrowser
 from datetime import date, datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from werkzeug.utils import secure_filename
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -746,7 +746,7 @@ app = Flask(
     static_folder=VIEWS_DIR,
     static_url_path="",
 )
-app.secret_key = os.urandom(24)
+app.secret_key = os.environ.get("SECRET_KEY", "sugo-grand-palace-front-desk-key-2026")
 
 
 @app.context_processor
@@ -796,25 +796,42 @@ def login_page():
     return render_template("login.html")
 
 
-@app.route("/login/receptionist", methods=["GET", "POST"])
 @app.route("/receptionist/login", methods=["GET", "POST"])
+@app.route("/login/receptionist", methods=["GET", "POST"])
 def receptionist_login_page():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
 
-        # Front desk staff credential validation
-        if username.lower() in ("receptionist", "frontdesk", "staff",) and password in ("frontdesk2026", "1234", "password", "receptionist"):
-            flash(f"✔ Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
-            return redirect(url_for("receptionist_dashboard"))
-        elif not username or not password:
+        if not username or not password:
             flash("Please enter both your Receptionist User ID and Terminal Passcode.", "danger")
             return redirect(url_for("receptionist_login_page"))
-        else:
-            flash(f"✔ Terminal Authenticated for staff '{username}'. Front Desk Console ready.", "success")
+
+        # Strict Front Desk credential authentication
+        AUTHORIZED_STAFF = {
+            "receptionist": "frontdesk2026",
+            "frontdesk": "frontdesk2026",
+        }
+
+        if username.lower() in AUTHORIZED_STAFF and AUTHORIZED_STAFF[username.lower()] == password:
+            session["receptionist_logged_in"] = True
+            session["receptionist_user"] = username
+            flash(f"✔ Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
             return redirect(url_for("receptionist_dashboard"))
+        else:
+            flash("❌ Access Denied: Invalid Receptionist User ID or Terminal Passcode.", "danger")
+            return redirect(url_for("receptionist_login_page"))
 
     return render_template("login_receptionist.html")
+
+
+@app.route("/receptionist/logout")
+@app.route("/logout/receptionist")
+def receptionist_logout():
+    session.pop("receptionist_logged_in", None)
+    session.pop("receptionist_user", None)
+    flash("✔ You have signed out of the Front Desk Console.", "info")
+    return redirect(url_for("receptionist_login_page"))
 
 
 @app.route("/book", methods=["POST"])
@@ -885,6 +902,10 @@ def confirmation_page(booking_id):
 
 @app.route("/receptionist")
 def receptionist_dashboard():
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in to access the Front Desk Receptionist Console.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
     metrics = get_metrics()
     all_transactions = transaction_ledger.get_all(reverse=True)
     txn_metrics = transaction_ledger.get_metrics()

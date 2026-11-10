@@ -223,9 +223,19 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
-            <div style="background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(220, 38, 38, 0.4); color: #FCA5A5; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px;">
-              {{ message }}
-            </div>
+            {% if category == 'success' %}
+              <div style="background: rgba(22, 163, 74, 0.2); border: 1px solid rgba(22, 163, 74, 0.4); color: #86EFAC; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; font-weight: 600;">
+                {{ message }}
+              </div>
+            {% elif category == 'info' %}
+              <div style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93C5FD; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; font-weight: 600;">
+                {{ message }}
+              </div>
+            {% else %}
+              <div style="background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(220, 38, 38, 0.4); color: #FCA5A5; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; font-weight: 600;">
+                {{ message }}
+              </div>
+            {% endif %}
           {% endfor %}
         {% endif %}
       {% endwith %}
