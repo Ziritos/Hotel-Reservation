@@ -196,7 +196,7 @@ img {
   background: rgba(217, 119, 6, 0.06);
 }
 
-.nav-link.admin-pill {
+.nav-link.receptionist-pill {
   background: #F1F5F9;
   color: var(--primary-navy);
   border: 1px solid var(--border-card);
@@ -204,7 +204,7 @@ img {
   border-radius: var(--radius-full);
 }
 
-.nav-link.admin-pill:hover, .nav-link.admin-pill.active {
+.nav-link.receptionist-pill:hover, .nav-link.receptionist-pill.active {
   background: var(--primary-navy);
   color: var(--text-white);
   border-color: var(--primary-navy);
@@ -1691,21 +1691,21 @@ img {
   margin-top: 4px;
 }
 
-/* ----------------- Admin & Staff Portal Styles ----------------- */
-.admin-wrapper {
+/* ----------------- Front Desk & Receptionist Portal Styles ----------------- */
+.receptionist-wrapper {
   background: #F1F5F9;
   min-height: calc(100vh - 76px);
   padding-bottom: 60px;
 }
 
-.admin-subnav {
+.receptionist-subnav {
   background: #FFFFFF;
   border-bottom: 1px solid var(--border-card);
   padding: 20px 0;
   box-shadow: var(--shadow-sm);
 }
 
-.admin-subnav-content {
+.receptionist-subnav-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1713,7 +1713,7 @@ img {
   gap: 16px;
 }
 
-.admin-badge {
+.receptionist-badge {
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -1721,18 +1721,18 @@ img {
   text-transform: uppercase;
 }
 
-.admin-title {
+.receptionist-title {
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--primary-navy);
 }
 
-.admin-nav-tabs {
+.receptionist-nav-tabs {
   display: flex;
   gap: 8px;
 }
 
-.admin-tab-btn {
+.receptionist-tab-btn {
   font-size: 0.86rem;
   font-weight: 600;
   color: var(--secondary-navy);
@@ -1743,17 +1743,17 @@ img {
   transition: all var(--transition-fast);
 }
 
-.admin-tab-btn:hover {
+.receptionist-tab-btn:hover {
   background: #E2E8F0;
 }
 
-.admin-tab-btn.active {
+.receptionist-tab-btn.active {
   background: var(--primary-navy);
   color: #FFFFFF;
   border-color: var(--primary-navy);
 }
 
-.admin-content-container {
+.receptionist-content-container {
   padding-top: 28px;
 }
 
@@ -1815,14 +1815,14 @@ img {
   font-weight: 600;
 }
 
-/* Admin Main Grid */
-.admin-main-grid {
+/* Receptionist Main Grid */
+.receptionist-main-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 24px;
 }
 
-.admin-card {
+.receptionist-card {
   background: #FFFFFF;
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
@@ -1969,19 +1969,19 @@ img {
   gap: 12px;
 }
 
-/* Admin Tables */
+/* Receptionist Tables */
 .table-responsive {
   overflow-x: auto;
 }
 
-.admin-table {
+.receptionist-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.86rem;
   text-align: left;
 }
 
-.admin-table th {
+.receptionist-table th {
   background: #F8FAFC;
   color: var(--secondary-navy);
   font-weight: 700;
@@ -1990,13 +1990,13 @@ img {
   white-space: nowrap;
 }
 
-.admin-table td {
+.receptionist-table td {
   padding: 12px 14px;
   border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
 }
 
-.admin-table tr:hover td {
+.receptionist-table tr:hover td {
   background: #F8FAFC;
 }
 
@@ -2566,7 +2566,7 @@ img {
   .metrics-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-  .admin-main-grid {
+  .receptionist-main-grid {
     grid-template-columns: 1fr;
   }
   .footer-grid {

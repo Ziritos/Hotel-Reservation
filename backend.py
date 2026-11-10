@@ -804,7 +804,7 @@ def receptionist_login_page():
         password = request.form.get("password", "").strip()
 
         # Front desk staff credential validation
-        if username.lower() in ("receptionist", "frontdesk", "staff", "admin") and password in ("frontdesk2026", "1234", "password", "receptionist"):
+        if username.lower() in ("receptionist", "frontdesk", "staff",) and password in ("frontdesk2026", "1234", "password", "receptionist"):
             flash(f"✔ Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
             return redirect(url_for("receptionist_dashboard"))
         elif not username or not password:
@@ -883,9 +883,6 @@ def confirmation_page(booking_id):
     return redirect(url_for("guest_page", tab="lookup", query=booking_id))
 
 
-@app.route("/admin")
-@app.route("/admin/bookings")
-@app.route("/admin/customers")
 @app.route("/receptionist")
 def receptionist_dashboard():
     metrics = get_metrics()
@@ -903,7 +900,6 @@ def receptionist_dashboard():
 
 
 @app.route("/receptionist/reset-system", methods=["POST"])
-@app.route("/admin/reset-system", methods=["POST"])
 def receptionist_reset_system_route():
     reset_system_to_beginning(persist=True)
     flash("✔ System refreshed to Day 1: All 9 suites are available clean, zero in-house guests, and ₱0.00 revenue.", "success")
@@ -911,7 +907,6 @@ def receptionist_reset_system_route():
 
 
 @app.route("/receptionist/checkout", methods=["POST"])
-@app.route("/admin/checkout", methods=["POST"])
 def receptionist_checkout_route():
     booking_id = request.form.get("booking_id", "").strip()
     if not booking_id:
@@ -924,7 +919,6 @@ def receptionist_checkout_route():
 
 
 @app.route("/receptionist/room/<room_number>/update-image", methods=["POST"])
-@app.route("/admin/room/<room_number>/update-image", methods=["POST"])
 def update_room_image_route(room_number):
     uploaded_file = request.files.get("room_image_file")
     image_url_input = request.form.get("room_image_url", "").strip()
@@ -954,7 +948,6 @@ def update_room_image_route(room_number):
 
 
 @app.route("/receptionist/upload-logo", methods=["POST"])
-@app.route("/admin/upload-logo", methods=["POST"])
 def upload_logo_route():
     uploaded_file = request.files.get("logo_file")
     logo_url_input = request.form.get("logo_url", "").strip()

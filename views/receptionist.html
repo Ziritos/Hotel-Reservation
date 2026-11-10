@@ -529,7 +529,7 @@
                 </div>
               </div>
               <div style="margin-top: auto; display: flex; gap: 8px;">
-                <form action="/admin/checkout" method="POST" style="flex: 1;" onsubmit="return confirm('Process check-out for Room {{ r.room_number }}?')">
+                <form action="/receptionist/checkout" method="POST" style="flex: 1;" onsubmit="return confirm('Process check-out for Room {{ r.room_number }}?')">
                   <input type="hidden" name="booking_id" value="{{ occ_booking.booking_id }}">
                   <button type="submit" class="btn btn-outline-danger btn-sm" style="width: 100%;">
                     Check-Out
@@ -622,7 +622,7 @@
                     View Receipt
                   </button>
                   {% if b.status == 'Confirmed' %}
-                  <form action="/admin/checkout" method="POST" style="display: inline;" onsubmit="return confirm('Confirm check-out for booking {{ b.booking_id }}?')">
+                  <form action="/receptionist/checkout" method="POST" style="display: inline;" onsubmit="return confirm('Confirm check-out for booking {{ b.booking_id }}?')">
                     <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
                     <button type="submit" class="btn btn-outline-danger btn-xs">Check-Out</button>
                   </form>
@@ -814,7 +814,7 @@
             </div>
           </div>
 
-          <form action="/admin/upload-logo" method="POST" enctype="multipart/form-data">
+          <form action="/receptionist/upload-logo" method="POST" enctype="multipart/form-data">
             <div class="form-group mb-3">
               <label class="form-label">Upload New Emblem File</label>
               <input type="file" name="logo_file" class="form-control" accept="image/*">
@@ -1126,7 +1126,7 @@
       document.getElementById('photoModalTitle').textContent = `Update Room ${roomNo} Photo`;
       document.getElementById('photoModalPreview').src = currentUrl || '/assets/room_single.svg';
       document.getElementById('photoUrlInput').value = currentUrl.startsWith('http') ? currentUrl : '';
-      document.getElementById('photoModalForm').action = `/admin/room/${roomNo}/update-image`;
+      document.getElementById('photoModalForm').action = `/receptionist/room/${roomNo}/update-image`;
       document.getElementById('photoModal').style.display = 'flex';
     }
 
