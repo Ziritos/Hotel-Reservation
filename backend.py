@@ -892,9 +892,9 @@ def root_index():
     return redirect(url_for("login_page"))
 
 
-@app.route("/guest")
-@app.route("/customer")
 @app.route("/rooms")
+@app.route("/customer")
+@app.route("/guest")
 def guest_page():
     query = request.args.get("query", "").strip()
     tab = request.args.get("tab", "").strip()
@@ -976,7 +976,7 @@ def book_room_route():
         nights = int(nights_raw)
     except ValueError:
         flash("Invalid number of nights! Please enter a whole number.", "danger")
-        return redirect(request.referrer or url_for("guest_page"))
+        return redirect(url_for("guest_page"))
 
     success, message, new_booking = book_room(
         guest_name=guest_name,
@@ -991,11 +991,7 @@ def book_room_route():
 
     if not success:
         flash(f"Booking Failed: {message}", "danger")
-        return redirect(request.referrer or url_for("guest_page"))
-
-    if (request.referrer and "/receptionist" in request.referrer) or session.get("receptionist_logged_in"):
-        flash(f"Success! Suite {room_number} reserved for {guest_name}. Booking ID: {new_booking['booking_id']}", "success")
-        return redirect(url_for("receptionist_dashboard"))
+        return redirect(url_for("guest_page"))
 
     flash(f"Success! Suite {room_number} reserved for {guest_name}. Confirmation Code: {new_booking['booking_id']}", "success")
     return redirect(url_for("guest_page", tab="lookup", query=new_booking["booking_id"]))
