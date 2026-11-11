@@ -990,10 +990,14 @@ def book_room_route():
     )
 
     if not success:
-        flash(f"[!] Booking Failed: {message}", "danger")
+        flash(f"Booking Failed: {message}", "danger")
         return redirect(request.referrer or url_for("guest_page"))
 
-    flash(f"✔ Success! Suite {room_number} reserved for {guest_name}. Confirmation Code: {new_booking['booking_id']}", "success")
+    if (request.referrer and "/receptionist" in request.referrer) or session.get("receptionist_logged_in"):
+        flash(f"Success! Suite {room_number} reserved for {guest_name}. Booking ID: {new_booking['booking_id']}", "success")
+        return redirect(url_for("receptionist_dashboard"))
+
+    flash(f"Success! Suite {room_number} reserved for {guest_name}. Confirmation Code: {new_booking['booking_id']}", "success")
     return redirect(url_for("guest_page", tab="lookup", query=new_booking["booking_id"]))
 
 
