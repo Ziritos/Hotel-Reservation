@@ -210,13 +210,13 @@
         <img src="/assets/logo.png" alt="Sugo Crest" class="staff-crest-img"
              onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
         <h1 class="staff-hotel-title">SUGO GRAND PALACE</h1>
-        <div class="staff-subtitle">Front Desk Operations Terminal</div>
+        <div class="staff-subtitle">Front Desk Reception</div>
       </div>
 
       <!-- Security Status Badge -->
       <div class="staff-security-badge">
         <span class="staff-duty-dot"></span>
-        <span>Terminal 01 &bull; Authorized Staff Access Only</span>
+        <span>Authorized Staff Only</span>
       </div>
 
       <!-- Flash Alert messages -->
@@ -243,21 +243,21 @@
       <!-- Staff Login Form -->
       <form action="/login/receptionist" method="POST">
         <div class="form-group-item">
-          <label class="staff-label">Receptionist User ID</label>
-          <input type="text" name="username" class="staff-input" value="receptionist" placeholder="Enter Staff User ID..." required autofocus>
+          <label class="staff-label">Username</label>
+          <input type="text" name="username" class="staff-input" value="receptionist" placeholder="Enter username..." required autofocus>
         </div>
 
         <div class="form-group-item">
-          <label class="staff-label">Terminal Passcode</label>
-          <input type="password" name="password" class="staff-input" value="frontdesk2026" placeholder="Enter Terminal Passcode..." required>
+          <label class="staff-label">Password</label>
+          <input type="password" name="password" class="staff-input" value="frontdesk2026" placeholder="Enter password..." required>
         </div>
 
         <button type="submit" class="btn-staff-submit">
-          <span>Sign In to Operations Console</span>
+          <span>Sign In</span>
         </button>
 
         <div class="demo-hint-box">
-          Quick Sign-In: User <code>receptionist</code> &bull; Pass <code>frontdesk2026</code>
+          Default Account: Username <code>receptionist</code> &bull; Password <code>frontdesk2026</code>
         </div>
       </form>
 

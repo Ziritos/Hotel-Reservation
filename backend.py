@@ -1021,7 +1021,7 @@ def receptionist_login_page():
         password = request.form.get("password", "").strip()
 
         if not username or not password:
-            flash("Please enter both your Receptionist User ID and Terminal Passcode.", "danger")
+            flash("Please enter both your username and password.", "danger")
             return redirect(url_for("receptionist_login_page"))
 
         # Strict Front Desk credential authentication
@@ -1033,10 +1033,10 @@ def receptionist_login_page():
         if username.lower() in AUTHORIZED_STAFF and AUTHORIZED_STAFF[username.lower()] == password:
             session["receptionist_logged_in"] = True
             session["receptionist_user"] = username
-            flash(f"Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
+            flash(f"Welcome, {username}! Front Desk Console ready.", "success")
             return redirect(url_for("receptionist_dashboard"))
         else:
-            flash("Access Denied: Invalid Receptionist User ID or Terminal Passcode.", "danger")
+            flash("Access Denied: Invalid username or password.", "danger")
             return redirect(url_for("receptionist_login_page"))
 
     return render_template("login_receptionist.html")
