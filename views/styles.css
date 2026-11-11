@@ -2276,6 +2276,8 @@ img {
   font-size: 0.9rem;
   font-weight: 600;
   animation: slideLeft 0.3s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+  overflow: hidden;
 }
 
 .alert-success {

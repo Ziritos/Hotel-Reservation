@@ -943,10 +943,10 @@ def receptionist_login_page():
         if username.lower() in AUTHORIZED_STAFF and AUTHORIZED_STAFF[username.lower()] == password:
             session["receptionist_logged_in"] = True
             session["receptionist_user"] = username
-            flash(f"✔ Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
+            flash(f"Terminal Authenticated: Welcome, {username}! Front Desk Console ready.", "success")
             return redirect(url_for("receptionist_dashboard"))
         else:
-            flash("❌ Access Denied: Invalid Receptionist User ID or Terminal Passcode.", "danger")
+            flash("Access Denied: Invalid Receptionist User ID or Terminal Passcode.", "danger")
             return redirect(url_for("receptionist_login_page"))
 
     return render_template("login_receptionist.html")

@@ -466,10 +466,10 @@
         {% for category, message in messages %}
           <div class="alert alert-{{ category }}" style="margin-bottom: 12px;">
             <span class="alert-icon">
-              {% if category == 'success' %}✔{% elif category == 'danger' %}✖{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
+              {% if category == 'success' %}✓{% elif category == 'danger' %}✕{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
             </span>
-            <div class="alert-text">{{ message }}</div>
-            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+            <div class="alert-text">{{ message|replace('✔ ', '')|replace('✔', '')|replace('[!] ', '')|replace('❌ ', '') }}</div>
+            <button class="alert-close" onclick="dismissAlert(this.parentElement)">&times;</button>
           </div>
         {% endfor %}
       {% endif %}
@@ -1121,12 +1121,45 @@
       document.getElementById('guestCancelModal').style.display = 'none';
     }
 
-    // Check URL parameters
+    // Smooth Alert Dismissal
+    function dismissAlert(alertEl) {
+      if (!alertEl) return;
+      alertEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease';
+      alertEl.style.opacity = '0';
+      alertEl.style.transform = 'translateY(-6px)';
+      alertEl.style.maxHeight = '0';
+      alertEl.style.paddingTop = '0';
+      alertEl.style.paddingBottom = '0';
+      alertEl.style.marginTop = '0';
+      alertEl.style.marginBottom = '0';
+      alertEl.style.overflow = 'hidden';
+      setTimeout(function () {
+        alertEl.remove();
+      }, 400);
+    }
+
+    // Check URL parameters & Auto-dismiss alerts
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get('tab') === 'lookup' || params.get('query')) {
         toggleGuestTab('lookup');
       }
+
+      // Auto-dismiss alerts after 3.5 seconds
+      document.querySelectorAll('.alert, .auto-dismiss-alert').forEach(function (alertEl) {
+        let dismissTimer = setTimeout(function () {
+          dismissAlert(alertEl);
+        }, 3500);
+
+        alertEl.addEventListener('mouseenter', function () {
+          clearTimeout(dismissTimer);
+        });
+        alertEl.addEventListener('mouseleave', function () {
+          dismissTimer = setTimeout(function () {
+            dismissAlert(alertEl);
+          }, 2000);
+        });
+      });
     });
   </script>
 </body>
