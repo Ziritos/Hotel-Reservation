@@ -415,7 +415,6 @@
 </head>
 <body>
 
-  <!-- Top Hospitality Status Bar -->
   <div class="hospitality-top-bar">
     <div class="container top-bar-inner">
       <div class="top-bar-left">
@@ -428,11 +427,10 @@
     </div>
   </div>
 
-  <!-- Main Navigation -->
   <nav class="hotel-navbar">
     <div class="container nav-inner">
       <a href="/guest" class="brand-identity">
-        <img src="/assets/logo.png" alt="Sugo Palace" class="brand-crest"
+        <img src="/assets/logo.png" alt="Sugo Crest" class="brand-crest"
              onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
         <div>
           <div class="brand-name">SUGO GRAND PALACE</div>
@@ -440,7 +438,6 @@
         </div>
       </a>
 
-      <!-- Guest Portal Tabs -->
       <div class="nav-tabs-wrapper">
         <button type="button" class="portal-tab-btn {% if active_tab != 'lookup' %}active{% endif %}" 
                 id="tabRoomsBtn" onclick="toggleGuestTab('rooms')">
@@ -459,7 +456,6 @@
     </div>
   </nav>
 
-  <!-- Flash Alerts -->
   <div class="container" style="padding-top: 14px;">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -468,7 +464,7 @@
             <span class="alert-icon">
               {% if category == 'success' %}✓{% elif category == 'danger' %}✕{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
             </span>
-            <div class="alert-text">{{ message|replace('✔ ', '')|replace('✔', '')|replace('[!] ', '')|replace('❌ ', '') }}</div>
+            <div class="alert-text">{{ message|replace('✔ ', '')|replace('✔', '')|replace('✓ ', '')|replace('✓', '')|replace('[!] ', '')|replace('❌ ', '') }}</div>
             <button class="alert-close" onclick="dismissAlert(this.parentElement)">&times;</button>
           </div>
         {% endfor %}
@@ -476,7 +472,6 @@
     {% endwith %}
   </div>
 
-  <!-- Hero Section -->
   <section class="guest-hero">
     <div class="container">
       <div class="hero-pretitle">Boutique Accommodations</div>
@@ -502,9 +497,6 @@
     </div>
   </section>
 
-  <!-- ======================================================== -->
-  <!-- TAB 1: BROWSE SUITES & ROOMS (AVAILABLE ONLY)            -->
-  <!-- ======================================================== -->
   <main class="container" id="roomsViewPane" style="{% if active_tab == 'lookup' %}display: none;{% endif %} flex: 1;">
     
     {% set avail_single = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Single') | list | length %}
@@ -512,7 +504,6 @@
     {% set avail_suite = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Suite') | list | length %}
     {% set avail_pres = rooms | selectattr('is_available', 'equalto', true) | selectattr('type', 'equalto', 'Presidential Suite') | list | length %}
 
-    <!-- Filter Toolbar -->
     <div class="catalog-bar">
       <div class="category-pills">
         <button type="button" class="cat-btn active" onclick="setCategoryFilter('all', this)">
@@ -537,7 +528,6 @@
       </div>
     </div>
 
-    <!-- Rooms Grid: Only Available Rooms are rendered for guests -->
     <div class="rooms-layout" id="suitesGrid">
       {% for room in rooms %}
         {% if room.is_available %}
@@ -607,7 +597,6 @@
     </div>
     {% endif %}
 
-    <!-- Empty Filter Notice -->
     <div id="noMatchNotice" style="display: none; text-align: center; padding: 48px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 40px;">
       <h3 style="color: #0F172A; margin-bottom: 6px;">No Matching Available Suites Found</h3>
       <p style="color: #64748B; font-size: 14px; margin-bottom: 16px;">Try selecting another category or clearing your search term.</p>
@@ -616,10 +605,6 @@
 
   </main>
 
-
-  <!-- ======================================================== -->
-  <!-- TAB 2: FIND MY RESERVATION (SELF-SERVICE)                -->
-  <!-- ======================================================== -->
   <main class="container" id="lookupViewPane" style="{% if active_tab != 'lookup' %}display: none;{% endif %} flex: 1; padding: 32px 0 48px;">
     
     <div style="max-width: 680px; margin: 0 auto 36px; text-align: center;">
@@ -741,9 +726,6 @@
   </main>
 
 
-  <!-- ======================================================== -->
-  <!-- MODAL: GUEST RESERVATION                                 -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="reserveModal" style="display: none;">
     <div class="modal-window">
       <div class="modal-header">
@@ -770,7 +752,6 @@
             </div>
           </div>
 
-          <!-- Guest Name with Real-Time Letters-Only Validation -->
           <div class="form-group mb-3">
             <label class="form-label">Guest Full Name <span class="required">*</span></label>
             <input type="text" name="guest_name" id="resGuestName" class="form-control" 
@@ -846,9 +827,6 @@
   </div>
 
 
-  <!-- ======================================================== -->
-  <!-- MODAL: PRINTABLE CONFIRMATION VOUCHER                    -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="guestReceiptModal" style="display: none;">
     <div class="modal-window modal-lg">
       <div class="modal-header no-print">
@@ -924,9 +902,6 @@
   </div>
 
 
-  <!-- ======================================================== -->
-  <!-- MODAL: GUEST CANCELLATION                                -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="guestCancelModal" style="display: none;">
     <div class="modal-window modal-sm">
       <div class="modal-header">
@@ -950,8 +925,6 @@
     </div>
   </div>
 
-
-  <!-- Global Footer -->
   <footer style="background: #0F172A; color: #94A3B8; padding: 28px 0; font-size: 12px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06);">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
       <div>
@@ -964,8 +937,6 @@
     </div>
   </footer>
 
-
-  <!-- Interactive Client-side Script -->
   <script>
     function toggleGuestTab(tab) {
       const btnRooms = document.getElementById('tabRoomsBtn');
@@ -1030,7 +1001,6 @@
       runFilters();
     }
 
-    // Active confirmed reservations for date-clash detection
     const activeRoomBookings = [
       {% for b in bookings %}
         {% if b.status != 'Checked Out' and b.status != 'Cancelled' %}
@@ -1045,7 +1015,6 @@
       {% endfor %}
     ];
 
-    // Reservation Modal
     function openReservationModal(roomNo, type, price, cap) {
       document.getElementById('resSuiteInput').value = roomNo;
       document.getElementById('resRateInput').value = price;
@@ -1069,7 +1038,6 @@
       document.getElementById('reserveModal').style.display = 'none';
     }
 
-    // Strict Letters-Only Guest Name Validation
     function checkGuestNameLettersOnly(input) {
       const val = input.value;
       const feedback = document.getElementById('guestNameFeedback');
@@ -1085,7 +1053,6 @@
       } else {
         feedback.style.display = 'none';
         input.classList.remove('is-invalid');
-        // Check if date clash is blocking submit
         const clashAlert = document.getElementById('resDateClashAlert');
         if (!clashAlert || clashAlert.style.display === 'none') {
           submitBtn.disabled = false;
@@ -1115,7 +1082,6 @@
       const submitBtn = document.getElementById('btnSubmitReservation');
 
       if (checkInVal && selectedRoom) {
-        // Calculate check-out date: YYYY-MM-DD
         const parts = checkInVal.split('-');
         if (parts.length === 3) {
           const inY = parseInt(parts[0], 10);
@@ -1126,7 +1092,6 @@
           const outStr = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
           document.getElementById('calcOutDate').textContent = outStr;
 
-          // Check for date clashes with active bookings on this suite
           let clash = null;
           for (const b of activeRoomBookings) {
             if (String(b.room_number).trim() === String(selectedRoom).trim()) {
@@ -1152,7 +1117,6 @@
       }
     }
 
-    // Voucher Print Modal
     function showGuestVoucher(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date) {
       document.getElementById('vouchCode').textContent = id;
       document.getElementById('vouchDate').textContent = `Issued: ${date || 'Today'}`;
@@ -1174,7 +1138,6 @@
       document.getElementById('guestReceiptModal').style.display = 'none';
     }
 
-    // Cancellation
     function openGuestCancel(code, name, room) {
       document.getElementById('gcModalCode').value = code;
       document.getElementById('gcModalGuest').value = name;
@@ -1187,7 +1150,6 @@
       document.getElementById('guestCancelModal').style.display = 'none';
     }
 
-    // Smooth Alert Dismissal
     function dismissAlert(alertEl) {
       if (!alertEl) return;
       alertEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease';
@@ -1204,14 +1166,12 @@
       }, 400);
     }
 
-    // Check URL parameters & Auto-dismiss alerts
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get('tab') === 'lookup' || params.get('query')) {
         toggleGuestTab('lookup');
       }
 
-      // Auto-dismiss alerts after 3.5 seconds
       document.querySelectorAll('.alert, .auto-dismiss-alert').forEach(function (alertEl) {
         let dismissTimer = setTimeout(function () {
           dismissAlert(alertEl);

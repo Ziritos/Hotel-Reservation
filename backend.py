@@ -1,8 +1,3 @@
-"""
-Sugo Grand Palace Hotel - Backend Core & API Engine
-Maintains rooms, bookings, customer profiles, persistence, and the Flask/PyWebView bridge.
-Frontend templates & static assets are located in the 'views/' directory.
-"""
 
 import json
 import os
@@ -28,7 +23,6 @@ os.makedirs(DATA_DIR, exist_ok=True)
 CURRENCY = "PHP "
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "svg", "gif"}
 
-# Default Room Inventory matching project scope with local asset illustrations
 DEFAULT_ROOMS = [
     {
         "room_number": "101",
@@ -140,9 +134,6 @@ DEFAULT_ROOMS = [
     },
 ]
 
-# ---------------------------------------------------------
-# In-Memory Transaction Data Structure
-# ---------------------------------------------------------
 
 class Transaction:
     """Represents an atomic hotel financial and operational transaction record."""
@@ -150,7 +141,7 @@ class Transaction:
     def __init__(
         self,
         transaction_id: str,
-        transaction_type: str,  # 'BOOKING_RESERVATION', 'CHECKOUT_SETTLED', 'CANCELLATION_REFUND'
+        transaction_type: str,
         booking_id: str,
         guest_name: str,
         room_number: str,
@@ -233,17 +224,16 @@ class TransactionLedger:
             timestamp=timestamp,
         )
 
-        # 1. Primary chronological storage
         self._transactions.append(txn)
-        # 2. Hash map index by Transaction ID (O(1))
+
         self._by_id[txn.transaction_id] = txn
-        # 3. Multi-index by Booking ID (O(1))
+
         b_key = txn.booking_id.strip().upper()
         self._by_booking.setdefault(b_key, []).append(txn)
-        # 4. Multi-index by Guest Name (O(1))
+
         g_key = txn.guest_name.strip().lower()
         self._by_guest.setdefault(g_key, []).append(txn)
-        # 5. Multi-index by Room Number (O(1))
+       
         r_key = str(txn.room_number).strip()
         self._by_room.setdefault(r_key, []).append(txn)
 
@@ -311,7 +301,6 @@ class TransactionLedger:
         self._by_room.clear()
 
 
-# In-Memory Datastores
 rooms = []
 bookings = []
 customers = []
@@ -517,7 +506,6 @@ def book_room(
     if not room:
         return False, f"Room '{room_number}' does not exist! Please choose a valid room.", {}
 
-    # Parse and validate requested check-in and check-out dates
     if not check_in:
         req_in_date = date.today()
         check_in_str = req_in_date.strftime("%Y-%m-%d")
@@ -531,7 +519,6 @@ def book_room(
     req_out_date = req_in_date + timedelta(days=parsed_nights)
     check_out_str = req_out_date.strftime("%Y-%m-%d")
 
-    # Verify that the room has no overlapping confirmed reservations
     is_avail, clash_msg, _ = check_room_availability_for_dates(
         room_number=str(room["room_number"]),
         check_in_date=req_in_date,
@@ -573,7 +560,6 @@ def book_room(
         booking_id=booking_id
     )
 
-    # In-memory transaction data structure registration
     transaction_ledger.record(
         txn_type="BOOKING_RESERVATION",
         booking_id=booking_id,
@@ -623,7 +609,6 @@ def checkout_booking(booking_or_id_or_room: str) -> tuple[bool, str, dict]:
     target_booking["status"] = "Checked Out"
     target_booking["checked_out_at"] = now_ts
 
-    # In-memory transaction registration for check-out settlement
     transaction_ledger.record(
         txn_type="CHECKOUT_SETTLED",
         booking_id=target_booking.get("booking_id", ""),
@@ -656,7 +641,6 @@ def cancel_booking_by_customer(booking_id: str, guest_name: str) -> tuple[bool, 
 
     now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # In-memory transaction registration for cancellation refund
     transaction_ledger.record(
         txn_type="CANCELLATION_REFUND",
         booking_id=booking.get("booking_id", ""),
@@ -686,7 +670,6 @@ def cancel_booking_by_staff(booking_id: str, reason: str = "") -> tuple[bool, st
 
     now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # In-memory transaction registration for front desk cancellation
     transaction_ledger.record(
         txn_type="CANCELLATION_REFUND",
         booking_id=booking.get("booking_id", ""),
@@ -732,7 +715,6 @@ def update_booking_by_staff(
     if not target_room:
         return False, f"Room '{target_room_number}' does not exist.", {}
 
-    # Determine updated stay dates
     if check_in:
         parsed_in = parse_date_str(check_in)
         if not parsed_in:
@@ -743,7 +725,6 @@ def update_booking_by_staff(
 
     new_out_date = new_in_date + timedelta(days=parsed_nights)
 
-    # Check date overlap for target room (excluding this booking itself)
     is_avail, clash_msg, _ = check_room_availability_for_dates(
         room_number=target_room_number,
         check_in_date=new_in_date,
@@ -753,7 +734,6 @@ def update_booking_by_staff(
     if not is_avail:
         return False, clash_msg, {}
 
-    # Apply changes
     booking["room_number"] = str(target_room["room_number"])
     booking["room_type"] = target_room.get("type", "Standard")
     booking["price_per_night"] = float(target_room["price_per_night"])
@@ -761,11 +741,9 @@ def update_booking_by_staff(
     booking["check_in"] = new_in_date.strftime("%Y-%m-%d")
     booking["check_out"] = new_out_date.strftime("%Y-%m-%d")
 
-    # Recalculate cost
     rate = float(booking.get("price_per_night", 1200.0))
     booking["total_cost"] = round(rate * parsed_nights, 2)
 
-    # Update guest contact information
     booking["guest_name"] = guest_name.strip()
     if phone is not None:
         booking["phone"] = phone.strip()
@@ -774,7 +752,6 @@ def update_booking_by_staff(
     if special_requests is not None:
         booking["special_requests"] = special_requests.strip()
 
-    # Update customer profile in CRM
     update_or_create_customer(
         name=booking["guest_name"],
         email=booking.get("email", ""),
@@ -837,7 +814,6 @@ def get_metrics() -> dict:
     total_rooms = len(rooms)
     today_dt = date.today()
 
-    # Rooms currently occupied by in-house guests today
     occupied_today_room_nos = set()
     for b in bookings:
         if b.get("status") in ("Checked Out", "Cancelled"):
@@ -849,13 +825,11 @@ def get_metrics() -> dict:
         if not b_out:
             b_out = b_in + timedelta(days=int(b.get("nights", 1)))
 
-        # In-house: guest stay covers today until checkout is processed
         if b_in <= today_dt <= b_out:
             occupied_today_room_nos.add(str(b.get("room_number", "")).strip())
         elif b_in <= today_dt and b.get("status") in ("Confirmed", "Checked In"):
             occupied_today_room_nos.add(str(b.get("room_number", "")).strip())
 
-    # Set real-time daily availability for rooms catalog
     for r in rooms:
         r_num = str(r.get("room_number", "")).strip()
         r["is_available"] = (r_num not in occupied_today_room_nos)
@@ -942,17 +916,10 @@ def load_data():
         except Exception:
             pass
 
-    # Start fresh from the beginning with zero guests and zero revenue
     reset_system_to_beginning(persist=True)
 
-
-# Initialize data on startup (Fresh start: 0 guests, zero revenue)
 load_data()
 
-
-# ---------------------------------------------------------
-# Flask Web Engine (Configured for 'views/' folder)
-# ---------------------------------------------------------
 
 app = Flask(
     __name__,
@@ -1024,7 +991,6 @@ def receptionist_login_page():
             flash("Please enter both your username and password.", "danger")
             return redirect(url_for("receptionist_login_page"))
 
-        # Strict Front Desk credential authentication
         AUTHORIZED_STAFF = {
             "receptionist": "frontdesk2026",
             "frontdesk": "frontdesk2026",
@@ -1047,7 +1013,7 @@ def receptionist_login_page():
 def receptionist_logout():
     session.pop("receptionist_logged_in", None)
     session.pop("receptionist_user", None)
-    flash("✔ You have signed out of the Front Desk Console.", "info")
+    flash("You have signed out of the Front Desk Console.", "info")
     return redirect(url_for("receptionist_login_page"))
 
 
@@ -1104,7 +1070,7 @@ def cancel_my_booking_route():
         return redirect(url_for("guest_page", tab="lookup"))
 
     success, msg = cancel_booking_by_customer(booking_id, guest_name)
-    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    flash(msg, "success" if success else "danger")
     return redirect(url_for("guest_page", tab="lookup", query=booking_id))
 
 
@@ -1146,7 +1112,7 @@ def receptionist_reset_system_route():
         return redirect(url_for("receptionist_login_page"))
 
     reset_system_to_beginning(persist=True)
-    flash("✔ System refreshed to Day 1: All 9 suites are available clean, zero in-house guests, and ₱0.00 revenue.", "success")
+    flash("System refreshed to Day 1: All 9 suites are available clean, zero in-house guests, and ₱0.00 revenue.", "success")
     return redirect(url_for("receptionist_dashboard"))
 
 
@@ -1162,7 +1128,7 @@ def receptionist_checkout_route():
         return redirect(url_for("receptionist_dashboard"))
 
     success, msg, _ = checkout_booking(booking_id)
-    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    flash(msg, "success" if success else "danger")
     return redirect(request.referrer or url_for("receptionist_dashboard"))
 
 
@@ -1200,9 +1166,9 @@ def receptionist_add_booking_route():
     )
 
     if success:
-        flash(f"✔ New Reservation confirmed: Booking {new_b.get('booking_id')} for {new_b.get('guest_name')} in Suite {new_b.get('room_number')}.", "success")
+        flash(f"New Reservation confirmed: Booking {new_b.get('booking_id')} for {new_b.get('guest_name')} in Suite {new_b.get('room_number')}.", "success")
     else:
-        flash(f"[!] Booking Failed: {msg}", "danger")
+        flash(f"Booking Failed: {msg}", "danger")
 
     return redirect(url_for("receptionist_dashboard"))
 
@@ -1240,7 +1206,7 @@ def receptionist_update_booking_route():
         special_requests=special_requests,
     )
 
-    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    flash(msg, "success" if success else "danger")
     return redirect(url_for("receptionist_dashboard"))
 
 
@@ -1259,7 +1225,7 @@ def receptionist_cancel_booking_route():
         return redirect(url_for("receptionist_dashboard"))
 
     success, msg = cancel_booking_by_staff(booking_id, reason)
-    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    flash(msg, "success" if success else "danger")
     return redirect(url_for("receptionist_dashboard"))
 
 
@@ -1298,7 +1264,7 @@ def update_room_image_route(room_number):
 
     if final_image_url:
         update_room_image(room_number, final_image_url)
-        flash(f"✔ Suite {room_number} photo updated successfully!", "success")
+        flash(f"Suite {room_number} photo updated successfully!", "success")
     else:
         flash("Please upload an image file or provide a valid image URL.", "warning")
 
@@ -1327,14 +1293,13 @@ def upload_logo_route():
 
     if final_logo_url:
         set_hotel_logo(final_logo_url)
-        flash("✔ Property logo updated successfully!", "success")
+        flash("Property logo updated successfully!", "success")
     else:
         flash("Please select a logo file or enter a valid logo URL.", "warning")
 
     return redirect(request.referrer or url_for("receptionist_dashboard"))
 
 
-# REST API endpoints
 @app.route("/api/rooms", methods=["GET"])
 def api_get_rooms():
     return jsonify({"status": "success", "rooms": rooms})
@@ -1414,10 +1379,6 @@ def api_reset_system():
     })
 
 
-# ---------------------------------------------------------
-# PyWebView Bridge API Class
-# ---------------------------------------------------------
-
 class HotelBackendAPI:
     """Python API exposed directly to JavaScript via pywebview."""
 
@@ -1456,11 +1417,6 @@ class HotelBackendAPI:
     def reset_system(self):
         reset_system_to_beginning(persist=True)
         return {"success": True, "message": "System reset to Day 1: 0 guests, zero revenue, 9 suites available."}
-
-
-# ---------------------------------------------------------
-# Launchers
-# ---------------------------------------------------------
 
 def launch_webview(host="127.0.0.1", port=5000):
     """Starts the Flask server and opens inside a native pywebview desktop window."""

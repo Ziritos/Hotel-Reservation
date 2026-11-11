@@ -360,7 +360,6 @@
 </head>
 <body>
 
-  <!-- Top Front Desk Strip -->
   <header class="desk-header">
     <div class="container desk-header-inner">
       <a href="/receptionist" class="desk-brand-group">
@@ -379,7 +378,6 @@
     </div>
   </header>
 
-  <!-- Sticky Operations Navigation Tabs (Scrollbar Hidden, Fully Responsive) -->
   <div class="desk-subnav">
     <div class="container">
       <div class="subnav-tabs">
@@ -405,7 +403,6 @@
     </div>
   </div>
 
-  <!-- Flash Alerts -->
   <div class="container" style="padding-top: 14px;">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -414,7 +411,7 @@
             <span class="alert-icon">
               {% if category == 'success' %}✓{% elif category == 'danger' %}✕{% elif category == 'warning' %}⚠️{% else %}ℹ{% endif %}
             </span>
-            <div class="alert-text">{{ message|replace('✔ ', '')|replace('✔', '')|replace('[!] ', '')|replace('❌ ', '') }}</div>
+            <div class="alert-text">{{ message|replace('✔ ', '')|replace('✔', '')|replace('✓ ', '')|replace('✓', '')|replace('[!] ', '')|replace('❌ ', '') }}</div>
             <button class="alert-close" onclick="dismissAlert(this.parentElement)">&times;</button>
           </div>
         {% endfor %}
@@ -424,7 +421,6 @@
 
   <div class="container" style="flex: 1; padding-bottom: 48px;">
 
-    <!-- KPI Metric Strip (Balanced 6 Cards Grid - Accurate & Dynamically Synchronized) -->
     <div class="kpi-grid">
       <div class="kpi-tile kpi-total">
         <div class="kpi-header">
@@ -481,10 +477,6 @@
       </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- TAB 1: FRONT DESK                                        -->
-    <!-- ======================================================== -->
     <section id="paneRack" style="display: block;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
         <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Front Desk</h3>
@@ -594,10 +586,6 @@
       </div>
     </section>
 
-
-    <!-- ======================================================== -->
-    <!-- TAB 2: GUEST RESERVATIONS & BOOKINGS LEDGER              -->
-    <!-- ======================================================== -->
     <section id="paneReservations" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
         <div>
@@ -691,10 +679,6 @@
       </div>
     </section>
 
-
-    <!-- ======================================================== -->
-    <!-- TAB 3: GUEST RECORDS                                     -->
-    <!-- ======================================================== -->
     <section id="paneDirectory" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Records</h3>
@@ -743,10 +727,6 @@
       </div>
     </section>
 
-
-    <!-- ======================================================== -->
-    <!-- TAB 4: IN-MEMORY TRANSACTIONS LEDGER                     -->
-    <!-- ======================================================== -->
     <section id="paneTransactions" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
         <div>
@@ -759,7 +739,6 @@
                placeholder="Search TXN #, Booking ID, Guest, or Type..." oninput="filterTxnTable()">
       </div>
 
-      <!-- Transaction Metrics Strip -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px;">
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
           <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">Transactions Stored</span>
@@ -783,7 +762,6 @@
         </div>
       </div>
 
-      <!-- Transactions Data Table -->
       <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
         <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="txnTable">
           <thead>
@@ -847,10 +825,6 @@
       </div>
     </section>
 
-
-    <!-- ======================================================== -->
-    <!-- TAB 5: PROPERTY & BRANDING ASSETS                        -->
-    <!-- ======================================================== -->
     <section id="paneBranding" style="display: none;">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
         
@@ -905,10 +879,6 @@
 
   </div>
 
-
-  <!-- ======================================================== -->
-  <!-- MODAL: WALK-IN CHECK-IN (With Letters-Only Validation)   -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="walkInModal" style="display: none;">
     <div class="modal-window">
       <div class="modal-header">
@@ -924,7 +894,6 @@
         <input type="hidden" id="wiRateInput" value="1200">
 
         <div class="modal-body">
-          <!-- Guest Name (Letters Only) -->
           <div class="form-group mb-3">
             <label class="form-label">Guest Full Name <span class="required">*</span></label>
             <input type="text" name="guest_name" id="wiGuestName" class="form-control" 
@@ -975,10 +944,6 @@
     </div>
   </div>
 
-
-  <!-- ======================================================== -->
-  <!-- MODAL: ADD / CREATE NEW RESERVATION                      -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="createBookingModal" style="display: none;">
     <div class="modal-window">
       <div class="modal-header">
@@ -1069,10 +1034,6 @@
     </div>
   </div>
 
-
-  <!-- ======================================================== -->
-  <!-- MODAL: EDIT / UPDATE RESERVATION                         -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="editBookingModal" style="display: none;">
     <div class="modal-window">
       <div class="modal-header">
@@ -1090,7 +1051,6 @@
           <div class="form-group mb-3">
             <label class="form-label">Suite Assignment <span class="required">*</span></label>
             <select name="room_number" id="editRoomSelect" class="form-control" required onchange="calcEditTotal()">
-              <!-- Populated dynamically: current room + any available rooms -->
             </select>
             <div style="font-size: 11px; color: #64748B; margin-top: 3px;">
               You may reassign the guest to another available room of any category.
@@ -1152,10 +1112,6 @@
     </div>
   </div>
 
-
-  <!-- ======================================================== -->
-  <!-- MODAL: PHOTO EDITOR                                      -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="photoModal" style="display: none;">
     <div class="modal-window modal-sm">
       <div class="modal-header">
@@ -1185,10 +1141,6 @@
     </div>
   </div>
 
-
-  <!-- ======================================================== -->
-  <!-- MODAL: FRONT DESK OFFICIAL GUEST RECEIPT                 -->
-  <!-- ======================================================== -->
   <div class="modal-backdrop" id="deskReceiptModal" style="display: none;">
     <div class="modal-window modal-lg">
       <div class="modal-header no-print">
@@ -1317,7 +1269,6 @@
       });
     }
 
-    // Walk-In Modal
     function openWalkInCheckIn(roomNo, type, price, cap) {
       document.getElementById('wiRoomInput').value = roomNo;
       document.getElementById('wiRateInput').value = price;
@@ -1370,7 +1321,6 @@
       document.getElementById('wiTotalDisplay').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
     }
 
-    // Photo Editor
     function openPhotoEditor(roomNo, type, currentUrl) {
       document.getElementById('photoModalTitle').textContent = `Update Room ${roomNo} Photo`;
       document.getElementById('photoModalPreview').src = currentUrl || '/assets/room_single.svg';
@@ -1423,7 +1373,6 @@
       {% endfor %}
     ];
 
-    // Create Reservation Modal
     function openCreateReservationModal() {
       const select = document.getElementById('createRoomSelect');
       document.getElementById('createGuestName').value = '';
@@ -1472,7 +1421,6 @@
           const outStr = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
           document.getElementById('createCalcOut').textContent = outStr;
 
-          // Check date collision with existing active bookings
           let clash = null;
           for (const b of receptionistBookings) {
             if (String(b.room_number).trim() === String(selectedRoom).trim()) {
@@ -1527,7 +1475,6 @@
       return true;
     }
 
-    // Edit Reservation Modal
     function openEditBookingModal(bookingId, guestName, roomNumber, nights, checkIn, phone, email, requests) {
       document.getElementById('editBookingId').value = bookingId;
       document.getElementById('editModalSubtitle').textContent = `Booking Ref: ${bookingId} (${guestName})`;
@@ -1542,7 +1489,6 @@
       document.getElementById('editNights').value = nights || 1;
       document.getElementById('editRequests').value = (requests && requests !== 'None') ? requests : '';
 
-      // Populate room dropdown with all suites
       const roomSelect = document.getElementById('editRoomSelect');
       roomSelect.innerHTML = '';
       hotelRoomsCatalog.forEach(rm => {
@@ -1610,7 +1556,6 @@
       return checkEditGuestName(input);
     }
 
-    // Desk Receipt
     function showDeskReceipt(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date, requests) {
       document.getElementById('dRcptId').textContent = id;
       document.getElementById('dRcptDate').textContent = `Issued: ${date || 'Today'}`;
@@ -1647,7 +1592,6 @@
       document.getElementById('deskReceiptModal').style.display = 'none';
     }
 
-    // Smooth Alert Dismissal
     function dismissAlert(alertEl) {
       if (!alertEl) return;
       alertEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease';
@@ -1664,14 +1608,12 @@
       }, 400);
     }
 
-    // Auto-dismiss alert notifications after 3.5 seconds
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelectorAll('.alert, .auto-dismiss-alert').forEach(function (alertEl) {
         let dismissTimer = setTimeout(function () {
           dismissAlert(alertEl);
         }, 3500);
 
-        // Pause timer if mouse hovers over alert
         alertEl.addEventListener('mouseenter', function () {
           clearTimeout(dismissTimer);
         });

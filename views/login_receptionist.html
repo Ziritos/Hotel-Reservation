@@ -205,7 +205,6 @@
   <div class="staff-login-wrapper">
     <div class="staff-card">
 
-      <!-- Brand Header -->
       <div class="staff-brand-header">
         <img src="/assets/logo.png" alt="Sugo Crest" class="staff-crest-img"
              onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
@@ -213,13 +212,11 @@
         <div class="staff-subtitle">Front Desk Reception</div>
       </div>
 
-      <!-- Security Status Badge -->
       <div class="staff-security-badge">
         <span class="staff-duty-dot"></span>
         <span>Authorized Staff Only</span>
       </div>
 
-      <!-- Flash Alert messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
@@ -240,7 +237,6 @@
         {% endif %}
       {% endwith %}
 
-      <!-- Staff Login Form -->
       <form action="/login/receptionist" method="POST">
         <div class="form-group-item">
           <label class="staff-label">Username</label>
@@ -261,7 +257,6 @@
         </div>
       </form>
 
-      <!-- Return link -->
       <div class="staff-footer-links">
         <a href="/login" class="link-return-guest">
           Return to Guest Portal
