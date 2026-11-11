@@ -497,9 +497,19 @@
       <div class="rack-grid">
         {% for r in rooms %}
           {% set occ_booking = None %}
+          {% set occ_booking = None %}
+          {% set next_booking = None %}
           {% for b in bookings %}
             {% if b.room_number|string == r.room_number|string and b.status != 'Checked Out' and b.status != 'Cancelled' %}
-              {% set occ_booking = b %}
+              {% if b.check_in <= today_str and b.check_out > today_str %}
+                {% set occ_booking = b %}
+              {% elif b.check_in > today_str %}
+                {% if not next_booking or b.check_in < next_booking.check_in %}
+                  {% set next_booking = b %}
+                {% endif %}
+              {% else %}
+                {% set occ_booking = b %}
+              {% endif %}
             {% endif %}
           {% endfor %}
 
@@ -553,6 +563,19 @@
                     Receipt
                   </button>
                 </div>
+              </div>
+              {% elif next_booking %}
+              <div class="rack-vacant-box" style="border-left: 3px solid #F59E0B; background: #FFFBEB;">
+                <span style="color: #16A34A; font-weight: 700; font-size: 12px;">● Vacant Clean Today</span>
+                <div style="color: #92400E; font-size: 11px; margin-top: 3px;">
+                  Upcoming: {{ next_booking.guest_name }} &bull; In: {{ next_booking.check_in }}
+                </div>
+              </div>
+              <div style="margin-top: auto;">
+                <button type="button" class="btn btn-primary btn-sm" style="width: 100%;"
+                        onclick="openWalkInCheckIn('{{ r.room_number }}', '{{ r.type }}', {{ r.price_per_night }}, {{ r.capacity }})">
+                  Walk-In Check-In
+                </button>
               </div>
               {% else %}
               <div class="rack-vacant-box">
@@ -969,23 +992,14 @@
       <form action="/receptionist/booking/add" method="POST" id="createBookingForm" onsubmit="return verifyCreateBookingForm()">
         <div class="modal-body">
           <div class="form-group mb-3">
-            <label class="form-label">Select Available Suite <span class="required">*</span></label>
-            <select name="room_number" id="createRoomSelect" class="form-control" required onchange="updateCreateModalRate()">
-              {% set avail_count = namespace(count=0) %}
+            <label class="form-label">Select Suite <span class="required">*</span></label>
+            <select name="room_number" id="createRoomSelect" class="form-control" required onchange="calcCreateTotal()">
               {% for rm in rooms %}
-                {% if rm.is_available %}
-                  {% set avail_count.count = avail_count.count + 1 %}
-                  <option value="{{ rm.room_number }}" data-price="{{ rm.price_per_night }}" data-type="{{ rm.type }}" data-cap="{{ rm.capacity }}">
-                    Suite {{ rm.room_number }} &bull; {{ rm.type }} &bull; ₱{{ "{:,.2f}".format(rm.price_per_night) }} / night
-                  </option>
-                {% endif %}
+                <option value="{{ rm.room_number }}" data-price="{{ rm.price_per_night }}" data-type="{{ rm.type }}" data-cap="{{ rm.capacity }}">
+                  Suite {{ rm.room_number }} &bull; {{ rm.type }} &bull; ₱{{ "{:,.2f}".format(rm.price_per_night) }} / night {% if not rm.is_available %}(In-House Today){% endif %}
+                </option>
               {% endfor %}
             </select>
-            {% if avail_count.count == 0 %}
-              <div style="color: #DC2626; font-size: 12px; font-weight: 600; margin-top: 4px;">
-                All 9 suites are currently occupied. Cannot create new booking until a room is checked out or cancelled.
-              </div>
-            {% endif %}
           </div>
 
           <div class="form-group mb-3">
@@ -1020,6 +1034,13 @@
             <div class="form-group col-4">
               <label class="form-label">Guests Count</label>
               <input type="number" name="guests_count" id="createGuestsCount" class="form-control" value="1" min="1" max="6">
+            </div>
+          </div>
+
+          <div id="createDateClashAlert" style="display: none; background: #FEF2F2; border: 1px solid #F87171; border-radius: 8px; padding: 10px 14px; margin-top: 10px; margin-bottom: 10px; color: #991B1B; font-size: 13px;">
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+              <span style="font-size: 16px; line-height: 1;">⚠️</span>
+              <div id="createDateClashMessage">Selected dates conflict with an existing reservation for this suite.</div>
             </div>
           </div>
 
@@ -1388,13 +1409,28 @@
       {% endfor %}
     ];
 
+    const receptionistBookings = [
+      {% for b in bookings %}
+        {% if b.status != 'Checked Out' and b.status != 'Cancelled' %}
+        {
+          room_number: "{{ b.room_number }}",
+          check_in: "{{ b.check_in }}",
+          check_out: "{{ b.check_out }}",
+          guest_name: {{ b.guest_name|tojson }},
+          booking_id: "{{ b.booking_id }}"
+        },
+        {% endif %}
+      {% endfor %}
+    ];
+
     // Create Reservation Modal
     function openCreateReservationModal() {
       const select = document.getElementById('createRoomSelect');
-      updateCreateModalRate();
       document.getElementById('createGuestName').value = '';
       document.getElementById('createGuestName').classList.remove('is-invalid');
       document.getElementById('createNameError').style.display = 'none';
+      const clashBox = document.getElementById('createDateClashAlert');
+      if (clashBox) clashBox.style.display = 'none';
       if (select && select.options.length > 0) {
         document.getElementById('createSubmitBtn').disabled = false;
       }
@@ -1420,10 +1456,43 @@
       document.getElementById('createTotalDisplay').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
 
       const checkInVal = document.getElementById('createCheckIn').value;
-      if (checkInVal) {
-        const d = new Date(checkInVal);
-        d.setDate(d.getDate() + nights);
-        document.getElementById('createCalcOut').textContent = d.toISOString().split('T')[0];
+      const selectedRoom = opt.value;
+      const clashBox = document.getElementById('createDateClashAlert');
+      const clashMsg = document.getElementById('createDateClashMessage');
+      const submitBtn = document.getElementById('createSubmitBtn');
+
+      if (checkInVal && selectedRoom) {
+        const parts = checkInVal.split('-');
+        if (parts.length === 3) {
+          const inY = parseInt(parts[0], 10);
+          const inM = parseInt(parts[1], 10) - 1;
+          const inD = parseInt(parts[2], 10);
+          const dt = new Date(inY, inM, inD);
+          dt.setDate(dt.getDate() + nights);
+          const outStr = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+          document.getElementById('createCalcOut').textContent = outStr;
+
+          // Check date collision with existing active bookings
+          let clash = null;
+          for (const b of receptionistBookings) {
+            if (String(b.room_number).trim() === String(selectedRoom).trim()) {
+              if (checkInVal < b.check_out && outStr > b.check_in) {
+                clash = b;
+                break;
+              }
+            }
+          }
+
+          if (clash) {
+            clashMsg.textContent = `Suite ${selectedRoom} is already booked from ${clash.check_in} to ${clash.check_out} for ${clash.guest_name} (Ref: ${clash.booking_id}). Please select non-overlapping dates.`;
+            clashBox.style.display = 'block';
+            submitBtn.disabled = true;
+          } else {
+            clashBox.style.display = 'none';
+            const nameInput = document.getElementById('createGuestName');
+            checkCreateGuestName(nameInput);
+          }
+        }
       }
     }
 
@@ -1442,14 +1511,20 @@
       } else {
         errorEl.style.display = 'none';
         input.classList.remove('is-invalid');
-        submitBtn.disabled = false;
+        const clashAlert = document.getElementById('createDateClashAlert');
+        if (!clashAlert || clashAlert.style.display === 'none') {
+          submitBtn.disabled = false;
+        }
         return true;
       }
     }
 
     function verifyCreateBookingForm() {
       const input = document.getElementById('createGuestName');
-      return checkCreateGuestName(input);
+      if (!checkCreateGuestName(input)) return false;
+      const submitBtn = document.getElementById('createSubmitBtn');
+      if (submitBtn && submitBtn.disabled) return false;
+      return true;
     }
 
     // Edit Reservation Modal
@@ -1467,23 +1542,21 @@
       document.getElementById('editNights').value = nights || 1;
       document.getElementById('editRequests').value = (requests && requests !== 'None') ? requests : '';
 
-      // Populate room dropdown with current suite + any available suites
+      // Populate room dropdown with all suites
       const roomSelect = document.getElementById('editRoomSelect');
       roomSelect.innerHTML = '';
       hotelRoomsCatalog.forEach(rm => {
-        if (rm.room_number === String(roomNumber) || rm.is_available) {
-          const opt = document.createElement('option');
-          opt.value = rm.room_number;
-          opt.setAttribute('data-price', rm.price);
-          opt.setAttribute('data-type', rm.type);
-          if (rm.room_number === String(roomNumber)) {
-            opt.selected = true;
-            opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night (Current Suite)`;
-          } else {
-            opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night (Available)`;
-          }
-          roomSelect.appendChild(opt);
+        const opt = document.createElement('option');
+        opt.value = rm.room_number;
+        opt.setAttribute('data-price', rm.price);
+        opt.setAttribute('data-type', rm.type);
+        if (rm.room_number === String(roomNumber)) {
+          opt.selected = true;
+          opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night (Current Suite)`;
+        } else {
+          opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night`;
         }
+        roomSelect.appendChild(opt);
       });
 
       calcEditTotal();

@@ -434,6 +434,67 @@ def update_or_create_customer(name: str, email: str = "", phone: str = "", booki
     return customer
 
 
+def parse_date_str(d_str: str) -> date | None:
+    """Safely parse date from YYYY-MM-DD or ISO timestamp strings."""
+    if not d_str:
+        return None
+    d_clean = str(d_str).strip()
+    if len(d_clean) >= 10:
+        d_clean = d_clean[:10]
+    try:
+        return datetime.strptime(d_clean, "%Y-%m-%d").date()
+    except Exception:
+        try:
+            return datetime.fromisoformat(d_clean).date()
+        except Exception:
+            return None
+
+
+def dates_overlap(start_a: date, end_a: date, start_b: date, end_b: date) -> bool:
+    """
+    Returns True if stay periods [start_a, end_a) and [start_b, end_b) overlap.
+    Check-out day allows same-day check-in for the next arriving guest (half-open interval).
+    """
+    return max(start_a, start_b) < min(end_a, end_b)
+
+
+def check_room_availability_for_dates(
+    room_number: str,
+    check_in_date: date,
+    check_out_date: date,
+    exclude_booking_id: str | None = None,
+) -> tuple[bool, str, dict | None]:
+    """
+    Checks if the specified room is available for the date range [check_in_date, check_out_date).
+    Returns (is_available, message, conflicting_booking).
+    """
+    r_target = str(room_number).strip()
+    for b in bookings:
+        if str(b.get("room_number", "")).strip() != r_target:
+            continue
+        if b.get("status") in ("Checked Out", "Cancelled"):
+            continue
+        if exclude_booking_id and str(b.get("booking_id", "")).strip() == str(exclude_booking_id).strip():
+            continue
+
+        b_in = parse_date_str(b.get("check_in"))
+        b_out = parse_date_str(b.get("check_out"))
+        if not b_in:
+            continue
+        if not b_out:
+            b_out = b_in + timedelta(days=int(b.get("nights", 1)))
+
+        if dates_overlap(check_in_date, check_out_date, b_in, b_out):
+            msg = (
+                f"Suite {room_number} is already booked from {b.get('check_in')} to {b.get('check_out')} "
+                f"by {b.get('guest_name')} (Ref: {b.get('booking_id')}). "
+                f"Please choose different dates or another suite."
+            )
+            return False, msg, b
+
+    return True, f"Suite {room_number} is available for selected stay dates.", None
+
+
 def book_room(
     guest_name: str,
     room_number: str,
@@ -456,25 +517,31 @@ def book_room(
     if not room:
         return False, f"Room '{room_number}' does not exist! Please choose a valid room.", {}
 
-    if not room.get("is_available", True):
-        return False, f"Room {room['room_number']} is ALREADY OCCUPIED! Please choose another room.", {}
+    # Parse and validate requested check-in and check-out dates
+    if not check_in:
+        req_in_date = date.today()
+        check_in_str = req_in_date.strftime("%Y-%m-%d")
+    else:
+        check_in_str = str(check_in).strip()
+        parsed_in = parse_date_str(check_in_str)
+        if not parsed_in:
+            return False, f"Invalid check-in date '{check_in}'. Please enter a valid date in YYYY-MM-DD format.", {}
+        req_in_date = parsed_in
+
+    req_out_date = req_in_date + timedelta(days=parsed_nights)
+    check_out_str = req_out_date.strftime("%Y-%m-%d")
+
+    # Verify that the room has no overlapping confirmed reservations
+    is_avail, clash_msg, _ = check_room_availability_for_dates(
+        room_number=str(room["room_number"]),
+        check_in_date=req_in_date,
+        check_out_date=req_out_date,
+    )
+    if not is_avail:
+        return False, clash_msg, {}
 
     price_night = float(room["price_per_night"])
     total_cost = price_night * parsed_nights
-
-    room["is_available"] = False
-
-    if not check_in:
-        today_date = date.today()
-        check_in_str = today_date.strftime("%Y-%m-%d")
-        check_out_str = (today_date + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
-    else:
-        check_in_str = check_in
-        try:
-            parsed_date = datetime.strptime(check_in, "%Y-%m-%d").date()
-            check_out_str = (parsed_date + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
-        except Exception:
-            check_out_str = "N/A"
 
     booking_id = generate_booking_id()
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -519,6 +586,7 @@ def book_room(
         timestamp=created_at,
     )
 
+    get_metrics()
     save_data()
     return True, "Booking confirmed successfully!", new_booking
 
@@ -569,6 +637,7 @@ def checkout_booking(booking_or_id_or_room: str) -> tuple[bool, str, dict]:
     )
 
     bookings.remove(target_booking)
+    get_metrics()
     save_data()
     return True, f"Guest '{target_booking['guest_name']}' checked out. Room {target_booking['room_number']} is now Available.", target_booking
 
@@ -601,6 +670,7 @@ def cancel_booking_by_customer(booking_id: str, guest_name: str) -> tuple[bool, 
     )
 
     bookings.remove(booking)
+    get_metrics()
     save_data()
     return True, f"Reservation {booking_id} has been successfully cancelled."
 
@@ -630,6 +700,7 @@ def cancel_booking_by_staff(booking_id: str, reason: str = "") -> tuple[bool, st
     )
 
     bookings.remove(booking)
+    get_metrics()
     save_data()
     return True, f"Reservation {booking_id} for '{booking['guest_name']}' was successfully cancelled. Room {booking['room_number']} is now available clean."
 
@@ -657,41 +728,38 @@ def update_booking_by_staff(
         return False, err_nights, {}
 
     target_room_number = str(room_number).strip() if room_number else str(booking["room_number"])
-    current_room_number = str(booking["room_number"])
+    target_room = get_room(target_room_number)
+    if not target_room:
+        return False, f"Room '{target_room_number}' does not exist.", {}
 
-    # If re-assigning room
-    if target_room_number != current_room_number:
-        new_room = get_room(target_room_number)
-        if not new_room:
-            return False, f"Room '{target_room_number}' does not exist.", {}
-        if not new_room.get("is_available", True):
-            return False, f"Room {target_room_number} is already occupied! Please choose another room.", {}
-
-        # Free old room and occupy new room
-        old_room = get_room(current_room_number)
-        if old_room:
-            old_room["is_available"] = True
-        new_room["is_available"] = False
-
-        booking["room_number"] = str(new_room["room_number"])
-        booking["room_type"] = new_room.get("type", "Standard")
-        booking["price_per_night"] = float(new_room["price_per_night"])
-
-    # Update nights & dates
-    booking["nights"] = parsed_nights
+    # Determine updated stay dates
     if check_in:
-        try:
-            parsed_in = datetime.strptime(check_in.strip(), "%Y-%m-%d").date()
-            booking["check_in"] = parsed_in.strftime("%Y-%m-%d")
-            booking["check_out"] = (parsed_in + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
-        except Exception:
-            pass
-    elif booking.get("check_in"):
-        try:
-            parsed_in = datetime.strptime(booking["check_in"], "%Y-%m-%d").date()
-            booking["check_out"] = (parsed_in + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
-        except Exception:
-            pass
+        parsed_in = parse_date_str(check_in)
+        if not parsed_in:
+            return False, f"Invalid check-in date '{check_in}'. Please use YYYY-MM-DD format.", {}
+        new_in_date = parsed_in
+    else:
+        new_in_date = parse_date_str(booking.get("check_in")) or date.today()
+
+    new_out_date = new_in_date + timedelta(days=parsed_nights)
+
+    # Check date overlap for target room (excluding this booking itself)
+    is_avail, clash_msg, _ = check_room_availability_for_dates(
+        room_number=target_room_number,
+        check_in_date=new_in_date,
+        check_out_date=new_out_date,
+        exclude_booking_id=booking_id,
+    )
+    if not is_avail:
+        return False, clash_msg, {}
+
+    # Apply changes
+    booking["room_number"] = str(target_room["room_number"])
+    booking["room_type"] = target_room.get("type", "Standard")
+    booking["price_per_night"] = float(target_room["price_per_night"])
+    booking["nights"] = parsed_nights
+    booking["check_in"] = new_in_date.strftime("%Y-%m-%d")
+    booking["check_out"] = new_out_date.strftime("%Y-%m-%d")
 
     # Recalculate cost
     rate = float(booking.get("price_per_night", 1200.0))
@@ -728,6 +796,7 @@ def update_booking_by_staff(
         timestamp=now_ts,
     )
 
+    get_metrics()
     save_data()
     return True, f"Reservation {booking_id} for '{booking['guest_name']}' has been updated successfully!", booking
 
@@ -766,18 +835,32 @@ def set_hotel_logo(logo_url: str):
 
 def get_metrics() -> dict:
     total_rooms = len(rooms)
-    active_room_nos = {
-        str(b.get("room_number")).strip()
-        for b in bookings
-        if b.get("status") not in ("Checked Out", "Cancelled")
-    }
+    today_dt = date.today()
 
-    # Ensure rooms list strictly matches active in-house reservations
+    # Rooms currently occupied by in-house guests today
+    occupied_today_room_nos = set()
+    for b in bookings:
+        if b.get("status") in ("Checked Out", "Cancelled"):
+            continue
+        b_in = parse_date_str(b.get("check_in"))
+        b_out = parse_date_str(b.get("check_out"))
+        if not b_in:
+            continue
+        if not b_out:
+            b_out = b_in + timedelta(days=int(b.get("nights", 1)))
+
+        # In-house: guest stay covers today until checkout is processed
+        if b_in <= today_dt <= b_out:
+            occupied_today_room_nos.add(str(b.get("room_number", "")).strip())
+        elif b_in <= today_dt and b.get("status") in ("Confirmed", "Checked In"):
+            occupied_today_room_nos.add(str(b.get("room_number", "")).strip())
+
+    # Set real-time daily availability for rooms catalog
     for r in rooms:
         r_num = str(r.get("room_number", "")).strip()
-        r["is_available"] = (r_num not in active_room_nos)
+        r["is_available"] = (r_num not in occupied_today_room_nos)
 
-    occupied_count = len(active_room_nos)
+    occupied_count = len(occupied_today_room_nos)
     available_count = total_rooms - occupied_count
     total_revenue = sum(
         float(b.get("total_cost", 0.0))
@@ -786,13 +869,17 @@ def get_metrics() -> dict:
     )
     occupancy_rate = (occupied_count / total_rooms * 100) if total_rooms > 0 else 0.0
 
+    active_bookings_count = sum(
+        1 for b in bookings if b.get("status") not in ("Checked Out", "Cancelled")
+    )
+
     return {
         "total_rooms": total_rooms,
         "available_rooms": available_count,
         "occupied_rooms": occupied_count,
         "occupancy_rate": round(occupancy_rate, 1),
         "total_revenue": total_revenue,
-        "active_bookings_count": len(active_room_nos),
+        "active_bookings_count": active_bookings_count,
         "total_customers": len(customers),
     }
 
@@ -906,6 +993,7 @@ def guest_page():
         tab = "rooms"
 
     metrics = get_metrics()
+    today_str = date.today().strftime("%Y-%m-%d")
     return render_template(
         "guest.html",
         active_tab=tab,
@@ -913,6 +1001,8 @@ def guest_page():
         results=results,
         metrics=metrics,
         rooms=rooms,
+        bookings=bookings,
+        today_str=today_str,
     )
 
 
@@ -1036,6 +1126,7 @@ def receptionist_dashboard():
     metrics = get_metrics()
     all_transactions = transaction_ledger.get_all(reverse=True)
     txn_metrics = transaction_ledger.get_metrics()
+    today_str = date.today().strftime("%Y-%m-%d")
     return render_template(
         "receptionist.html",
         metrics=metrics,
@@ -1044,6 +1135,7 @@ def receptionist_dashboard():
         customers=customers,
         transactions=all_transactions,
         txn_metrics=txn_metrics,
+        today_str=today_str,
     )
 
 
