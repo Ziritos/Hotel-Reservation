@@ -53,7 +53,7 @@ Hotel-Reservation/
    - **Property KPIs**: Live metrics for Total Rooms, Available Clean, Occupied, Current Occupancy %, Gross Revenue, and Registered Guests.
    - **Room Rack & Housekeeping**: Real-time room cards showing occupant details, walk-in quick check-in, 1-click check-out, and a **"Change Photo"** tool to upload custom room photos directly into `views/assets/`.
    - **Master Reservations Ledger**: Searchable reservation log with folio receipts and check-out capabilities.
-   - **Guest CRM & Loyalty Directory**: Guest profiles categorized into loyalty tiers (*VIP Platinum*, *Gold*, *Silver*, *Standard*).
+   - **Guest Records**: Guest profiles with contact information, completed stays, and lifetime expenditure.
    - **Property Branding**: Upload custom hotel emblems or specify web image URLs.
 
 4. 📊 **In-Memory Transaction Data Structure (`TransactionLedger`)**:
