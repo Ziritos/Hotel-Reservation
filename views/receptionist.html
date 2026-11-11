@@ -528,17 +528,31 @@
                   Booking ID: {{ occ_booking.booking_id }} &bull; Out: {{ occ_booking.check_out }}
                 </div>
               </div>
-              <div style="margin-top: auto; display: flex; gap: 8px;">
-                <form action="/receptionist/checkout" method="POST" style="flex: 1;" onsubmit="return confirm('Process check-out for Room {{ r.room_number }}?')">
-                  <input type="hidden" name="booking_id" value="{{ occ_booking.booking_id }}">
-                  <button type="submit" class="btn btn-outline-danger btn-sm" style="width: 100%;">
-                    Check-Out
+              <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; gap: 6px;">
+                  <form action="/receptionist/checkout" method="POST" style="flex: 1;" onsubmit="return confirm('Process check-out for Room {{ r.room_number }}?')">
+                    <input type="hidden" name="booking_id" value="{{ occ_booking.booking_id }}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" style="width: 100%;">
+                      Check-Out
+                    </button>
+                  </form>
+                  <form action="/receptionist/booking/cancel" method="POST" style="flex: 1;" onsubmit="return confirm('Cancel reservation {{ occ_booking.booking_id }} for {{ occ_booking.guest_name }}?')">
+                    <input type="hidden" name="booking_id" value="{{ occ_booking.booking_id }}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" style="width: 100%; color: #DC2626; border-color: rgba(220, 38, 38, 0.4);">
+                      Cancel
+                    </button>
+                  </form>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" class="btn btn-outline btn-sm" style="flex: 1;"
+                          onclick="openEditBookingModal('{{ occ_booking.booking_id }}', '{{ occ_booking.guest_name }}', '{{ occ_booking.room_number }}', {{ occ_booking.nights }}, '{{ occ_booking.check_in }}', '{{ occ_booking.phone }}', '{{ occ_booking.email }}', '{{ occ_booking.special_requests|default('')|e }}')">
+                    Edit Stay
                   </button>
-                </form>
-                <button type="button" class="btn btn-outline btn-sm"
-                        onclick="showDeskReceipt('{{ occ_booking.booking_id }}', '{{ occ_booking.guest_name }}', '{{ occ_booking.room_number }}', '{{ occ_booking.room_type }}', {{ occ_booking.nights }}, '{{ occ_booking.check_in }}', '{{ occ_booking.check_out }}', {{ occ_booking.total_cost }}, {{ occ_booking.price_per_night }}, '{{ occ_booking.phone }}', '{{ occ_booking.email }}', '{{ occ_booking.created_at }}')">
-                  Receipt
-                </button>
+                  <button type="button" class="btn btn-outline btn-sm" style="flex: 1;"
+                          onclick="showDeskReceipt('{{ occ_booking.booking_id }}', '{{ occ_booking.guest_name }}', '{{ occ_booking.room_number }}', '{{ occ_booking.room_type }}', {{ occ_booking.nights }}, '{{ occ_booking.check_in }}', '{{ occ_booking.check_out }}', {{ occ_booking.total_cost }}, {{ occ_booking.price_per_night }}, '{{ occ_booking.phone }}', '{{ occ_booking.email }}', '{{ occ_booking.created_at }}', '{{ occ_booking.special_requests|default('')|e }}')">
+                    Receipt
+                  </button>
+                </div>
               </div>
               {% else %}
               <div class="rack-vacant-box">
@@ -563,9 +577,19 @@
     <!-- ======================================================== -->
     <section id="paneReservations" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
-        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Reservations &amp; Master Bookings Ledger</h3>
-        <input type="text" id="ledgerSearchInput" class="search-box" style="width: 280px;" 
-               placeholder="Search booking #, guest, or room..." oninput="filterLedgerTable()">
+        <div>
+          <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Reservations &amp; Master Bookings Ledger</h3>
+          <p style="font-size: 12px; color: #64748B; margin-top: 2px;">
+            Authorized staff can view, add new reservations, edit stay details, or cancel bookings.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="ledgerSearchInput" class="search-box" style="width: 260px;" 
+                 placeholder="Search booking #, guest, or room..." oninput="filterLedgerTable()">
+          <button type="button" class="btn btn-primary" onclick="openCreateReservationModal()">
+            + New Booking
+          </button>
+        </div>
       </div>
 
       <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
@@ -617,14 +641,22 @@
               </td>
               <td style="padding: 12px 16px; text-align: right;">
                 <div style="display: inline-flex; gap: 6px;">
-                  <button type="button" class="btn btn-outline btn-xs"
-                          onclick="showDeskReceipt('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', '{{ b.room_type }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.check_out }}', {{ b.total_cost }}, {{ b.price_per_night }}, '{{ b.phone }}', '{{ b.email }}', '{{ b.created_at }}')">
-                    View Receipt
+                  <button type="button" class="btn btn-outline btn-xs" title="View Details & Receipt"
+                          onclick="showDeskReceipt('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', '{{ b.room_type }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.check_out }}', {{ b.total_cost }}, {{ b.price_per_night }}, '{{ b.phone }}', '{{ b.email }}', '{{ b.created_at }}', '{{ b.special_requests|default('')|e }}')">
+                    View
                   </button>
                   {% if b.status == 'Confirmed' %}
+                  <button type="button" class="btn btn-outline btn-xs" title="Edit Reservation"
+                          onclick="openEditBookingModal('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.phone }}', '{{ b.email }}', '{{ b.special_requests|default('')|e }}')">
+                    Edit
+                  </button>
                   <form action="/receptionist/checkout" method="POST" style="display: inline;" onsubmit="return confirm('Confirm check-out for booking {{ b.booking_id }}?')">
                     <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
-                    <button type="submit" class="btn btn-outline-danger btn-xs">Check-Out</button>
+                    <button type="submit" class="btn btn-outline-danger btn-xs" title="Process Check-Out">Check-Out</button>
+                  </form>
+                  <form action="/receptionist/booking/cancel" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel reservation {{ b.booking_id }} for {{ b.guest_name }}? Room {{ b.room_number }} will be released.')">
+                    <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
+                    <button type="submit" class="btn btn-outline-danger btn-xs" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.4);" title="Cancel Reservation">Cancel</button>
                   </form>
                   {% endif %}
                 </div>
@@ -922,6 +954,185 @@
 
 
   <!-- ======================================================== -->
+  <!-- MODAL: ADD / CREATE NEW RESERVATION                      -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="createBookingModal" style="display: none;">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Create New Reservation</h3>
+          <p class="modal-subtitle">Authorized Staff Front Desk Booking Entry</p>
+        </div>
+        <button type="button" class="modal-close" onclick="closeCreateReservationModal()">&times;</button>
+      </div>
+
+      <form action="/receptionist/booking/add" method="POST" id="createBookingForm" onsubmit="return verifyCreateBookingForm()">
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="form-label">Select Available Suite <span class="required">*</span></label>
+            <select name="room_number" id="createRoomSelect" class="form-control" required onchange="updateCreateModalRate()">
+              {% set avail_count = namespace(count=0) %}
+              {% for rm in rooms %}
+                {% if rm.is_available %}
+                  {% set avail_count.count = avail_count.count + 1 %}
+                  <option value="{{ rm.room_number }}" data-price="{{ rm.price_per_night }}" data-type="{{ rm.type }}" data-cap="{{ rm.capacity }}">
+                    Suite {{ rm.room_number }} &bull; {{ rm.type }} &bull; ₱{{ "{:,.2f}".format(rm.price_per_night) }} / night
+                  </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            {% if avail_count.count == 0 %}
+              <div style="color: #DC2626; font-size: 12px; font-weight: 600; margin-top: 4px;">
+                All 9 suites are currently occupied. Cannot create new booking until a room is checked out or cancelled.
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Guest Full Name <span class="required">*</span></label>
+            <input type="text" name="guest_name" id="createGuestName" class="form-control"
+                   placeholder="e.g. Maria Santos" required oninput="checkCreateGuestName(this)">
+            <div id="createNameError" style="color: #DC2626; font-size: 12px; font-weight: 600; margin-top: 4px; display: none;">
+              Numbers are not allowed in guest names. Letters and spaces only.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label">Contact Phone</label>
+              <input type="text" name="phone" class="form-control" placeholder="0917-555-0199">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="guest@example.ph">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label class="form-label">Check-In Date <span class="required">*</span></label>
+              <input type="date" name="check_in" id="createCheckIn" class="form-control" value="{{ today_str }}" required onchange="calcCreateTotal()">
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Nights <span class="required">*</span></label>
+              <input type="number" name="nights" id="createNights" class="form-control" value="1" min="1" max="30" required oninput="calcCreateTotal()">
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label">Guests Count</label>
+              <input type="number" name="guests_count" id="createGuestsCount" class="form-control" value="1" min="1" max="6">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Special Requests / Preferences</label>
+            <textarea name="special_requests" class="form-control" rows="2" placeholder="Airport transfer, quiet room, late check-in..."></textarea>
+          </div>
+
+          <div style="background: #FEF3C7; border: 1px solid rgba(180,83,9,0.3); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Estimated Check-Out</div>
+              <strong id="createCalcOut" style="color: #0F172A; font-size: 13px;">Tomorrow</strong>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Total Estimate</div>
+              <strong style="font-size: 18px; color: #92400E;" id="createTotalDisplay">₱1,200.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeCreateReservationModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="createSubmitBtn">Confirm &amp; Create Reservation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: EDIT / UPDATE RESERVATION                         -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="editBookingModal" style="display: none;">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Edit Reservation Particulars</h3>
+          <p class="modal-subtitle" id="editModalSubtitle">Booking Ref: SH-1024</p>
+        </div>
+        <button type="button" class="modal-close" onclick="closeEditBookingModal()">&times;</button>
+      </div>
+
+      <form action="/receptionist/booking/update" method="POST" id="editBookingForm" onsubmit="return verifyEditBookingForm()">
+        <input type="hidden" name="booking_id" id="editBookingId">
+
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="form-label">Suite Assignment <span class="required">*</span></label>
+            <select name="room_number" id="editRoomSelect" class="form-control" required onchange="calcEditTotal()">
+              <!-- Populated dynamically: current room + any available rooms -->
+            </select>
+            <div style="font-size: 11px; color: #64748B; margin-top: 3px;">
+              You may reassign the guest to another available room of any category.
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Guest Full Name <span class="required">*</span></label>
+            <input type="text" name="guest_name" id="editGuestName" class="form-control" required oninput="checkEditGuestName(this)">
+            <div id="editNameError" style="color: #DC2626; font-size: 12px; font-weight: 600; margin-top: 4px; display: none;">
+              Numbers are not allowed in guest names. Letters and spaces only.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label">Contact Phone</label>
+              <input type="text" name="phone" id="editPhone" class="form-control" placeholder="0917-555-0199">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" id="editEmail" class="form-control" placeholder="guest@example.ph">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label">Check-In Date <span class="required">*</span></label>
+              <input type="date" name="check_in" id="editCheckIn" class="form-control" required onchange="calcEditTotal()">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label">Length of Stay (Nights) <span class="required">*</span></label>
+              <input type="number" name="nights" id="editNights" class="form-control" min="1" max="30" required oninput="calcEditTotal()">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Special Requests / Preferences</label>
+            <textarea name="special_requests" id="editRequests" class="form-control" rows="2" placeholder="Airport transfer, quiet room, late check-in..."></textarea>
+          </div>
+
+          <div style="background: #FEF3C7; border: 1px solid rgba(180,83,9,0.3); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Updated Check-Out</div>
+              <strong id="editCalcOut" style="color: #0F172A; font-size: 13px;">Tomorrow</strong>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; color: #92400E; font-weight: 700;">Updated Total</div>
+              <strong style="font-size: 18px; color: #92400E;" id="editTotalDisplay">₱1,200.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditBookingModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="editSubmitBtn">Save Reservation Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
   <!-- MODAL: PHOTO EDITOR                                      -->
   <!-- ======================================================== -->
   <div class="modal-backdrop" id="photoModal" style="display: none;">
@@ -1015,11 +1226,28 @@
           <div style="font-size: 18px; font-weight: 800; color: #B45309; text-align: right;" id="dRcptTotal">
             Grand Total: ₱3,600.00
           </div>
+
+          <div id="dRcptRequestsBox" style="margin-top: 14px; font-size: 12px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 14px; display: none;">
+            <strong style="color: #0F172A;">Special Requests / Inquiries:</strong> <span id="dRcptRequests">None</span>
+          </div>
         </div>
       </div>
-      <div class="modal-footer no-print">
-        <button type="button" class="btn btn-outline" onclick="closeDeskReceipt()">Close</button>
-        <button type="button" class="btn btn-primary" onclick="window.print()">Print Receipt</button>
+      <div class="modal-footer no-print" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn btn-outline btn-sm" id="dRcptEditBtn">Edit Stay</button>
+          <form action="/receptionist/checkout" method="POST" id="dRcptCheckoutForm" style="display: inline;" onsubmit="return confirm('Confirm check-out for this reservation?')">
+            <input type="hidden" name="booking_id" id="dRcptCheckoutId">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Check-Out</button>
+          </form>
+          <form action="/receptionist/booking/cancel" method="POST" id="dRcptCancelForm" style="display: inline;" onsubmit="return confirm('Cancel this reservation? Room will be returned to clean inventory.')">
+            <input type="hidden" name="booking_id" id="dRcptCancelId">
+            <button type="submit" class="btn btn-outline-danger btn-sm" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.4);">Cancel</button>
+          </form>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn btn-outline" onclick="closeDeskReceipt()">Close</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()">Print Receipt</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1148,8 +1376,169 @@
       }
     }
 
+    const hotelRoomsCatalog = [
+      {% for rm in rooms %}
+      {
+        room_number: "{{ rm.room_number }}",
+        type: "{{ rm.type }}",
+        price: {{ rm.price_per_night }},
+        capacity: {{ rm.capacity }},
+        is_available: {{ 'true' if rm.is_available else 'false' }}
+      },
+      {% endfor %}
+    ];
+
+    // Create Reservation Modal
+    function openCreateReservationModal() {
+      const select = document.getElementById('createRoomSelect');
+      updateCreateModalRate();
+      document.getElementById('createGuestName').value = '';
+      document.getElementById('createGuestName').classList.remove('is-invalid');
+      document.getElementById('createNameError').style.display = 'none';
+      if (select && select.options.length > 0) {
+        document.getElementById('createSubmitBtn').disabled = false;
+      }
+      calcCreateTotal();
+      document.getElementById('createBookingModal').style.display = 'flex';
+    }
+
+    function closeCreateReservationModal() {
+      document.getElementById('createBookingModal').style.display = 'none';
+    }
+
+    function updateCreateModalRate() {
+      calcCreateTotal();
+    }
+
+    function calcCreateTotal() {
+      const select = document.getElementById('createRoomSelect');
+      if (!select || !select.selectedOptions || select.selectedOptions.length === 0) return;
+      const opt = select.selectedOptions[0];
+      const rate = parseFloat(opt.getAttribute('data-price')) || 1200;
+      const nights = parseInt(document.getElementById('createNights').value) || 1;
+      const total = rate * nights;
+      document.getElementById('createTotalDisplay').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      const checkInVal = document.getElementById('createCheckIn').value;
+      if (checkInVal) {
+        const d = new Date(checkInVal);
+        d.setDate(d.getDate() + nights);
+        document.getElementById('createCalcOut').textContent = d.toISOString().split('T')[0];
+      }
+    }
+
+    function checkCreateGuestName(input) {
+      const val = input.value;
+      const errorEl = document.getElementById('createNameError');
+      const submitBtn = document.getElementById('createSubmitBtn');
+      const letterPattern = /^[A-Za-z\s\.\-']*$/;
+      const hasDigits = /\d/.test(val);
+
+      if (hasDigits || (val.length > 0 && !letterPattern.test(val))) {
+        errorEl.style.display = 'block';
+        input.classList.add('is-invalid');
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        errorEl.style.display = 'none';
+        input.classList.remove('is-invalid');
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    function verifyCreateBookingForm() {
+      const input = document.getElementById('createGuestName');
+      return checkCreateGuestName(input);
+    }
+
+    // Edit Reservation Modal
+    function openEditBookingModal(bookingId, guestName, roomNumber, nights, checkIn, phone, email, requests) {
+      document.getElementById('editBookingId').value = bookingId;
+      document.getElementById('editModalSubtitle').textContent = `Booking Ref: ${bookingId} (${guestName})`;
+      document.getElementById('editGuestName').value = guestName;
+      document.getElementById('editGuestName').classList.remove('is-invalid');
+      document.getElementById('editNameError').style.display = 'none';
+      document.getElementById('editSubmitBtn').disabled = false;
+
+      document.getElementById('editPhone').value = (phone && phone !== 'None') ? phone : '';
+      document.getElementById('editEmail').value = (email && email !== 'None') ? email : '';
+      document.getElementById('editCheckIn').value = checkIn || '{{ today_str }}';
+      document.getElementById('editNights').value = nights || 1;
+      document.getElementById('editRequests').value = (requests && requests !== 'None') ? requests : '';
+
+      // Populate room dropdown with current suite + any available suites
+      const roomSelect = document.getElementById('editRoomSelect');
+      roomSelect.innerHTML = '';
+      hotelRoomsCatalog.forEach(rm => {
+        if (rm.room_number === String(roomNumber) || rm.is_available) {
+          const opt = document.createElement('option');
+          opt.value = rm.room_number;
+          opt.setAttribute('data-price', rm.price);
+          opt.setAttribute('data-type', rm.type);
+          if (rm.room_number === String(roomNumber)) {
+            opt.selected = true;
+            opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night (Current Suite)`;
+          } else {
+            opt.textContent = `Suite ${rm.room_number} • ${rm.type} • ₱${rm.price.toLocaleString('en-US', {minimumFractionDigits: 2})} / night (Available)`;
+          }
+          roomSelect.appendChild(opt);
+        }
+      });
+
+      calcEditTotal();
+      document.getElementById('editBookingModal').style.display = 'flex';
+    }
+
+    function closeEditBookingModal() {
+      document.getElementById('editBookingModal').style.display = 'none';
+    }
+
+    function calcEditTotal() {
+      const roomSelect = document.getElementById('editRoomSelect');
+      let rate = 1200;
+      if (roomSelect && roomSelect.selectedOptions && roomSelect.selectedOptions.length > 0) {
+        rate = parseFloat(roomSelect.selectedOptions[0].getAttribute('data-price')) || 1200;
+      }
+      const nights = parseInt(document.getElementById('editNights').value) || 1;
+      const total = rate * nights;
+      document.getElementById('editTotalDisplay').textContent = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      const checkInVal = document.getElementById('editCheckIn').value;
+      if (checkInVal) {
+        const d = new Date(checkInVal);
+        d.setDate(d.getDate() + nights);
+        document.getElementById('editCalcOut').textContent = d.toISOString().split('T')[0];
+      }
+    }
+
+    function checkEditGuestName(input) {
+      const val = input.value;
+      const errorEl = document.getElementById('editNameError');
+      const submitBtn = document.getElementById('editSubmitBtn');
+      const letterPattern = /^[A-Za-z\s\.\-']*$/;
+      const hasDigits = /\d/.test(val);
+
+      if (hasDigits || (val.length > 0 && !letterPattern.test(val))) {
+        errorEl.style.display = 'block';
+        input.classList.add('is-invalid');
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        errorEl.style.display = 'none';
+        input.classList.remove('is-invalid');
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    function verifyEditBookingForm() {
+      const input = document.getElementById('editGuestName');
+      return checkEditGuestName(input);
+    }
+
     // Desk Receipt
-    function showDeskReceipt(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date) {
+    function showDeskReceipt(id, name, room, type, nights, inDate, outDate, total, rate, phone, email, date, requests) {
       document.getElementById('dRcptId').textContent = id;
       document.getElementById('dRcptDate').textContent = `Issued: ${date || 'Today'}`;
       document.getElementById('dRcptName').textContent = name;
@@ -1161,6 +1550,22 @@
       document.getElementById('dRcptNights').textContent = nights;
       document.getElementById('dRcptSubtotal').textContent = `₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
       document.getElementById('dRcptTotal').textContent = `Grand Total: ₱${Number(total).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+      const reqBox = document.getElementById('dRcptRequestsBox');
+      const reqEl = document.getElementById('dRcptRequests');
+      if (requests && requests !== 'None' && requests.trim()) {
+        reqEl.textContent = requests;
+        reqBox.style.display = 'block';
+      } else {
+        reqBox.style.display = 'none';
+      }
+
+      document.getElementById('dRcptCheckoutId').value = id;
+      document.getElementById('dRcptCancelId').value = id;
+      document.getElementById('dRcptEditBtn').onclick = function() {
+        closeDeskReceipt();
+        openEditBookingModal(id, name, room, nights, inDate, phone, email, requests);
+      };
 
       document.getElementById('deskReceiptModal').style.display = 'flex';
     }

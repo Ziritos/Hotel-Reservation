@@ -605,6 +605,133 @@ def cancel_booking_by_customer(booking_id: str, guest_name: str) -> tuple[bool, 
     return True, f"Reservation {booking_id} has been successfully cancelled."
 
 
+def cancel_booking_by_staff(booking_id: str, reason: str = "") -> tuple[bool, str]:
+    booking = get_booking_by_id(booking_id)
+    if not booking:
+        return False, f"Reservation with reference ID '{booking_id}' was not found."
+
+    room = get_room(booking["room_number"])
+    if room:
+        room["is_available"] = True
+
+    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # In-memory transaction registration for front desk cancellation
+    transaction_ledger.record(
+        txn_type="CANCELLATION_REFUND",
+        booking_id=booking.get("booking_id", ""),
+        guest_name=booking.get("guest_name", ""),
+        room_number=booking.get("room_number", ""),
+        amount=float(booking.get("total_cost", 0.0)),
+        status="Refunded",
+        payment_method="Front Desk Void / Refund",
+        notes=f"Staff cancellation: {reason or 'Cancelled by Front Desk'}. Suite {booking.get('room_number')} returned to inventory.",
+        timestamp=now_ts,
+    )
+
+    bookings.remove(booking)
+    save_data()
+    return True, f"Reservation {booking_id} for '{booking['guest_name']}' was successfully cancelled. Room {booking['room_number']} is now available clean."
+
+
+def update_booking_by_staff(
+    booking_id: str,
+    guest_name: str,
+    nights: int,
+    check_in: str = "",
+    room_number: str = "",
+    phone: str = "",
+    email: str = "",
+    special_requests: str = "",
+) -> tuple[bool, str, dict]:
+    booking = get_booking_by_id(booking_id)
+    if not booking:
+        return False, f"Reservation with reference ID '{booking_id}' was not found.", {}
+
+    valid_name, err_name = validate_guest_name(guest_name)
+    if not valid_name:
+        return False, err_name, {}
+
+    valid_nights_flag, err_nights, parsed_nights = validate_nights(nights)
+    if not valid_nights_flag:
+        return False, err_nights, {}
+
+    target_room_number = str(room_number).strip() if room_number else str(booking["room_number"])
+    current_room_number = str(booking["room_number"])
+
+    # If re-assigning room
+    if target_room_number != current_room_number:
+        new_room = get_room(target_room_number)
+        if not new_room:
+            return False, f"Room '{target_room_number}' does not exist.", {}
+        if not new_room.get("is_available", True):
+            return False, f"Room {target_room_number} is already occupied! Please choose another room.", {}
+
+        # Free old room and occupy new room
+        old_room = get_room(current_room_number)
+        if old_room:
+            old_room["is_available"] = True
+        new_room["is_available"] = False
+
+        booking["room_number"] = str(new_room["room_number"])
+        booking["room_type"] = new_room.get("type", "Standard")
+        booking["price_per_night"] = float(new_room["price_per_night"])
+
+    # Update nights & dates
+    booking["nights"] = parsed_nights
+    if check_in:
+        try:
+            parsed_in = datetime.strptime(check_in.strip(), "%Y-%m-%d").date()
+            booking["check_in"] = parsed_in.strftime("%Y-%m-%d")
+            booking["check_out"] = (parsed_in + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
+        except Exception:
+            pass
+    elif booking.get("check_in"):
+        try:
+            parsed_in = datetime.strptime(booking["check_in"], "%Y-%m-%d").date()
+            booking["check_out"] = (parsed_in + timedelta(days=parsed_nights)).strftime("%Y-%m-%d")
+        except Exception:
+            pass
+
+    # Recalculate cost
+    rate = float(booking.get("price_per_night", 1200.0))
+    booking["total_cost"] = round(rate * parsed_nights, 2)
+
+    # Update guest contact information
+    booking["guest_name"] = guest_name.strip()
+    if phone is not None:
+        booking["phone"] = phone.strip()
+    if email is not None:
+        booking["email"] = email.strip()
+    if special_requests is not None:
+        booking["special_requests"] = special_requests.strip()
+
+    # Update customer profile in CRM
+    update_or_create_customer(
+        name=booking["guest_name"],
+        email=booking.get("email", ""),
+        phone=booking.get("phone", ""),
+        booking_cost=booking["total_cost"],
+        booking_id=booking_id,
+    )
+
+    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    transaction_ledger.record(
+        txn_type="BOOKING_UPDATED",
+        booking_id=booking_id,
+        guest_name=booking["guest_name"],
+        room_number=booking["room_number"],
+        amount=booking["total_cost"],
+        status="Completed",
+        payment_method="Front Desk Modification",
+        notes=f"Updated by Front Desk: Suite {booking['room_number']}, {parsed_nights} night(s), Total: ₱{booking['total_cost']:,.2f}",
+        timestamp=now_ts,
+    )
+
+    save_data()
+    return True, f"Reservation {booking_id} for '{booking['guest_name']}' has been updated successfully!", booking
+
+
 def search_customer_reservations(lookup: str) -> list[dict]:
     clean_q = lookup.strip().lower()
     if not clean_q:
@@ -922,6 +1049,10 @@ def receptionist_dashboard():
 
 @app.route("/receptionist/reset-system", methods=["POST"])
 def receptionist_reset_system_route():
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in as authorized staff to reset the system.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
     reset_system_to_beginning(persist=True)
     flash("✔ System refreshed to Day 1: All 9 suites are available clean, zero in-house guests, and ₱0.00 revenue.", "success")
     return redirect(url_for("receptionist_dashboard"))
@@ -929,6 +1060,10 @@ def receptionist_reset_system_route():
 
 @app.route("/receptionist/checkout", methods=["POST"])
 def receptionist_checkout_route():
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in as authorized staff to process check-outs.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
     booking_id = request.form.get("booking_id", "").strip()
     if not booking_id:
         flash("No reservation specified for checkout.", "danger")
@@ -937,6 +1072,116 @@ def receptionist_checkout_route():
     success, msg, _ = checkout_booking(booking_id)
     flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
     return redirect(request.referrer or url_for("receptionist_dashboard"))
+
+
+@app.route("/receptionist/booking/add", methods=["POST"])
+def receptionist_add_booking_route():
+    """Allows authorized staff to add new reservations directly from the console."""
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in as authorized staff to create reservations.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
+    guest_name = request.form.get("guest_name", "").strip()
+    room_number = request.form.get("room_number", "").strip()
+    nights_raw = request.form.get("nights", "1").strip()
+    check_in = request.form.get("check_in", "").strip()
+    guests_count = request.form.get("guests_count", "1").strip()
+    phone = request.form.get("phone", "").strip()
+    email = request.form.get("email", "").strip()
+    special_requests = request.form.get("special_requests", "").strip()
+
+    try:
+        nights = int(nights_raw)
+    except ValueError:
+        flash("Invalid number of nights! Please enter a whole number.", "danger")
+        return redirect(url_for("receptionist_dashboard"))
+
+    success, msg, new_b = book_room(
+        guest_name=guest_name,
+        room_number=room_number,
+        nights=nights,
+        email=email,
+        phone=phone,
+        check_in=check_in,
+        guests_count=guests_count,
+        special_requests=special_requests,
+    )
+
+    if success:
+        flash(f"✔ New Reservation confirmed: Booking {new_b.get('booking_id')} for {new_b.get('guest_name')} in Suite {new_b.get('room_number')}.", "success")
+    else:
+        flash(f"[!] Booking Failed: {msg}", "danger")
+
+    return redirect(url_for("receptionist_dashboard"))
+
+
+@app.route("/receptionist/booking/update", methods=["POST"])
+def receptionist_update_booking_route():
+    """Allows authorized staff to edit and update existing reservations."""
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in as authorized staff to update reservations.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
+    booking_id = request.form.get("booking_id", "").strip()
+    guest_name = request.form.get("guest_name", "").strip()
+    room_number = request.form.get("room_number", "").strip()
+    nights_raw = request.form.get("nights", "1").strip()
+    check_in = request.form.get("check_in", "").strip()
+    phone = request.form.get("phone", "").strip()
+    email = request.form.get("email", "").strip()
+    special_requests = request.form.get("special_requests", "").strip()
+
+    try:
+        nights = int(nights_raw)
+    except ValueError:
+        flash("Invalid number of nights! Please enter a whole number.", "danger")
+        return redirect(url_for("receptionist_dashboard"))
+
+    success, msg, _ = update_booking_by_staff(
+        booking_id=booking_id,
+        guest_name=guest_name,
+        nights=nights,
+        check_in=check_in,
+        room_number=room_number,
+        phone=phone,
+        email=email,
+        special_requests=special_requests,
+    )
+
+    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    return redirect(url_for("receptionist_dashboard"))
+
+
+@app.route("/receptionist/booking/cancel", methods=["POST"])
+def receptionist_cancel_booking_route():
+    """Allows authorized staff to cancel reservations and return rooms to clean inventory."""
+    if not session.get("receptionist_logged_in"):
+        flash("Please sign in as authorized staff to cancel reservations.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+
+    booking_id = request.form.get("booking_id", "").strip()
+    reason = request.form.get("reason", "").strip()
+
+    if not booking_id:
+        flash("No reservation reference provided for cancellation.", "danger")
+        return redirect(url_for("receptionist_dashboard"))
+
+    success, msg = cancel_booking_by_staff(booking_id, reason)
+    flash(f"✔ {msg}" if success else f"[!] {msg}", "success" if success else "danger")
+    return redirect(url_for("receptionist_dashboard"))
+
+
+@app.route("/receptionist/booking/<booking_id>/details", methods=["GET"])
+def receptionist_get_booking_json_route(booking_id):
+    """API endpoint for fetching booking details for receptionist modal dialogs."""
+    if not session.get("receptionist_logged_in"):
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+    b = get_booking_by_id(booking_id)
+    if not b:
+        return jsonify({"success": False, "error": "Booking not found"}), 404
+
+    return jsonify({"success": True, "booking": b})
 
 
 @app.route("/receptionist/room/<room_number>/update-image", methods=["POST"])
