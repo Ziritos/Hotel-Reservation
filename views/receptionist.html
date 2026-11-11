@@ -391,7 +391,7 @@
           <span class="tab-badge">{{ bookings|length }}</span>
         </button>
         <button type="button" class="desk-tab-btn" onclick="switchDeskTab('directory', this)">
-          <span>Guest Directory &amp; Loyalty</span>
+          <span>Guest Records</span>
           <span class="tab-badge">{{ customers|length }}</span>
         </button>
         <button type="button" class="desk-tab-btn" onclick="switchDeskTab('transactions', this)">
@@ -477,7 +477,7 @@
           <span class="kpi-icon-pill" style="background: #F0FDFA; color: #0D9488;">★</span>
         </div>
         <div class="kpi-number" style="color: #0D9488;">{{ metrics.total_customers }}</div>
-        <div class="kpi-footer">In CRM Directory</div>
+        <div class="kpi-footer">In Guest Records</div>
       </div>
     </div>
 
@@ -693,11 +693,11 @@
 
 
     <!-- ======================================================== -->
-    <!-- TAB 3: GUEST DIRECTORY & LOYALTY CRM                     -->
+    <!-- TAB 3: GUEST RECORDS                                     -->
     <!-- ======================================================== -->
     <section id="paneDirectory" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Directory &amp; CRM Profiles</h3>
+        <h3 style="font-size: 18px; color: #0F172A; margin: 0;">Guest Records</h3>
         <input type="text" id="custSearchInput" class="search-box" style="width: 280px;" 
                placeholder="Search guest name or contact..." oninput="filterCustomerTable()">
       </div>
