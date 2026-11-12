@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Directory | Sugo Grand Palace Hotel</title>
+  <title>Operations &amp; Guest Portal Directory | Sugo Grand Palace Hotel</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,336 +18,560 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background-color: #0F172A;
+      background-color: #070D18;
       color: #F8FAFC;
       font-family: 'Plus Jakarta Sans', sans-serif;
       position: relative;
       overflow-x: hidden;
     }
-    .login-hero-bg {
+    .portal-hero-bg {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.86) 0%, rgba(30, 41, 59, 0.92) 100%),
-                  url('/assets/login-bg.jpg') center/cover no-repeat;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(217, 119, 6, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 80%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(7, 13, 24, 0.82) 0%, rgba(11, 17, 32, 0.94) 100%),
+        url('/assets/login-bg.jpg') center/cover no-repeat;
       background-attachment: fixed;
       z-index: 1;
     }
-    .login-wrapper {
+    .portal-layout-wrapper {
       position: relative;
       z-index: 2;
       flex: 1;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 24px;
+      width: 100%;
+    }
+    .portal-master-container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      animation: masterFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes masterFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .brand-masthead {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .brand-crest-wrapper {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      position: relative;
+      margin-bottom: 14px;
     }
-    .login-card {
-      width: 100%;
-      max-width: 560px;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(217, 119, 6, 0.35);
-      border-radius: 24px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), 0 0 30px rgba(217, 119, 6, 0.12);
-      padding: 38px 36px;
-      animation: cardEnter 0.45s ease-out;
+    .brand-crest-img {
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      filter: drop-shadow(0 10px 24px rgba(217, 119, 6, 0.35));
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 4px;
     }
-    @keyframes cardEnter {
-      from { opacity: 0; transform: translateY(16px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .brand-crest-box {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-    .brand-logo-img {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 12px;
-      display: block;
-      filter: drop-shadow(0 6px 14px rgba(217, 119, 6, 0.45));
-      border-radius: 12px;
-    }
-    .hotel-title {
+    .masthead-hotel-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 24px;
+      font-size: 32px;
       font-weight: 700;
       color: #FEF3C7;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
     }
-    .hotel-subtitle {
-      font-size: 11px;
+    .masthead-tagline {
+      font-size: 12px;
       color: #94A3B8;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       font-weight: 600;
+      margin-bottom: 14px;
     }
-    .portal-section-title {
-      font-size: 11px;
+    .system-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 12px;
+      color: #E2E8F0;
+      backdrop-filter: blur(12px);
+    }
+    .status-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 10px #10B981;
+    }
+    .section-eyebrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 0 4px;
+    }
+    .eyebrow-text {
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       font-weight: 700;
       color: #D97706;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
-    .portal-grid {
+    .eyebrow-desc {
+      font-size: 13px;
+      color: #94A3B8;
+    }
+    .portals-showcase-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
     }
-    @media (max-width: 500px) {
-      .portal-grid {
+    @media (max-width: 1024px) {
+      .portals-showcase-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .portals-showcase-grid {
         grid-template-columns: 1fr;
       }
     }
-    .portal-card {
-      background: rgba(30, 41, 59, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      padding: 16px;
+    .portal-tile-card {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 24px 20px;
       text-decoration: none;
       color: #F8FAFC;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: all 0.2s ease;
-      min-height: 110px;
+      min-height: 250px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
     }
-    .portal-card:hover {
-      background: rgba(30, 41, 59, 0.95);
-      border-color: rgba(217, 119, 6, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-    .portal-card.card-customer:hover {
-      border-color: #F59E0B;
-    }
-    .portal-card.card-receptionist:hover {
-      border-color: #10B981;
-    }
-    .portal-card.card-admin:hover {
-      border-color: #D97706;
-    }
-    .portal-card.card-maintenance:hover {
-      border-color: #0284C7;
-    }
-    .portal-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-    .portal-icon {
-      font-size: 20px;
-    }
-    .portal-role-tag {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 9999px;
-      letter-spacing: 0.5px;
-    }
-    .tag-customer {
-      background: rgba(245, 158, 11, 0.18);
-      color: #FCD34D;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-    .tag-receptionist {
-      background: rgba(16, 185, 129, 0.18);
-      color: #6EE7B7;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .tag-admin {
-      background: rgba(217, 119, 6, 0.22);
-      color: #FDE68A;
-      border: 1px solid rgba(217, 119, 6, 0.4);
-    }
-    .tag-maintenance {
-      background: rgba(2, 132, 199, 0.18);
-      color: #7DD3FC;
-      border: 1px solid rgba(2, 132, 199, 0.3);
-    }
-    .portal-card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #FFFFFF;
-      margin-bottom: 3px;
-    }
-    .portal-card-desc {
-      font-size: 11px;
-      color: #94A3B8;
-      line-height: 1.4;
-    }
-    .search-divider {
-      display: flex;
-      align-items: center;
-      margin: 18px 0 16px;
-      color: #475569;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 700;
-    }
-    .search-divider::before,
-    .search-divider::after {
+    .portal-tile-card::before {
       content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.08);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: transparent;
+      transition: all 0.28s ease;
     }
-    .search-divider span {
-      padding: 0 12px;
+    .portal-tile-card:hover {
+      transform: translateY(-4px);
+      background: rgba(22, 33, 56, 0.85);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
     }
-    .input-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #E2E8F0;
-      margin-bottom: 8px;
-      display: block;
+    .card-theme-customer::before { background: linear-gradient(90deg, #F59E0B, #D97706); }
+    .card-theme-customer:hover { border-color: rgba(245, 158, 11, 0.45); box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.2); }
+    
+    .card-theme-receptionist::before { background: linear-gradient(90deg, #10B981, #059669); }
+    .card-theme-receptionist:hover { border-color: rgba(16, 185, 129, 0.45); box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.2); }
+    
+    .card-theme-admin::before { background: linear-gradient(90deg, #D97706, #B45309); }
+    .card-theme-admin:hover { border-color: rgba(217, 119, 6, 0.5); box-shadow: 0 20px 40px -10px rgba(217, 119, 6, 0.2); }
+    
+    .card-theme-maintenance::before { background: linear-gradient(90deg, #0284C7, #0369A1); }
+    .card-theme-maintenance:hover { border-color: rgba(2, 132, 199, 0.45); box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.2); }
+
+    .tile-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
     }
-    .portal-input {
-      width: 100%;
-      padding: 12px 14px;
-      background: rgba(30, 41, 59, 0.75);
-      border: 1px solid #334155;
-      border-radius: 10px;
-      color: #FFFFFF;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s;
-    }
-    .portal-input:focus {
-      border-color: #D97706;
-      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25);
-      background: rgba(30, 41, 59, 0.95);
-    }
-    .btn-gold-primary {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #D97706, #B45309);
-      color: #FFFFFF;
-      font-weight: 700;
-      font-size: 14px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
+    .tile-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
-      text-decoration: none;
-      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.25s ease;
     }
-    .btn-gold-primary:hover {
-      background: linear-gradient(135deg, #B45309, #92400E);
-      transform: translateY(-1px);
+    .card-theme-customer .tile-icon-box {
+      background: rgba(245, 158, 11, 0.12);
+      color: #FCD34D;
+      border-color: rgba(245, 158, 11, 0.25);
     }
-    .card-footer-info {
-      margin-top: 24px;
-      text-align: center;
+    .card-theme-receptionist .tile-icon-box {
+      background: rgba(16, 185, 129, 0.12);
+      color: #6EE7B7;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .card-theme-admin .tile-icon-box {
+      background: rgba(217, 119, 6, 0.14);
+      color: #FDE68A;
+      border-color: rgba(217, 119, 6, 0.3);
+    }
+    .card-theme-maintenance .tile-icon-box {
+      background: rgba(2, 132, 199, 0.12);
+      color: #7DD3FC;
+      border-color: rgba(2, 132, 199, 0.25);
+    }
+    .portal-tile-card:hover .tile-icon-box {
+      transform: scale(1.06);
+    }
+    .tile-badge-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .badge-customer {
+      background: rgba(245, 158, 11, 0.16);
+      color: #FCD34D;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-receptionist {
+      background: rgba(16, 185, 129, 0.16);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-admin {
+      background: rgba(217, 119, 6, 0.2);
+      color: #FDE68A;
+      border: 1px solid rgba(217, 119, 6, 0.35);
+    }
+    .badge-maintenance {
+      background: rgba(2, 132, 199, 0.16);
+      color: #7DD3FC;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+    }
+    .tile-title-main {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+    .tile-subtitle-role {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94A3B8;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .tile-description-txt {
       font-size: 12px;
       color: #94A3B8;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .tile-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .card-theme-customer .tile-action-row { color: #FCD34D; }
+    .card-theme-receptionist .tile-action-row { color: #6EE7B7; }
+    .card-theme-admin .tile-action-row { color: #FDE68A; }
+    .card-theme-maintenance .tile-action-row { color: #7DD3FC; }
+
+    .tile-arrow-icon {
+      transition: transform 0.2s ease;
+    }
+    .portal-tile-card:hover .tile-arrow-icon {
+      transform: translateX(4px);
+    }
+
+    .concierge-lookup-panel {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
+    }
+    .lookup-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .lookup-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lookup-icon {
+      font-size: 18px;
+      color: #FBBF24;
+    }
+    .lookup-heading {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FEF3C7;
+      letter-spacing: 0.5px;
+    }
+    .lookup-subheading {
+      font-size: 12px;
+      color: #94A3B8;
+    }
+    .lookup-form-row {
+      display: flex;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .lookup-form-row {
+        flex-direction: column;
+      }
+    }
+    .lookup-input-field {
+      flex: 1;
+      padding: 14px 18px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid #334155;
+      border-radius: 12px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .lookup-input-field:focus {
+      border-color: #D97706;
+      background: rgba(30, 41, 59, 0.95);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.22);
+    }
+    .lookup-btn-submit {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #D97706, #B45309);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
+      white-space: nowrap;
+    }
+    .lookup-btn-submit:hover {
+      background: linear-gradient(135deg, #B45309, #92400E);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(217, 119, 6, 0.45);
+    }
+
+    .master-footer-info {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748B;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .footer-links-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .footer-link-item {
+      color: #94A3B8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link-item:hover {
+      color: #FEF3C7;
     }
   </style>
 </head>
 <body>
 
-  <div class="login-hero-bg"></div>
+  <div class="portal-hero-bg"></div>
 
-  <div class="login-wrapper">
-    <div class="login-card">
-      <div class="brand-crest-box">
-        <img src="/assets/logo.png" alt="Sugo Crest" class="brand-logo-img"
-             onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
-        <h1 class="hotel-title">SUGO GRAND PALACE</h1>
-        <div class="hotel-subtitle">Hospitality Management System &bull; Cagayan De Oro City</div>
+  <div class="portal-layout-wrapper">
+    <div class="portal-master-container">
+
+      <header class="brand-masthead">
+        <div class="brand-crest-wrapper">
+          <img src="/assets/logo.png" alt="Sugo Crest" class="brand-crest-img"
+               onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+        </div>
+        <h1 class="masthead-hotel-title">SUGO GRAND PALACE</h1>
+        <div class="masthead-tagline">Hospitality Management System &bull; Cagayan De Oro City, Philippines</div>
+        <div class="system-status-indicator">
+          <span class="status-pulse-dot"></span>
+          <span>Enterprise Core Active &bull; 9 Luxury Suites Online</span>
+        </div>
+      </header>
+
+      <div class="section-eyebrow">
+        <span class="eyebrow-text">Departmental Operations &amp; Guest Access</span>
+        <span class="eyebrow-desc">Select an authorized console to proceed</span>
       </div>
 
-      <div class="portal-section-title">
-        <span>Select Access Portal</span>
-      </div>
+      <div class="portals-showcase-grid">
 
-      <div class="portal-grid">
-        <a href="/customer" class="portal-card card-customer">
-          <div class="portal-card-top">
-            <span class="portal-icon">🏨</span>
-            <span class="portal-role-tag tag-customer">Customer</span>
-          </div>
+        <a href="/customer" class="portal-tile-card card-theme-customer">
           <div>
-            <div class="portal-card-title">Customer Portal</div>
-            <div class="portal-card-desc">Browse rooms, book online, &amp; manage reservations</div>
+            <div class="tile-header-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9h1M9 13h1M9 17h1"/>
+                </svg>
+              </div>
+              <span class="tile-badge-pill badge-customer">Customer</span>
+            </div>
+            <div class="tile-title-main">Guest Portal</div>
+            <div class="tile-subtitle-role">Accommodations &amp; Booking</div>
+            <p class="tile-description-txt">
+              Browse luxury suites, view real-time availability, make online bookings, and track stay history.
+            </p>
+          </div>
+          <div class="tile-action-row">
+            <span>Open Guest Portal</span>
+            <span class="tile-arrow-icon">&rarr;</span>
           </div>
         </a>
 
-        <a href="/login/receptionist" class="portal-card card-receptionist">
-          <div class="portal-card-top">
-            <span class="portal-icon">💼</span>
-            <span class="portal-role-tag tag-receptionist">Receptionist</span>
-          </div>
+        <a href="/login/receptionist" class="portal-tile-card card-theme-receptionist">
           <div>
-            <div class="portal-card-title">Front Desk Desk</div>
-            <div class="portal-card-desc">Walk-ins, check-in/out, room assignment, &amp; billing</div>
+            <div class="tile-header-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 16H6a2 2 0 0 1-2-2 7 7 0 0 1 14 0 2 2 0 0 1-2 2zM12 4v3M10 4h4M4 20h16"/>
+                </svg>
+              </div>
+              <span class="tile-badge-pill badge-receptionist">Front Desk</span>
+            </div>
+            <div class="tile-title-main">Front Desk</div>
+            <div class="tile-subtitle-role">Reception &amp; Operations</div>
+            <p class="tile-description-txt">
+              Walk-in check-in, guest departures, live room rack assignment, folio billing, and guest records.
+            </p>
+          </div>
+          <div class="tile-action-row">
+            <span>Sign In to Front Desk</span>
+            <span class="tile-arrow-icon">&rarr;</span>
           </div>
         </a>
 
-        <a href="/login/admin" class="portal-card card-admin">
-          <div class="portal-card-top">
-            <span class="portal-icon">👑</span>
-            <span class="portal-role-tag tag-admin">Admin</span>
-          </div>
+        <a href="/login/admin" class="portal-tile-card card-theme-admin">
           <div>
-            <div class="portal-card-title">Admin Module</div>
-            <div class="portal-card-desc">Executive analytics, accounts, room rates, &amp; reports</div>
+            <div class="tile-header-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8l2 3 3-1-2 4h-6l-2-4 3 1 2-3z"/>
+                </svg>
+              </div>
+              <span class="tile-badge-pill badge-admin">Executive</span>
+            </div>
+            <div class="tile-title-main">Administration</div>
+            <div class="tile-subtitle-role">Management &amp; Analytics</div>
+            <p class="tile-description-txt">
+              Executive dashboard, revenue analytics, staff credentials, suite pricing, and master reports.
+            </p>
+          </div>
+          <div class="tile-action-row">
+            <span>Executive Sign In</span>
+            <span class="tile-arrow-icon">&rarr;</span>
           </div>
         </a>
 
-        <a href="/login/maintenance" class="portal-card card-maintenance">
-          <div class="portal-card-top">
-            <span class="portal-icon">🛠️</span>
-            <span class="portal-role-tag tag-maintenance">Maintenance</span>
-          </div>
+        <a href="/login/maintenance" class="portal-tile-card card-theme-maintenance">
           <div>
-            <div class="portal-card-title">Maintenance</div>
-            <div class="portal-card-desc">Report room damage, work orders, &amp; mark rooms ready</div>
+            <div class="tile-header-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <span class="tile-badge-pill badge-maintenance">Engineering</span>
+            </div>
+            <div class="tile-title-main">Maintenance</div>
+            <div class="tile-subtitle-role">Facilities &amp; Repairs</div>
+            <p class="tile-description-txt">
+              Work order management, damage reports, repair cost logging, and room condition clearance.
+            </p>
+          </div>
+          <div class="tile-action-row">
+            <span>Maintenance Console</span>
+            <span class="tile-arrow-icon">&rarr;</span>
           </div>
         </a>
+
       </div>
 
-      <div class="search-divider">
-        <span>Guest Quick Reservation Lookup</span>
-      </div>
-
-      <form action="/guest" method="GET">
-        <input type="hidden" name="tab" value="lookup">
-        <div style="margin-bottom: 10px;">
-          <label class="input-label">Lookup Existing Booking</label>
-          <input type="text" name="query" class="portal-input" placeholder="Booking ID (e.g. SH-1024) or Guest Name...">
+      <div class="concierge-lookup-panel">
+        <div class="lookup-header-bar">
+          <div class="lookup-title-box">
+            <span class="lookup-icon">&#10024;</span>
+            <div>
+              <div class="lookup-heading">Guest Concierge &bull; Quick Reservation Lookup</div>
+              <div class="lookup-subheading">Verify existing reservation status, booking dates, and confirmation vouchers</div>
+            </div>
+          </div>
+          <a href="/guest" class="footer-link-item" style="font-size: 13px; font-weight: 600;">
+            Browse Available Suites &rarr;
+          </a>
         </div>
 
-        <button type="submit" class="btn-gold-primary">
-          Find My Reservation
-        </button>
-      </form>
-
-      <div class="card-footer-info">
-        <span>Cagayan De Oro City, Philippines &bull; Front Desk: +63 (088) 888-7846</span>
+        <form action="/guest" method="GET">
+          <input type="hidden" name="tab" value="lookup">
+          <div class="lookup-form-row">
+            <input type="text" name="query" class="lookup-input-field" 
+                   placeholder="Enter Booking Confirmation Code (e.g. SH-1024) or Registered Guest Name..." required>
+            <button type="submit" class="lookup-btn-submit">
+              <span>Find My Reservation</span>
+            </button>
+          </div>
+        </form>
       </div>
+
+      <footer class="master-footer-info">
+        <div class="footer-links-row">
+          <a href="/customer/login" class="footer-link-item">Guest Account Sign In</a>
+          <span>&bull;</span>
+          <a href="/guest" class="footer-link-item">Suite Catalog</a>
+          <span>&bull;</span>
+          <a href="/login/receptionist" class="footer-link-item">Staff Authentication</a>
+          <span>&bull;</span>
+          <span>Front Desk: +63 (088) 888-7846</span>
+        </div>
+        <div>
+          Sugo Grand Palace Hotel &bull; Cagayan De Oro City, Misamis Oriental, Philippines
+        </div>
+      </footer>
+
     </div>
   </div>
 
