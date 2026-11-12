@@ -180,22 +180,7 @@
     }
   ],
   "bookings": [],
-  "customers": [
-    {
-      "customer_id": "CUST-1261",
-      "name": "Ana Santos",
-      "email": "ana@example.com",
-      "phone": "0917-111-2222",
-      "bookings": [
-        "SH-9803"
-      ],
-      "total_stays": 1,
-      "total_spent": 2400.0,
-      "member_since": "2026-11-12 22:37",
-      "last_visit": "2026-11-12 22:37",
-      "tier": "Standard Guest"
-    }
-  ],
+  "customers": [],
   "hotel_settings": {
     "hotel_name": "Sugo Grand Palace Hotel",
     "logo_url": "/assets/logo.png",
@@ -235,57 +220,7 @@
   "customer_accounts": [],
   "maintenance_tickets": [],
   "notifications": [],
-  "payments": [
-    {
-      "payment_id": "PAY-6434",
-      "booking_id": "SH-9803",
-      "guest_name": "Ana Santos",
-      "room_number": "101",
-      "amount": 2400.0,
-      "method": "GCash",
-      "status": "Paid",
-      "recorded_by": "receptionist",
-      "timestamp": "2026-11-12 22:37:46",
-      "notes": "Ref #GC-998822"
-    }
-  ],
-  "transactions": [
-    {
-      "transaction_id": "TXN-607085",
-      "transaction_type": "BOOKING_RESERVATION",
-      "booking_id": "SH-9803",
-      "guest_name": "Ana Santos",
-      "room_number": "101",
-      "amount": 2400.0,
-      "status": "Completed",
-      "payment_method": "Credit / Debit Card",
-      "notes": "Stay: 2 night(s) (2026-11-12 to 2026-11-14)",
-      "timestamp": "2026-11-12 22:37"
-    },
-    {
-      "transaction_id": "TXN-221062",
-      "transaction_type": "PAYMENT_GCASH",
-      "booking_id": "SH-9803",
-      "guest_name": "Ana Santos",
-      "room_number": "101",
-      "amount": 2400.0,
-      "status": "Settled",
-      "payment_method": "GCash",
-      "notes": "Payment recorded: Ref #GC-998822",
-      "timestamp": "2026-11-12 22:37:46"
-    },
-    {
-      "transaction_id": "TXN-291609",
-      "transaction_type": "CHECKOUT_SETTLED",
-      "booking_id": "SH-9803",
-      "guest_name": "Ana Santos",
-      "room_number": "101",
-      "amount": 2400.0,
-      "status": "Settled",
-      "payment_method": "Booking Settlement",
-      "notes": "Checked out from Suite 101. Room cleared.",
-      "timestamp": "2026-11-12 22:37:46"
-    }
-  ],
-  "last_updated": "2026-11-12T22:37:46.653267"
+  "payments": [],
+  "transactions": [],
+  "last_updated": "2026-11-12T23:35:32.065440"
 }

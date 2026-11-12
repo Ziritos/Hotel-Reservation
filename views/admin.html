@@ -10,114 +10,264 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --admin-dark: #0F172A;
+      --admin-dark: #070D18;
+      --admin-sidebar: #0B1120;
       --admin-slate: #1E293B;
       --admin-gold: #D97706;
       --admin-gold-dark: #B45309;
       --admin-border: #E2E8F0;
     }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       background: #F8FAFC;
       color: #0F172A;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      padding: 0;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .admin-app-layout {
+      display: flex;
+      min-height: 100vh;
+      background: #F8FAFC;
+    }
+    .admin-sidebar {
+      width: 270px;
+      background: var(--admin-sidebar);
+      color: #F8FAFC;
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 100;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
-    .admin-header {
-      background: var(--admin-dark);
+    .admin-sidebar::-webkit-scrollbar {
+      display: none;
+    }
+    .sidebar-brand-box {
+      padding: 22px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
       color: #FFFFFF;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--admin-slate);
     }
-    .admin-header-inner {
+    .sidebar-brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid rgba(217, 119, 6, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 2px;
+    }
+    .sidebar-hotel-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #FEF3C7;
+      letter-spacing: 0.8px;
+      line-height: 1.2;
+    }
+    .sidebar-hotel-sub {
+      font-size: 10px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .sidebar-user-block {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-duty-dot {
+      width: 8px;
+      height: 8px;
+      background: #D97706;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #D97706;
+    }
+    .sidebar-user-info {
+      font-size: 12px;
+      color: #CBD5E1;
+    }
+    .sidebar-user-name {
+      font-weight: 700;
+      color: #FEF3C7;
+    }
+    .sidebar-user-role {
+      font-size: 10px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sidebar-nav-section {
+      padding: 16px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-nav-category {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #64748B;
+      font-weight: 700;
+      padding: 6px 12px 4px;
+    }
+    .admin-sidebar-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #94A3B8;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .admin-sidebar-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+    }
+    .admin-sidebar-btn.active {
+      background: rgba(217, 119, 6, 0.16);
+      color: #FEF3C7;
+      border-color: rgba(217, 119, 6, 0.35);
+      font-weight: 700;
+    }
+    .sidebar-icon-svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .admin-sidebar-btn.active .sidebar-icon-svg {
+      opacity: 1;
+      color: #FCD34D;
+    }
+    .sidebar-actions-section {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-action-pill {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: linear-gradient(135deg, #D97706, #B45309);
+      color: #FFFFFF;
+      border: none;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+    }
+    .sidebar-action-pill:hover {
+      background: linear-gradient(135deg, #B45309, #92400E);
+    }
+    .sidebar-footer-links {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-footer-link {
+      font-size: 12px;
+      color: #94A3B8;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .sidebar-footer-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FEF3C7;
+    }
+    .link-logout:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #FCA5A5;
+    }
+    .admin-main-wrapper {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: #F8FAFC;
+      overflow-y: auto;
+    }
+    .admin-topbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 14px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .admin-brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: #FFFFFF;
-    }
-    .admin-brand-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-    .admin-hotel-title {
-      font-family: 'Playfair Display', Georgia, serif;
+    .topbar-title {
       font-size: 18px;
-      font-weight: 700;
-      color: #FEF3C7;
-      letter-spacing: 0.5px;
+      font-weight: 800;
+      color: #0F172A;
       line-height: 1.2;
     }
-    .admin-header-badge {
-      font-size: 10px;
-      background: rgba(217, 119, 6, 0.25);
-      color: #FCD34D;
-      padding: 3px 8px;
-      border-radius: 9999px;
-      border: 1px solid rgba(217, 119, 6, 0.4);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 1px;
+    .topbar-sub {
+      font-size: 12px;
+      color: #64748B;
     }
-    .admin-user-group {
+    .topbar-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .admin-user-tag {
-      font-size: 13px;
-      color: #CBD5E1;
-    }
-    .admin-user-tag strong {
-      color: #FEF3C7;
-    }
-    .btn-header-link {
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-portal-exit {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #E2E8F0;
-    }
-    .btn-portal-exit:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: #FFFFFF;
-    }
-    .btn-admin-logout {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #FCA5A5;
-    }
-    .btn-admin-logout:hover {
-      background: rgba(239, 68, 68, 0.25);
-      color: #FFFFFF;
+    .admin-content-body {
+      padding: 24px 32px 48px;
+      flex: 1;
     }
     .admin-kpi-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 14px;
-      margin: 24px 0;
+      margin-bottom: 24px;
     }
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
       .admin-kpi-grid {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -155,41 +305,6 @@
       font-size: 11px;
       color: #94A3B8;
       margin-top: 4px;
-    }
-    .admin-tabs-nav {
-      display: flex;
-      gap: 6px;
-      border-bottom: 2px solid #E2E8F0;
-      margin-bottom: 24px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .admin-tabs-nav::-webkit-scrollbar {
-      display: none;
-    }
-    .admin-tab-btn {
-      padding: 12px 18px;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      color: #64748B;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .admin-tab-btn:hover {
-      color: #0F172A;
-    }
-    .admin-tab-btn.active {
-      color: var(--admin-gold-dark);
-      border-bottom-color: var(--admin-gold-dark);
-      font-weight: 700;
     }
     .admin-tab-content {
       display: none;
@@ -495,535 +610,640 @@
 </head>
 <body>
 
-  <header class="admin-header no-print">
-    <div class="container admin-header-inner">
-      <a href="/admin" class="admin-brand-group">
-        <img src="/assets/logo.png" alt="Sugo Crest" class="admin-brand-logo"
+  <div class="admin-app-layout">
+
+    <aside class="admin-sidebar no-print">
+      <a href="/admin" class="sidebar-brand-box">
+        <img src="/assets/logo.png" alt="Sugo Crest" class="sidebar-brand-logo"
              onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
         <div>
-          <div class="admin-hotel-title">SUGO GRAND PALACE</div>
-          <div style="font-size: 11px; color: #94A3B8;">Executive Administration Console</div>
+          <div class="sidebar-hotel-title">SUGO GRAND PALACE</div>
+          <div class="sidebar-hotel-sub">Executive Administration</div>
         </div>
-        <span class="admin-header-badge">Admin Module</span>
       </a>
 
-      <div class="admin-user-group">
-        <span class="admin-user-tag">Administrator: <strong>{{ session.get('admin_user', 'admin') }}</strong></span>
-        <a href="/login" class="btn-header-link btn-portal-exit">Portal Hub</a>
-        <a href="/admin/logout" class="btn-header-link btn-admin-logout">Sign Out</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="container" style="flex: 1; padding-top: 20px; padding-bottom: 40px;">
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert-flash alert-{{ category if category != 'error' else 'danger' }} no-print">
-            <span>{{ '⚠️' if category == 'danger' or category == 'error' else '✓' }}</span>
-            <span>{{ message }}</span>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
-    <div class="admin-kpi-grid no-print">
-      <div class="kpi-card">
-        <div class="kpi-title">Total Revenue</div>
-        <div class="kpi-value" style="color: #059669;">₱{{ "{:,.2f}".format(metrics.total_revenue) }}</div>
-        <div class="kpi-sub">All-time booking ledger</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-title">Occupancy Rate</div>
-        <div class="kpi-value">{{ "{:.1f}%".format(metrics.occupancy_rate) }}</div>
-        <div class="kpi-sub">{{ metrics.occupied_rooms }} of {{ metrics.total_rooms }} suites occupied</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-title">Active Reservations</div>
-        <div class="kpi-value">{{ metrics.active_bookings_count }}</div>
-        <div class="kpi-sub">Checked-in or confirmed</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-title">Available Suites</div>
-        <div class="kpi-value" style="color: #2563EB;">{{ metrics.available_rooms }}</div>
-        <div class="kpi-sub">Ready for guest check-in</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-title">Staff Accounts</div>
-        <div class="kpi-value">{{ staff_accounts|length }}</div>
-        <div class="kpi-sub">Front Desk &amp; Maintenance</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-title">Maintenance</div>
-        <div class="kpi-value" style="color: {{ '#D97706' if metrics.maintenance_rooms > 0 else '#64748B' }};">
-          {{ metrics.maintenance_rooms }}
+      <div class="sidebar-user-block">
+        <span class="sidebar-duty-dot"></span>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">{{ session.get('admin_user', 'admin') }}</div>
+          <div class="sidebar-user-role">Master Administrator</div>
         </div>
-        <div class="kpi-sub">{{ metrics.open_tickets }} open work orders</div>
       </div>
-    </div>
 
-    <div class="admin-tabs-nav no-print">
-      <button type="button" class="admin-tab-btn active" onclick="switchAdminTab('overview')">📊 Overview &amp; Analytics</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('staff')">👥 Staff Accounts</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('customers')">👤 Customer Accounts</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('rooms')">🏨 Room Types &amp; Rates</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('reservations')">📅 Master Reservations</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('payments')">💳 Payment Ledger</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('reports')">📑 Reports</button>
-      <button type="button" class="admin-tab-btn" onclick="switchAdminTab('settings')">⚙️ System Settings</button>
-    </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-category">Management &amp; Controls</div>
 
-    <div id="tab-overview" class="admin-tab-content active">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Revenue Distribution by Suite Type</div>
-            <div class="panel-subtitle">Financial breakdown across room categories</div>
-          </div>
+        <button type="button" class="admin-sidebar-btn active" onclick="switchAdminTab('overview', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Overview &amp; Analytics</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('staff', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Staff Accounts</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('customers', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Customer Accounts</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('rooms', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9h1M9 13h1M9 17h1"></path>
+          </svg>
+          <span>Room Types &amp; Rates</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('reservations', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Master Reservations</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('payments', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+          <span>Payment Ledger</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('reports', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Executive Reports</span>
+        </button>
+
+        <button type="button" class="admin-sidebar-btn" onclick="switchAdminTab('settings', this)">
+          <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>System Settings</span>
+        </button>
+      </div>
+
+      <div class="sidebar-actions-section">
+        <button type="button" class="sidebar-action-pill" onclick="openAddStaffModal()">
+          <span>+ Add Staff Account</span>
+        </button>
+        <button type="button" class="sidebar-action-pill" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14);" onclick="openAddRoomModal()">
+          <span>+ Add New Suite</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer-links">
+        <a href="/login" class="sidebar-footer-link">
+          <span>&larr; Portal Hub</span>
+        </a>
+        <a href="/guest" class="sidebar-footer-link">
+          <span>🏨 Guest View</span>
+        </a>
+        <a href="/admin/logout" class="sidebar-footer-link link-logout">
+          <span>🚪 Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="admin-main-wrapper">
+      <header class="admin-topbar no-print">
+        <div>
+          <h1 class="topbar-title">Executive Administration Console</h1>
+          <div class="topbar-sub">Sugo Grand Palace Hotel &bull; Master Management &amp; Analytics</div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
-          {% for rtype, rev in revenue_by_type.items() %}
-            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
-              <div style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">{{ rtype }}</div>
-              <div style="font-size: 18px; font-weight: 800; color: #0F172A; margin-top: 4px;">₱{{ "{:,.2f}".format(rev) }}</div>
+
+        <div class="topbar-controls">
+          <div style="font-size: 12px; color: #64748B; background: #F1F5F9; padding: 6px 12px; border-radius: 8px;">
+            <span>{{ today_str }}</span>
+          </div>
+          <button type="button" class="btn-outline-action" onclick="window.print()">
+            <span>🖨️ Print Statement</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-content-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert-flash alert-{{ category if category != 'error' else 'danger' }} no-print">
+                <span>{{ '⚠️' if category == 'danger' or category == 'error' else '✓' }}</span>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="admin-kpi-grid no-print">
+          <div class="kpi-card">
+            <div class="kpi-title">Total Revenue</div>
+            <div class="kpi-value" style="color: #059669;">₱{{ "{:,.2f}".format(metrics.total_revenue) }}</div>
+            <div class="kpi-sub">All-time booking ledger</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Occupancy Rate</div>
+            <div class="kpi-value">{{ "{:.1f}%".format(metrics.occupancy_rate) }}</div>
+            <div class="kpi-sub">{{ metrics.occupied_rooms }} of {{ metrics.total_rooms }} suites occupied</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Active Reservations</div>
+            <div class="kpi-value">{{ metrics.active_bookings_count }}</div>
+            <div class="kpi-sub">Checked-in or confirmed</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Available Suites</div>
+            <div class="kpi-value" style="color: #2563EB;">{{ metrics.available_rooms }}</div>
+            <div class="kpi-sub">Ready for guest check-in</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Staff Accounts</div>
+            <div class="kpi-value">{{ staff_accounts|length }}</div>
+            <div class="kpi-sub">Front Desk &amp; Maintenance</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Maintenance</div>
+            <div class="kpi-value" style="color: {{ '#D97706' if metrics.maintenance_rooms > 0 else '#64748B' }};">
+              {{ metrics.maintenance_rooms }}
             </div>
-          {% else %}
-            <div style="color: #94A3B8; font-size: 13px;">No revenue recorded yet. System starts at ₱0.00.</div>
-          {% endfor %}
-        </div>
-
-        <div class="panel-header-row" style="margin-top: 30px;">
-          <div>
-            <div class="panel-title">Recent System Audit Trail</div>
-            <div class="panel-subtitle">Chronological ledger of hotel operations</div>
-          </div>
-        </div>
-        <div style="overflow-x: auto;">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>Action</th>
-                <th>Guest / Reference</th>
-                <th>Room</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for t in transactions[:15] %}
-                <tr>
-                  <td>{{ t.timestamp[:19] }}</td>
-                  <td><strong>{{ t.action }}</strong></td>
-                  <td>{{ t.guest_name or t.details or '—' }}</td>
-                  <td>{{ t.room_number or '—' }}</td>
-                  <td style="font-weight: 700; color: #059669;">{{ "₱{:,.2f}".format(t.amount) if t.amount else '—' }}</td>
-                  <td><span class="status-badge status-active">{{ t.status }}</span></td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #94A3B8; padding: 24px;">No ledger transactions yet. System is at Day 1 clean state.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-staff" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Manage Staff Accounts</div>
-            <div class="panel-subtitle">Control system user credentials and dashboard permissions</div>
-          </div>
-          <button type="button" class="btn-gold-action" onclick="openAddStaffModal()">
-            <span>+ Add Staff Account</span>
-          </button>
-        </div>
-
-        <div style="overflow-x: auto;">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Module Role</th>
-                <th>Staff ID</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for s in staff_accounts %}
-                <tr>
-                  <td><strong>{{ s.name }}</strong></td>
-                  <td><code>{{ s.username }}</code></td>
-                  <td>
-                    <span class="status-badge {{ 'status-active' if s.role == 'receptionist' else ('status-maintenance' if s.role == 'maintenance' else 'status-completed') }}">
-                      {{ s.role|capitalize }} Module
-                    </span>
-                  </td>
-                  <td>{{ s.staff_id }}</td>
-                  <td>{{ s.created_at[:10] }}</td>
-                  <td>
-                    {% if s.username != 'admin' %}
-                      <form action="/admin/staff/delete/{{ s.staff_id }}" method="POST" onsubmit="return confirm('Are you sure you want to remove account for {{ s.name }}?');" style="display: inline;">
-                        <button type="submit" class="btn-outline-action" style="color: #DC2626; border-color: #FECACA;">Delete</button>
-                      </form>
-                    {% else %}
-                      <span style="font-size: 11px; color: #94A3B8;">Primary Master</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-customers" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Customer Directory &amp; Accounts</div>
-            <div class="panel-subtitle">Profiles of registered guests and reservation clients</div>
+            <div class="kpi-sub">{{ metrics.open_tickets }} open work orders</div>
           </div>
         </div>
 
-        <div style="overflow-x: auto;">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Guest Name</th>
-                <th>Email Address</th>
-                <th>Mobile Number</th>
-                <th>Registered Account</th>
-                <th>Total Stays</th>
-                <th>Total Spent</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for c in customers %}
-                <tr>
-                  <td><strong>{{ c.name }}</strong></td>
-                  <td>{{ c.email or '—' }}</td>
-                  <td>{{ c.phone or '—' }}</td>
-                  <td>
-                    {% if c.account_id %}
-                      <span class="status-badge status-active">Registered</span>
-                    {% else %}
-                      <span class="status-badge" style="background: #F1F5F9; color: #64748B;">Guest Client</span>
-                    {% endif %}
-                  </td>
-                  <td>{{ c.total_bookings }}</td>
-                  <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(c.total_spent) }}</td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #94A3B8; padding: 24px;">No customer records yet.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-rooms" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Manage Room Types &amp; Rates</div>
-            <div class="panel-subtitle">Configure inventory pricing, capacity, and luxury suite details</div>
-          </div>
-          <button type="button" class="btn-gold-action" onclick="openAddRoomModal()">
-            <span>+ Add New Suite</span>
-          </button>
-        </div>
-
-        <div class="rooms-card-grid">
-          {% for r in rooms %}
-            <div class="room-admin-card">
-              <img src="{{ r.image_url }}" alt="{{ r.type }}" class="room-admin-img"
-                   onerror="this.src='/assets/room-presidential.jpg'">
-              <div class="room-admin-body">
-                <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span class="room-admin-number">Suite {{ r.room_number }}</span>
-                    <span class="status-badge {{ 'status-active' if r.is_available and r.maintenance_status == 'Clean & Ready' else ('status-maintenance' if r.maintenance_status != 'Clean & Ready' else 'status-cancelled') }}">
-                      {{ r.maintenance_status if r.maintenance_status != 'Clean & Ready' else ('Available' if r.is_available else 'Occupied') }}
-                    </span>
-                  </div>
-                  <div class="room-admin-type">{{ r.type }}</div>
-                  <div class="room-admin-price">₱{{ "{:,.2f}".format(r.price_per_night or r.price|default(0.0)) }} <span style="font-size: 11px; color: #64748B; font-weight: normal;">/ night</span></div>
-                  <div style="font-size: 12px; color: #64748B; margin-bottom: 12px;">
-                    {{ r.capacity }} Guests &bull; {{ r.bed_type }} &bull; {{ r.size }}
-                  </div>
-                </div>
-
-                <button type="button" class="btn-outline-action" style="width: 100%; justify-content: center;"
-                        onclick="openEditRoomModal('{{ r.room_number }}', '{{ r.type }}', {{ r.price_per_night or r.price|default(0.0) }}, {{ r.capacity }}, '{{ r.bed_type }}', '{{ r.size }}', '{{ r.description|replace('\'', '\\\'') }}', '{{ r.amenities|join(', ')|replace('\'', '\\\'') }}')">
-                  Edit Room Rate &amp; Details
-                </button>
+        <div id="tab-overview" class="admin-tab-content active">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Revenue Distribution by Suite Type</div>
+                <div class="panel-subtitle">Financial breakdown across room categories</div>
               </div>
             </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-reservations" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Master Reservation Management</div>
-            <div class="panel-subtitle">Comprehensive registry of all customer and walk-in bookings</div>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <select id="resFilterSelect" class="form-input-txt" style="width: auto;" onchange="filterReservations(this.value)">
-              <option value="ALL">All Statuses</option>
-              <option value="Confirmed">Confirmed / Active</option>
-              <option value="Checked Out">Checked Out</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="overflow-x: auto;">
-          <table class="admin-table" id="adminResTable">
-            <thead>
-              <tr>
-                <th>Booking ID</th>
-                <th>Guest Name</th>
-                <th>Room</th>
-                <th>Check-In &rarr; Check-Out</th>
-                <th>Nights</th>
-                <th>Total Cost</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for b in bookings %}
-                <tr data-status="{{ b.status }}">
-                  <td><strong>{{ b.booking_id }}</strong></td>
-                  <td>{{ b.guest_name }}</td>
-                  <td>Suite {{ b.room_number }} ({{ b.room_type }})</td>
-                  <td>{{ b.check_in }} &rarr; {{ b.check_out }}</td>
-                  <td>{{ b.nights }}</td>
-                  <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(b.total_cost) }}</td>
-                  <td>
-                    <span class="status-badge {{ 'status-active' if b.payment_status == 'Paid' else 'status-maintenance' }}">
-                      {{ b.payment_status }}
-                    </span>
-                  </td>
-                  <td>
-                    <span class="status-badge {{ 'status-active' if b.status == 'Confirmed' else ('status-completed' if b.status == 'Checked Out' else 'status-cancelled') }}">
-                      {{ b.status }}
-                    </span>
-                  </td>
-                  <td>{{ b.created_at[:10] }}</td>
-                </tr>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px;">
+              {% for rtype, rev in revenue_by_type.items() %}
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+                  <div style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700;">{{ rtype }}</div>
+                  <div style="font-size: 18px; font-weight: 800; color: #0F172A; margin-top: 4px;">₱{{ "{:,.2f}".format(rev) }}</div>
+                </div>
               {% else %}
-                <tr>
-                  <td colspan="9" style="text-align: center; color: #94A3B8; padding: 24px;">No reservations in system. Clean Day 1 state.</td>
-                </tr>
+                <div style="color: #94A3B8; font-size: 13px;">No revenue recorded yet. System starts at ₱0.00.</div>
               {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+            </div>
 
-    <div id="tab-payments" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Manage Payments &amp; Financial Ledger</div>
-            <div class="panel-subtitle">Record of all guest transactions, receipts, and revenue streams</div>
+            <div class="panel-header-row" style="margin-top: 30px;">
+              <div>
+                <div class="panel-title">Recent System Audit Trail</div>
+                <div class="panel-subtitle">Chronological ledger of hotel operations</div>
+              </div>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                    <th>Guest / Reference</th>
+                    <th>Room</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for t in transactions[:15] %}
+                    <tr>
+                      <td>{{ t.timestamp[:19] }}</td>
+                      <td><strong>{{ t.action }}</strong></td>
+                      <td>{{ t.guest_name or t.details or '—' }}</td>
+                      <td>{{ t.room_number or '—' }}</td>
+                      <td style="font-weight: 700; color: #059669;">{{ "₱{:,.2f}".format(t.amount) if t.amount else '—' }}</td>
+                      <td><span class="status-badge status-active">{{ t.status }}</span></td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td colspan="6" style="text-align: center; color: #94A3B8; padding: 24px;">No ledger transactions yet. System is at Day 1 clean state.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div style="font-size: 14px; font-weight: 700; color: #059669;">
-            Total Collected: ₱{{ "{:,.2f}".format(metrics.total_revenue) }}
-          </div>
-        </div>
-
-        <div style="overflow-x: auto;">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Payment ID</th>
-                <th>Booking Ref</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Recorded By</th>
-                <th>Date &amp; Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in payments %}
-                <tr>
-                  <td><code>{{ p.payment_id }}</code></td>
-                  <td><strong>{{ p.booking_id }}</strong></td>
-                  <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(p.amount) }}</td>
-                  <td>{{ p.method }}</td>
-                  <td>{{ p.recorded_by }}</td>
-                  <td>{{ p.timestamp[:19] }}</td>
-                  <td><span class="status-badge status-active">{{ p.status }}</span></td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="7" style="text-align: center; color: #94A3B8; padding: 24px;">No payment records logged yet.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-reports" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">Executive Operations &amp; Audit Reports</div>
-            <div class="panel-subtitle">Generate printable statements of hotel activity and performance</div>
-          </div>
-          <button type="button" class="btn-gold-action" onclick="window.print()">
-            <span>🖨️ Print Daily Summary</span>
-          </button>
         </div>
 
-        <div id="printArea" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 24px; margin-top: 14px;">
-          <div style="border-bottom: 2px solid #0F172A; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-              <h2 style="font-family: 'Playfair Display', serif; margin: 0; color: #0F172A;">SUGO GRAND PALACE HOTEL</h2>
-              <div style="font-size: 12px; color: #64748B;">Cagayan De Oro City, Philippines &bull; Executive Daily Statement</div>
+        <div id="tab-staff" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Manage Staff Accounts</div>
+                <div class="panel-subtitle">Control system user credentials and dashboard permissions</div>
+              </div>
+              <button type="button" class="btn-gold-action" onclick="openAddStaffModal()">
+                <span>+ Add Staff Account</span>
+              </button>
             </div>
-            <div style="text-align: right; font-size: 12px; color: #64748B;">
-              <div>Date: <strong>{{ today_str }}</strong></div>
-              <div>Generated by: <strong>Administrator</strong></div>
+
+            <div style="overflow-x: auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Module Role</th>
+                    <th>Staff ID</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for s in staff_accounts %}
+                    <tr>
+                      <td><strong>{{ s.name }}</strong></td>
+                      <td><code>{{ s.username }}</code></td>
+                      <td>
+                        <span class="status-badge {{ 'status-active' if s.role == 'receptionist' else ('status-maintenance' if s.role == 'maintenance' else 'status-completed') }}">
+                          {{ s.role|capitalize }} Module
+                        </span>
+                      </td>
+                      <td>{{ s.staff_id }}</td>
+                      <td>{{ s.created_at[:10] }}</td>
+                      <td>
+                        {% if s.username != 'admin' %}
+                          <form action="/admin/staff/delete/{{ s.staff_id }}" method="POST" onsubmit="return confirm('Are you sure you want to remove account for {{ s.name }}?');" style="display: inline;">
+                            <button type="submit" class="btn-outline-action" style="color: #DC2626; border-color: #FECACA;">Delete</button>
+                          </form>
+                        {% else %}
+                          <span style="font-size: 11px; color: #94A3B8;">Primary Master</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
+        </div>
 
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
-            <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
-              <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Total Revenue</div>
-              <div style="font-size: 16px; font-weight: 800; color: #059669;">₱{{ "{:,.2f}".format(metrics.total_revenue) }}</div>
+        <div id="tab-customers" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Customer Directory &amp; Accounts</div>
+                <div class="panel-subtitle">Profiles of registered guests and reservation clients</div>
+              </div>
             </div>
-            <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
-              <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Occupancy</div>
-              <div style="font-size: 16px; font-weight: 800; color: #0F172A;">{{ "{:.1f}%".format(metrics.occupancy_rate) }}</div>
-            </div>
-            <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
-              <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Active Bookings</div>
-              <div style="font-size: 16px; font-weight: 800; color: #0F172A;">{{ metrics.active_bookings_count }}</div>
-            </div>
-            <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
-              <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Available Suites</div>
-              <div style="font-size: 16px; font-weight: 800; color: #2563EB;">{{ metrics.available_rooms }}</div>
+
+            <div style="overflow-x: auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Guest Name</th>
+                    <th>Email Address</th>
+                    <th>Mobile Number</th>
+                    <th>Registered Account</th>
+                    <th>Total Stays</th>
+                    <th>Total Spent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in customers %}
+                    <tr>
+                      <td><strong>{{ c.name }}</strong></td>
+                      <td>{{ c.email or '—' }}</td>
+                      <td>{{ c.phone or '—' }}</td>
+                      <td>
+                        {% if c.account_id %}
+                          <span class="status-badge status-active">Registered</span>
+                        {% else %}
+                          <span class="status-badge" style="background: #F1F5F9; color: #64748B;">Guest Client</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ c.total_bookings }}</td>
+                      <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(c.total_spent) }}</td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td colspan="6" style="text-align: center; color: #94A3B8; padding: 24px;">No customer records yet.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
+        </div>
 
-          <h4 style="margin: 16px 0 8px; font-size: 13px; text-transform: uppercase; color: #0F172A;">Room Inventory Status</h4>
-          <table class="admin-table" style="margin-bottom: 20px;">
-            <thead>
-              <tr>
-                <th>Suite</th>
-                <th>Type</th>
-                <th>Rate / Night</th>
-                <th>Capacity</th>
-                <th>Status</th>
-                <th>Maintenance</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div id="tab-rooms" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Manage Room Types &amp; Rates</div>
+                <div class="panel-subtitle">Configure inventory pricing, capacity, and luxury suite details</div>
+              </div>
+              <button type="button" class="btn-gold-action" onclick="openAddRoomModal()">
+                <span>+ Add New Suite</span>
+              </button>
+            </div>
+
+            <div class="rooms-card-grid">
               {% for r in rooms %}
-                <tr>
-                  <td><strong>Suite {{ r.room_number }}</strong></td>
-                  <td>{{ r.type }}</td>
-                  <td>₱{{ "{:,.2f}".format(r.price_per_night or r.price|default(0.0)) }}</td>
-                  <td>{{ r.capacity }} Guests</td>
-                  <td>{{ 'Occupied' if not r.is_available else 'Available' }}</td>
-                  <td>{{ r.maintenance_status }}</td>
-                </tr>
+                <div class="room-admin-card">
+                  <img src="{{ r.image_url }}" alt="{{ r.type }}" class="room-admin-img"
+                       onerror="this.src='/assets/room-presidential.jpg'">
+                  <div class="room-admin-body">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span class="room-admin-number">Suite {{ r.room_number }}</span>
+                        <span class="status-badge {{ 'status-active' if r.is_available and r.maintenance_status == 'Clean & Ready' else ('status-maintenance' if r.maintenance_status != 'Clean & Ready' else 'status-cancelled') }}">
+                          {{ r.maintenance_status if r.maintenance_status != 'Clean & Ready' else ('Available' if r.is_available else 'Occupied') }}
+                        </span>
+                      </div>
+                      <div class="room-admin-type">{{ r.type }}</div>
+                      <div class="room-admin-price">₱{{ "{:,.2f}".format(r.price_per_night or r.price|default(0.0)) }} <span style="font-size: 11px; color: #64748B; font-weight: normal;">/ night</span></div>
+                      <div style="font-size: 12px; color: #64748B; margin-bottom: 12px;">
+                        {{ r.capacity }} Guests &bull; {{ r.bed_type }} &bull; {{ r.size }}
+                      </div>
+                    </div>
+
+                    <button type="button" class="btn-outline-action" style="width: 100%; justify-content: center;"
+                            onclick="openEditRoomModal('{{ r.room_number }}', '{{ r.type }}', {{ r.price_per_night or r.price|default(0.0) }}, {{ r.capacity }}, '{{ r.bed_type }}', '{{ r.size }}', '{{ r.description|replace('\'', '\\\'') }}', '{{ r.amenities|join(', ')|replace('\'', '\\\'') }}')">
+                      Edit Room Rate &amp; Details
+                    </button>
+                  </div>
+                </div>
               {% endfor %}
-            </tbody>
-          </table>
-
-          <div style="border-top: 1px solid #E2E8F0; padding-top: 12px; font-size: 11px; color: #94A3B8; text-align: center;">
-            Official Sugo Grand Palace Management Report &bull; Certified Confidential
+            </div>
           </div>
         </div>
-      </div>
+
+        <div id="tab-reservations" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Master Reservation Management</div>
+                <div class="panel-subtitle">Comprehensive registry of all customer and walk-in bookings</div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <select id="resFilterSelect" class="form-input-txt" style="width: auto;" onchange="filterReservations(this.value)">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Confirmed">Confirmed / Active</option>
+                  <option value="Checked Out">Checked Out</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table class="admin-table" id="adminResTable">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Guest Name</th>
+                    <th>Room</th>
+                    <th>Check-In &rarr; Check-Out</th>
+                    <th>Nights</th>
+                    <th>Total Cost</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for b in bookings %}
+                    <tr data-status="{{ b.status }}">
+                      <td><strong>{{ b.booking_id }}</strong></td>
+                      <td>{{ b.guest_name }}</td>
+                      <td>Suite {{ b.room_number }} ({{ b.room_type }})</td>
+                      <td>{{ b.check_in }} &rarr; {{ b.check_out }}</td>
+                      <td>{{ b.nights }}</td>
+                      <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(b.total_cost) }}</td>
+                      <td>
+                        <span class="status-badge {{ 'status-active' if b.payment_status == 'Paid' else 'status-maintenance' }}">
+                          {{ b.payment_status }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="status-badge {{ 'status-active' if b.status == 'Confirmed' else ('status-completed' if b.status == 'Checked Out' else 'status-cancelled') }}">
+                          {{ b.status }}
+                        </span>
+                      </td>
+                      <td>{{ b.created_at[:10] }}</td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td colspan="9" style="text-align: center; color: #94A3B8; padding: 24px;">No reservations in system. Clean Day 1 state.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-payments" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Manage Payments &amp; Financial Ledger</div>
+                <div class="panel-subtitle">Record of all guest transactions, receipts, and revenue streams</div>
+              </div>
+              <div style="font-size: 14px; font-weight: 700; color: #059669;">
+                Total Collected: ₱{{ "{:,.2f}".format(metrics.total_revenue) }}
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Payment ID</th>
+                    <th>Booking Ref</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Recorded By</th>
+                    <th>Date &amp; Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in payments %}
+                    <tr>
+                      <td><code>{{ p.payment_id }}</code></td>
+                      <td><strong>{{ p.booking_id }}</strong></td>
+                      <td style="font-weight: 700; color: #059669;">₱{{ "{:,.2f}".format(p.amount) }}</td>
+                      <td>{{ p.method }}</td>
+                      <td>{{ p.recorded_by }}</td>
+                      <td>{{ p.timestamp[:19] }}</td>
+                      <td><span class="status-badge status-active">{{ p.status }}</span></td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td colspan="7" style="text-align: center; color: #94A3B8; padding: 24px;">No payment records logged yet.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-reports" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">Executive Operations &amp; Audit Reports</div>
+                <div class="panel-subtitle">Generate printable statements of hotel activity and performance</div>
+              </div>
+              <button type="button" class="btn-gold-action" onclick="window.print()">
+                <span>🖨️ Print Daily Summary</span>
+              </button>
+            </div>
+
+            <div id="printArea" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 24px; margin-top: 14px;">
+              <div style="border-bottom: 2px solid #0F172A; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                  <h2 style="font-family: 'Playfair Display', serif; margin: 0; color: #0F172A;">SUGO GRAND PALACE HOTEL</h2>
+                  <div style="font-size: 12px; color: #64748B;">Cagayan De Oro City, Philippines &bull; Executive Daily Statement</div>
+                </div>
+                <div style="text-align: right; font-size: 12px; color: #64748B;">
+                  <div>Date: <strong>{{ today_str }}</strong></div>
+                  <div>Generated by: <strong>Administrator</strong></div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+                <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
+                  <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Total Revenue</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #059669;">₱{{ "{:,.2f}".format(metrics.total_revenue) }}</div>
+                </div>
+                <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
+                  <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Occupancy</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #0F172A;">{{ "{:.1f}%".format(metrics.occupancy_rate) }}</div>
+                </div>
+                <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
+                  <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Active Bookings</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #0F172A;">{{ metrics.active_bookings_count }}</div>
+                </div>
+                <div style="border: 1px solid #E2E8F0; padding: 10px; border-radius: 8px;">
+                  <div style="font-size: 10px; text-transform: uppercase; color: #64748B; font-weight: 700;">Available Suites</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #2563EB;">{{ metrics.available_rooms }}</div>
+                </div>
+              </div>
+
+              <h4 style="margin: 16px 0 8px; font-size: 13px; text-transform: uppercase; color: #0F172A;">Room Inventory Status</h4>
+              <table class="admin-table" style="margin-bottom: 20px;">
+                <thead>
+                  <tr>
+                    <th>Suite</th>
+                    <th>Type</th>
+                    <th>Rate / Night</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Maintenance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for r in rooms %}
+                    <tr>
+                      <td><strong>Suite {{ r.room_number }}</strong></td>
+                      <td>{{ r.type }}</td>
+                      <td>₱{{ "{:,.2f}".format(r.price_per_night or r.price|default(0.0)) }}</td>
+                      <td>{{ r.capacity }} Guests</td>
+                      <td>{{ 'Occupied' if not r.is_available else 'Available' }}</td>
+                      <td>{{ r.maintenance_status }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <div style="border-top: 1px solid #E2E8F0; padding-top: 12px; font-size: 11px; color: #94A3B8; text-align: center;">
+                Official Sugo Grand Palace Management Report &bull; Certified Confidential
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-settings" class="admin-tab-content">
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <div class="panel-title">System Settings &amp; Hotel Configuration</div>
+                <div class="panel-subtitle">Manage property contact details and administrative actions</div>
+              </div>
+            </div>
+
+            <form action="/admin/settings/update" method="POST" style="max-width: 600px; margin-bottom: 36px;">
+              <div class="form-group-row">
+                <label class="form-label-txt">Hotel Property Name</label>
+                <input type="text" name="hotel_name" class="form-input-txt" value="{{ hotel_settings.name }}" required>
+              </div>
+
+              <div class="form-group-row">
+                <label class="form-label-txt">Address</label>
+                <input type="text" name="address" class="form-input-txt" value="{{ hotel_settings.address }}" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group-row">
+                  <label class="form-label-txt">Telephone</label>
+                  <input type="text" name="phone" class="form-input-txt" value="{{ hotel_settings.phone }}" required>
+                </div>
+                <div class="form-group-row">
+                  <label class="form-label-txt">Email</label>
+                  <input type="email" name="email" class="form-input-txt" value="{{ hotel_settings.email }}" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-gold-action" style="margin-top: 8px;">
+                Save Hotel Settings
+              </button>
+            </form>
+
+            <div style="border-top: 1px solid #E2E8F0; padding-top: 24px; max-width: 600px;">
+              <h4 style="color: #991B1B; margin-bottom: 6px;">Day 1 Factory Reset</h4>
+              <p style="font-size: 12px; color: #64748B; margin-bottom: 14px;">
+                Reset the entire system back to clean starting state: 0 active bookings, ₱0.00 revenue, and all 9 suites marked Clean &amp; Available.
+              </p>
+
+              <form action="/admin/reset-system" method="POST" onsubmit="return confirm('WARNING: This will reset all reservations and metrics to Day 1 clean start. Proceed?');">
+                <div class="form-group-row">
+                  <label class="form-label-txt">Confirm Admin Password</label>
+                  <input type="password" name="admin_password" class="form-input-txt" placeholder="Enter admin password to confirm (admin2026)..." required>
+                </div>
+                <button type="submit" class="btn-danger-action">
+                  Reset Entire Hotel System to Day 1 Clean Start
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </main>
     </div>
 
-    <div id="tab-settings" class="admin-tab-content">
-      <div class="admin-panel">
-        <div class="panel-header-row">
-          <div>
-            <div class="panel-title">System Settings &amp; Hotel Configuration</div>
-            <div class="panel-subtitle">Manage property contact details and administrative actions</div>
-          </div>
-        </div>
-
-        <form action="/admin/settings/update" method="POST" style="max-width: 600px; margin-bottom: 36px;">
-          <div class="form-group-row">
-            <label class="form-label-txt">Hotel Property Name</label>
-            <input type="text" name="hotel_name" class="form-input-txt" value="{{ hotel_settings.name }}" required>
-          </div>
-
-          <div class="form-group-row">
-            <label class="form-label-txt">Address</label>
-            <input type="text" name="address" class="form-input-txt" value="{{ hotel_settings.address }}" required>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div class="form-group-row">
-              <label class="form-label-txt">Telephone</label>
-              <input type="text" name="phone" class="form-input-txt" value="{{ hotel_settings.phone }}" required>
-            </div>
-            <div class="form-group-row">
-              <label class="form-label-txt">Email</label>
-              <input type="email" name="email" class="form-input-txt" value="{{ hotel_settings.email }}" required>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-gold-action" style="margin-top: 8px;">
-            Save Hotel Settings
-          </button>
-        </form>
-
-        <div style="border-top: 1px solid #E2E8F0; padding-top: 24px; max-width: 600px;">
-          <h4 style="color: #991B1B; margin-bottom: 6px;">Day 1 Factory Reset</h4>
-          <p style="font-size: 12px; color: #64748B; margin-bottom: 14px;">
-            Reset the entire system back to clean starting state: 0 active bookings, ₱0.00 revenue, and all 9 suites marked Clean &amp; Available.
-          </p>
-
-          <form action="/admin/reset-system" method="POST" onsubmit="return confirm('WARNING: This will reset all reservations and metrics to Day 1 clean start. Proceed?');">
-            <div class="form-group-row">
-              <label class="form-label-txt">Confirm Admin Password</label>
-              <input type="password" name="admin_password" class="form-input-txt" placeholder="Enter admin password to confirm (admin2026)..." required>
-            </div>
-            <button type="submit" class="btn-danger-action">
-              Reset Entire Hotel System to Day 1 Clean Start
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-  </main>
+  </div>
 
   <div id="addStaffModal" class="admin-modal-overlay">
     <div class="admin-modal-card">
@@ -1157,19 +1377,23 @@
   </div>
 
   <script>
-    function switchAdminTab(tabKey) {
+    function switchAdminTab(tabKey, btn) {
       document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.admin-sidebar-btn').forEach(b => b.classList.remove('active'));
 
       const target = document.getElementById('tab-' + tabKey);
       if (target) target.classList.add('active');
 
-      const buttons = document.querySelectorAll('.admin-tab-btn');
-      buttons.forEach(btn => {
-        if (btn.getAttribute('onclick').includes(tabKey)) {
-          btn.classList.add('active');
-        }
-      });
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        const buttons = document.querySelectorAll('.admin-sidebar-btn');
+        buttons.forEach(b => {
+          if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabKey)) {
+            b.classList.add('active');
+          }
+        });
+      }
     }
 
     function filterReservations(status) {
