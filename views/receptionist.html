@@ -372,6 +372,7 @@
       </a>
 
       <div class="desk-user-status">
+        <a href="/login" class="btn-desk-action">Portal Hub</a>
         <a href="/guest" class="btn-desk-action">Guest Portal</a>
         <a href="/receptionist/logout" class="btn-desk-action" style="color: #F87171; border-color: rgba(239,68,68,0.3);">Sign Out</a>
       </div>
@@ -420,6 +421,27 @@
   </div>
 
   <div class="container" style="flex: 1; padding-bottom: 48px;">
+
+    {% if unread_notifications %}
+      <div style="margin-bottom: 18px;">
+        {% for n in unread_notifications %}
+          <div style="background: #EFF6FF; border: 1px solid #93C5FD; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 18px;">🔔</span>
+              <div>
+                <strong style="color: #1E3A8A; font-size: 13px;">{{ n.title }}</strong>
+                <div style="color: #1E40AF; font-size: 12px;">{{ n.message }}</div>
+              </div>
+            </div>
+            <form action="/receptionist/notification/{{ n.id }}/dismiss" method="POST" style="margin: 0;">
+              <button type="submit" class="btn btn-outline btn-xs" style="background: #FFFFFF; font-size: 11px;">
+                Dismiss
+              </button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <div class="kpi-grid">
       <div class="kpi-tile kpi-total">
@@ -556,6 +578,18 @@
                   </button>
                 </div>
               </div>
+              {% elif r.maintenance_status != 'Clean & Ready' %}
+              <div class="rack-vacant-box" style="border-left: 3px solid #EF4444; background: #FEF2F2; color: #991B1B;">
+                <strong>⚠️ {{ r.maintenance_status }}</strong>
+                <div style="font-size: 11px; color: #B91C1C; margin-top: 3px;">
+                  Engineering work order in progress
+                </div>
+              </div>
+              <div style="margin-top: auto;">
+                <button type="button" class="btn btn-outline btn-sm" style="width: 100%; color: #94A3B8;" disabled>
+                  Room Under Maintenance
+                </button>
+              </div>
               {% elif next_booking %}
               <div class="rack-vacant-box" style="border-left: 3px solid #F59E0B; background: #FFFBEB;">
                 <span style="color: #16A34A; font-weight: 700; font-size: 12px;">● Vacant Clean Today</span>
@@ -657,6 +691,10 @@
                     View
                   </button>
                   {% if b.status == 'Confirmed' %}
+                  <button type="button" class="btn btn-outline btn-xs" style="color: #059669; border-color: rgba(5, 150, 105, 0.4);" title="Record Payment"
+                          onclick="openPaymentModal('{{ b.booking_id }}', '{{ b.guest_name }}', {{ b.total_cost }})">
+                    Pay
+                  </button>
                   <button type="button" class="btn btn-outline btn-xs" title="Edit Reservation"
                           onclick="openEditBookingModal('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.phone }}', '{{ b.email }}', '{{ b.special_requests|default('')|e }}')">
                     Edit
@@ -1216,6 +1254,49 @@
   </div>
 
 
+  <div class="modal-backdrop" id="paymentModal" style="display: none;">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Record Guest Payment</h3>
+          <p class="modal-subtitle">Post payment to Front Desk financial ledger</p>
+        </div>
+        <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+      </div>
+      <form action="/receptionist/payment/record" method="POST">
+        <input type="hidden" name="booking_id" id="payBookingId">
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="form-label">Reservation Reference</label>
+            <input type="text" id="payBookingRef" class="form-control" disabled>
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Payment Amount (₱)</label>
+            <input type="number" step="0.01" name="amount" id="payAmount" class="form-control" required>
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Payment Method</label>
+            <select name="method" class="form-control" required>
+              <option value="Cash">Cash (Front Desk)</option>
+              <option value="Credit Card">Credit Card (Visa / Mastercard)</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="GCash">GCash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Payment Notes / Transaction Ref</label>
+            <input type="text" name="notes" class="form-control" placeholder="Optional reference number or notes...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closePaymentModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm &amp; Record Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <footer style="background: #0F172A; color: #94A3B8; padding: 20px 0; font-size: 12px; text-align: center; border-top: 1px solid #1E293B; margin-top: auto;">
     <div class="container">
       &copy; 2026 Sugo Grand Palace Hotel &bull; Front Desk &amp; Reception Operations Console
@@ -1257,6 +1338,17 @@
         const text = row.getAttribute('data-search').toLowerCase();
         row.style.display = text.includes(q) ? '' : 'none';
       });
+    }
+
+    function openPaymentModal(bId, guestName, total) {
+      document.getElementById('payBookingId').value = bId;
+      document.getElementById('payBookingRef').value = `${bId} (${guestName})`;
+      document.getElementById('payAmount').value = total;
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
     }
 
     function openWalkInCheckIn(roomNo, type, price, cap) {

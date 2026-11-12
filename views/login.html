@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Accommodations &amp; Reservations | Sugo Grand Palace Hotel</title>
+  <title>Portal Directory | Sugo Grand Palace Hotel</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(30, 41, 59, 0.88) 100%),
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.86) 0%, rgba(30, 41, 59, 0.92) 100%),
                   url('/assets/login-bg.jpg') center/cover no-repeat;
       background-attachment: fixed;
       z-index: 1;
@@ -47,14 +47,14 @@
     }
     .login-card {
       width: 100%;
-      max-width: 480px;
-      background: rgba(15, 23, 42, 0.84);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      max-width: 560px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(217, 119, 6, 0.35);
-      border-radius: 22px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(217, 119, 6, 0.1);
-      padding: 40px 36px;
+      border-radius: 24px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), 0 0 30px rgba(217, 119, 6, 0.12);
+      padding: 38px 36px;
       animation: cardEnter 0.45s ease-out;
     }
     @keyframes cardEnter {
@@ -63,11 +63,11 @@
     }
     .brand-crest-box {
       text-align: center;
-      margin-bottom: 26px;
+      margin-bottom: 22px;
     }
     .brand-logo-img {
-      width: 72px;
-      height: 72px;
+      width: 70px;
+      height: 70px;
       margin: 0 auto 12px;
       display: block;
       filter: drop-shadow(0 6px 14px rgba(217, 119, 6, 0.45));
@@ -89,22 +89,129 @@
       letter-spacing: 2px;
       font-weight: 600;
     }
-    .guest-welcome-badge {
+    .portal-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      color: #D97706;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      background: rgba(254, 243, 199, 0.08);
-      border: 1px solid rgba(251, 191, 36, 0.25);
-      padding: 8px 14px;
-      border-radius: 9999px;
+    }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
       margin-bottom: 24px;
-      font-size: 12px;
-      color: #FEF3C7;
-      font-weight: 600;
+    }
+    @media (max-width: 500px) {
+      .portal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .portal-card {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      text-decoration: none;
+      color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      min-height: 110px;
+    }
+    .portal-card:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: rgba(217, 119, 6, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .portal-card.card-customer:hover {
+      border-color: #F59E0B;
+    }
+    .portal-card.card-receptionist:hover {
+      border-color: #10B981;
+    }
+    .portal-card.card-admin:hover {
+      border-color: #D97706;
+    }
+    .portal-card.card-maintenance:hover {
+      border-color: #0284C7;
+    }
+    .portal-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .portal-icon {
+      font-size: 20px;
+    }
+    .portal-role-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      letter-spacing: 0.5px;
+    }
+    .tag-customer {
+      background: rgba(245, 158, 11, 0.18);
+      color: #FCD34D;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .tag-receptionist {
+      background: rgba(16, 185, 129, 0.18);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .tag-admin {
+      background: rgba(217, 119, 6, 0.22);
+      color: #FDE68A;
+      border: 1px solid rgba(217, 119, 6, 0.4);
+    }
+    .tag-maintenance {
+      background: rgba(2, 132, 199, 0.18);
+      color: #7DD3FC;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+    }
+    .portal-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 3px;
+    }
+    .portal-card-desc {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+    .search-divider {
+      display: flex;
+      align-items: center;
+      margin: 18px 0 16px;
+      color: #475569;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+    .search-divider::before,
+    .search-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .search-divider span {
+      padding: 0 12px;
     }
     .input-label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: #E2E8F0;
       margin-bottom: 8px;
@@ -112,7 +219,7 @@
     }
     .portal-input {
       width: 100%;
-      padding: 13px 16px;
+      padding: 12px 14px;
       background: rgba(30, 41, 59, 0.75);
       border: 1px solid #334155;
       border-radius: 10px;
@@ -128,7 +235,7 @@
     }
     .btn-gold-primary {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       background: linear-gradient(135deg, #D97706, #B45309);
       color: #FFFFFF;
       font-weight: 700;
@@ -143,81 +250,11 @@
       gap: 8px;
       box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
       text-decoration: none;
+      margin-top: 10px;
     }
     .btn-gold-primary:hover {
       background: linear-gradient(135deg, #B45309, #92400E);
       transform: translateY(-1px);
-      box-shadow: 0 8px 22px rgba(217, 119, 6, 0.45);
-    }
-    .btn-ghost-secondary {
-      width: 100%;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #FEF3C7;
-      font-weight: 600;
-      font-size: 13px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
-      margin-top: 12px;
-      transition: all 0.2s;
-    }
-    .btn-ghost-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(217, 119, 6, 0.4);
-      color: #FFFFFF;
-    }
-    .staff-portal-divider {
-      display: flex;
-      align-items: center;
-      margin: 24px 0 16px;
-      color: #475569;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 700;
-    }
-    .staff-portal-divider::before,
-    .staff-portal-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .staff-portal-divider span {
-      padding: 0 12px;
-    }
-    .btn-staff-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      color: #CBD5E1;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .btn-staff-link:hover {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: rgba(217, 119, 6, 0.5);
-      color: #FEF3C7;
-    }
-    .staff-pill-tag {
-      background: rgba(217, 119, 6, 0.18);
-      color: #FCD34D;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
     }
     .card-footer-info {
       margin-top: 24px;
@@ -225,7 +262,7 @@
       font-size: 12px;
       color: #94A3B8;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 18px;
+      padding-top: 16px;
     }
   </style>
 </head>
@@ -239,45 +276,78 @@
         <img src="/assets/logo.png" alt="Sugo Crest" class="brand-logo-img"
              onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
         <h1 class="hotel-title">SUGO GRAND PALACE</h1>
-        <div class="hotel-subtitle">Luxury Hotel &amp; Residences &bull; Cagayan De Oro City, Philippines</div>
+        <div class="hotel-subtitle">Hospitality Management System &bull; Cagayan De Oro City</div>
       </div>
 
-      <div class="guest-welcome-badge">
-        <span>✨ Welcome to Guest Accommodations &amp; Reservations</span>
+      <div class="portal-section-title">
+        <span>Select Access Portal</span>
+      </div>
+
+      <div class="portal-grid">
+        <a href="/customer" class="portal-card card-customer">
+          <div class="portal-card-top">
+            <span class="portal-icon">🏨</span>
+            <span class="portal-role-tag tag-customer">Customer</span>
+          </div>
+          <div>
+            <div class="portal-card-title">Customer Portal</div>
+            <div class="portal-card-desc">Browse rooms, book online, &amp; manage reservations</div>
+          </div>
+        </a>
+
+        <a href="/login/receptionist" class="portal-card card-receptionist">
+          <div class="portal-card-top">
+            <span class="portal-icon">💼</span>
+            <span class="portal-role-tag tag-receptionist">Receptionist</span>
+          </div>
+          <div>
+            <div class="portal-card-title">Front Desk Desk</div>
+            <div class="portal-card-desc">Walk-ins, check-in/out, room assignment, &amp; billing</div>
+          </div>
+        </a>
+
+        <a href="/login/admin" class="portal-card card-admin">
+          <div class="portal-card-top">
+            <span class="portal-icon">👑</span>
+            <span class="portal-role-tag tag-admin">Admin</span>
+          </div>
+          <div>
+            <div class="portal-card-title">Admin Module</div>
+            <div class="portal-card-desc">Executive analytics, accounts, room rates, &amp; reports</div>
+          </div>
+        </a>
+
+        <a href="/login/maintenance" class="portal-card card-maintenance">
+          <div class="portal-card-top">
+            <span class="portal-icon">🛠️</span>
+            <span class="portal-role-tag tag-maintenance">Maintenance</span>
+          </div>
+          <div>
+            <div class="portal-card-title">Maintenance</div>
+            <div class="portal-card-desc">Report room damage, work orders, &amp; mark rooms ready</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="search-divider">
+        <span>Guest Quick Reservation Lookup</span>
       </div>
 
       <form action="/guest" method="GET">
         <input type="hidden" name="tab" value="lookup">
-        <div style="margin-bottom: 18px;">
-          <label class="input-label">Find Your Reservation or Booking</label>
+        <div style="margin-bottom: 10px;">
+          <label class="input-label">Lookup Existing Booking</label>
           <input type="text" name="query" class="portal-input" placeholder="Booking ID (e.g. SH-1024) or Guest Name...">
         </div>
 
         <button type="submit" class="btn-gold-primary">
           Find My Reservation
         </button>
-
-        <a href="/guest" class="btn-ghost-secondary">
-          Browse Luxury Suites &amp; Book Now
-        </a>
       </form>
-
-      <div class="staff-portal-divider">
-        <span>Hotel Staff Access</span>
-      </div>
-
-      <a href="/login/receptionist" class="btn-staff-link">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>💼</span>
-          <span>Receptionist Login</span>
-        </div>
-        <span class="staff-pill-tag">Staff Only</span>
-      </a>
 
       <div class="card-footer-info">
         <span>Cagayan De Oro City, Philippines &bull; Front Desk: +63 (088) 888-7846</span>
       </div>
-
     </div>
   </div>
 

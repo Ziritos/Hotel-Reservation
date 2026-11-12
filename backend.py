@@ -301,13 +301,51 @@ class TransactionLedger:
         self._by_room.clear()
 
 
+DEFAULT_STAFF_ACCOUNTS = [
+    {
+        "id": "STF-101",
+        "staff_id": "STF-101",
+        "username": "receptionist",
+        "password": "frontdesk2026",
+        "role": "receptionist",
+        "name": "Front Desk Receptionist",
+        "created_at": "2026-11-01 08:00:00"
+    },
+    {
+        "id": "STF-102",
+        "staff_id": "STF-102",
+        "username": "admin",
+        "password": "admin2026",
+        "role": "admin",
+        "name": "System Administrator",
+        "created_at": "2026-11-01 08:00:00"
+    },
+    {
+        "id": "STF-103",
+        "staff_id": "STF-103",
+        "username": "maintenance",
+        "password": "clean2026",
+        "role": "maintenance",
+        "name": "Facilities & Maintenance Lead",
+        "created_at": "2026-11-01 08:00:00"
+    },
+]
+
 rooms = []
 bookings = []
 customers = []
+staff_accounts = [dict(s) for s in DEFAULT_STAFF_ACCOUNTS]
+customer_accounts = []
+maintenance_tickets = []
+notifications = []
+payments = []
 transaction_ledger = TransactionLedger()
 hotel_settings = {
     "hotel_name": "Sugo Grand Palace Hotel",
     "logo_url": "/assets/logo.svg",
+    "phone": "+63 (088) 888-7846",
+    "email": "frontdesk@sugograndpalace.ph",
+    "address": "Cagayan De Oro City, Philippines",
 }
 
 
@@ -458,6 +496,10 @@ def check_room_availability_for_dates(
     Returns (is_available, message, conflicting_booking).
     """
     r_target = str(room_number).strip()
+    room = get_room(r_target)
+    if room and room.get("maintenance_status") in ("Under Maintenance", "Damaged", "Out of Order"):
+        return False, f"Suite {room_number} is currently under maintenance and unavailable for booking.", None
+
     for b in bookings:
         if str(b.get("room_number", "")).strip() != r_target:
             continue
@@ -505,6 +547,8 @@ def book_room(
     room = get_room(room_number)
     if not room:
         return False, f"Room '{room_number}' does not exist! Please choose a valid room.", {}
+    if room.get("maintenance_status") in ("Under Maintenance", "Damaged", "Out of Order"):
+        return False, f"Suite {room_number} is currently under maintenance and cannot be reserved.", {}
 
     if not check_in:
         req_in_date = date.today()
@@ -810,6 +854,340 @@ def set_hotel_logo(logo_url: str):
     save_data()
 
 
+def get_staff_account(username: str):
+    u = (username or "").strip().lower()
+    for s in staff_accounts:
+        if s.get("username", "").strip().lower() == u:
+            return s
+    return None
+
+
+def authenticate_staff_user(username: str, password: str, expected_role: str = None) -> tuple[bool, str, dict]:
+    u = (username or "").strip().lower()
+    p = (password or "").strip()
+    staff = get_staff_account(u)
+    if not staff:
+        return False, "Access Denied: Invalid username or password.", {}
+    if staff.get("password") != p:
+        return False, "Access Denied: Invalid username or password.", {}
+    if expected_role and staff.get("role") != expected_role:
+        return False, f"Unauthorized: Account does not have '{expected_role}' privileges.", {}
+    return True, f"Welcome, {staff.get('name')}!", staff
+
+
+def add_or_update_staff_account(username: str, password: str, role: str, name: str, staff_id: str = "") -> tuple[bool, str, dict]:
+    u = username.strip().lower()
+    if not u or not password.strip():
+        return False, "Username and password cannot be empty.", {}
+    existing = get_staff_account(u)
+    if existing:
+        existing["password"] = password.strip()
+        existing["role"] = role.strip()
+        existing["name"] = name.strip() or existing.get("name", u)
+        if "staff_id" not in existing:
+            existing["staff_id"] = existing.get("id", f"STF-{random.randint(100, 999)}")
+        save_data()
+        return True, f"Staff account '{u}' updated.", existing
+    sid = staff_id or f"STF-{random.randint(100, 999)}"
+    new_staff = {
+        "id": sid,
+        "staff_id": sid,
+        "username": u,
+        "password": password.strip(),
+        "role": role.strip(),
+        "name": name.strip() or u.capitalize(),
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    staff_accounts.append(new_staff)
+    save_data()
+    return True, f"Staff account '{u}' created.", new_staff
+
+
+def delete_staff_account(staff_id: str) -> tuple[bool, str]:
+    for i, s in enumerate(list(staff_accounts)):
+        if s.get("id") == staff_id or s.get("staff_id") == staff_id:
+            if s.get("username") in ("admin", "receptionist", "maintenance"):
+                return False, f"Cannot delete default core account '{s.get('username')}'."
+            uname = s.get("username")
+            staff_accounts.pop(i)
+            save_data()
+            return True, f"Staff account '{uname}' deleted."
+    return False, "Staff account not found."
+
+
+def get_customer_account_by_identifier(identifier: str):
+    target = (identifier or "").strip().lower()
+    for c in customer_accounts:
+        if c.get("username", "").strip().lower() == target or c.get("email", "").strip().lower() == target:
+            return c
+    return None
+
+
+def register_customer_account(name: str, email: str, phone: str, password: str, username: str = "") -> tuple[bool, str, dict]:
+    name_clean = name.strip()
+    email_clean = email.strip().lower()
+    phone_clean = phone.strip()
+    user_clean = (username or email_clean.split("@")[0]).strip().lower()
+    
+    valid_name, err = validate_guest_name(name_clean)
+    if not valid_name:
+        return False, err, {}
+    if not email_clean or "@" not in email_clean:
+        return False, "Please enter a valid email address.", {}
+    if not password or len(password) < 4:
+        return False, "Password must be at least 4 characters long.", {}
+    
+    if get_customer_account_by_identifier(email_clean):
+        return False, "An account with this email address already exists. Please log in.", {}
+    if get_customer_account_by_identifier(user_clean):
+        user_clean = f"{user_clean}{random.randint(10, 99)}"
+        
+    cust_id = f"CUST-{random.randint(1000, 9999)}"
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    new_acc = {
+        "customer_id": cust_id,
+        "username": user_clean,
+        "name": name_clean,
+        "email": email_clean,
+        "phone": phone_clean,
+        "password": password.strip(),
+        "created_at": now_str,
+        "bookings": [],
+        "total_stays": 0,
+        "total_spent": 0.0
+    }
+    customer_accounts.append(new_acc)
+    update_or_create_customer(name=name_clean, email=email_clean, phone=phone_clean)
+    save_data()
+    return True, "Account registered successfully!", new_acc
+
+
+def authenticate_customer_account(identifier: str, password: str) -> tuple[bool, str, dict]:
+    acc = get_customer_account_by_identifier(identifier)
+    if not acc:
+        return False, "Invalid email/username or password.", {}
+    if acc.get("password") != password.strip():
+        return False, "Invalid email/username or password.", {}
+    return True, f"Welcome back, {acc.get('name')}!", acc
+
+
+def add_notification(target_role: str, title: str, message: str, room_number: str = ""):
+    notif = {
+        "id": f"NOTIF-{random.randint(1000, 9999)}",
+        "target_role": target_role,
+        "title": title,
+        "message": message,
+        "room_number": str(room_number),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "read": False
+    }
+    notifications.append(notif)
+    save_data()
+    return notif
+
+
+def get_notifications_for_role(role: str, unread_only: bool = False):
+    res = [n for n in notifications if n.get("target_role") in (role, "all")]
+    if unread_only:
+        res = [n for n in res if not n.get("read")]
+    return list(reversed(res))
+
+
+def dismiss_notification(notif_id: str):
+    for n in notifications:
+        if n.get("id") == notif_id:
+            n["read"] = True
+            save_data()
+            return True
+    return False
+
+
+def create_maintenance_ticket(room_number: str, issue: str, priority: str = "Medium", reported_by: str = "Staff", technician: str = "", cost: float = 0.0, notes: str = "") -> tuple[bool, str, dict]:
+    room = get_room(room_number)
+    if not room:
+        return False, f"Room '{room_number}' does not exist.", {}
+    
+    tkt_id = f"TKT-{random.randint(100, 999)}"
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ticket = {
+        "ticket_id": tkt_id,
+        "room_number": str(room_number),
+        "issue": issue.strip(),
+        "priority": priority.strip() or "Medium",
+        "status": "In Progress",
+        "reported_by": reported_by.strip() or "Staff",
+        "reported_at": now_str,
+        "created_at": now_str,
+        "technician": technician.strip() or "Facilities Team",
+        "cost": float(cost or 0.0),
+        "notes": notes.strip(),
+        "completed_at": None
+    }
+    maintenance_tickets.append(ticket)
+    room["maintenance_status"] = "Under Maintenance"
+    room["is_available"] = False
+    
+    add_notification(
+        target_role="receptionist",
+        title="Room Under Maintenance",
+        message=f"Suite {room_number} flagged for maintenance: {issue} (Priority: {priority}).",
+        room_number=str(room_number)
+    )
+    save_data()
+    return True, f"Maintenance ticket {tkt_id} created for Suite {room_number}.", ticket
+
+
+def update_maintenance_ticket(ticket_id: str, status: str = "", notes: str = "", cost: float = None, technician: str = "", mark_ready: bool = False) -> tuple[bool, str, dict]:
+    target = None
+    for t in maintenance_tickets:
+        if t.get("ticket_id") == ticket_id:
+            target = t
+            break
+    if not target:
+        return False, f"Ticket '{ticket_id}' not found.", {}
+    
+    if status:
+        target["status"] = status
+    if notes:
+        target["notes"] = notes
+    if cost is not None:
+        target["cost"] = float(cost)
+    if technician:
+        target["technician"] = technician
+        
+    if mark_ready or status == "Completed":
+        target["status"] = "Completed"
+        target["completed_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        r = get_room(target.get("room_number"))
+        if r:
+            r["maintenance_status"] = "Clean & Ready"
+            get_metrics()
+            
+        add_notification(
+            target_role="receptionist",
+            title="Room Repaired & Ready",
+            message=f"Suite {target.get('room_number')} repairs completed! Room is clean and ready for check-in.",
+            room_number=str(target.get("room_number"))
+        )
+    save_data()
+    return True, f"Ticket {ticket_id} updated.", target
+
+
+def set_room_repaired_and_ready(room_number: str) -> tuple[bool, str]:
+    r = get_room(room_number)
+    if not r:
+        return False, f"Room '{room_number}' not found."
+    r["maintenance_status"] = "Clean & Ready"
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for t in maintenance_tickets:
+        if str(t.get("room_number")) == str(room_number) and t.get("status") != "Completed":
+            t["status"] = "Completed"
+            t["completed_at"] = now_str
+            t["notes"] = (t.get("notes", "") + " | Marked ready by Maintenance.").strip(" | ")
+            
+    add_notification(
+        target_role="receptionist",
+        title="Room Repaired & Ready",
+        message=f"Suite {room_number} repairs completed! Room is clean and ready for guests.",
+        room_number=str(room_number)
+    )
+    get_metrics()
+    save_data()
+    return True, f"Suite {room_number} is now marked Clean & Ready!"
+
+
+def record_payment_entry(booking_id: str, amount: float, method: str = "Cash", status: str = "Paid", recorded_by: str = "Front Desk", notes: str = "") -> dict:
+    b = get_booking_by_id(booking_id)
+    guest_name = b.get("guest_name", "Walk-In Guest") if b else "Guest"
+    room_number = b.get("room_number", "") if b else ""
+    
+    pay_id = f"PAY-{random.randint(1000, 9999)}"
+    entry = {
+        "payment_id": pay_id,
+        "booking_id": booking_id,
+        "guest_name": guest_name,
+        "room_number": room_number,
+        "amount": float(amount),
+        "method": method,
+        "status": status,
+        "recorded_by": recorded_by,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "notes": notes
+    }
+    payments.append(entry)
+    
+    transaction_ledger.record(
+        txn_type=f"PAYMENT_{method.upper().replace(' ', '_')}",
+        booking_id=booking_id,
+        guest_name=guest_name,
+        room_number=room_number,
+        amount=float(amount),
+        status="Settled" if status == "Paid" else status,
+        payment_method=method,
+        notes=f"Payment recorded: {notes}" if notes else f"Payment recorded via {method}"
+    )
+    if b:
+        b["payment_status"] = status
+        b["payment_method"] = method
+    save_data()
+    return entry
+
+
+def add_new_room(room_number: str, room_type: str, price: float, capacity: int, bed_type: str, size: str, description: str = "", amenities_str: str = "") -> tuple[bool, str, dict]:
+    r_num = str(room_number).strip()
+    if not r_num:
+        return False, "Room number cannot be empty.", {}
+    if get_room(r_num):
+        return False, f"Room '{r_num}' already exists.", {}
+    amenities = [a.strip() for a in amenities_str.split(",") if a.strip()] if amenities_str else ["High-speed Wi-Fi", "Air Conditioning", "Hot & Cold Shower", "Smart TV"]
+    new_r = {
+        "room_number": r_num,
+        "type": room_type.strip(),
+        "price_per_night": float(price),
+        "capacity": int(capacity),
+        "bed_type": bed_type.strip(),
+        "size": size.strip(),
+        "image_url": get_default_room_image(room_type),
+        "amenities": amenities,
+        "description": description.strip() or f"Well-appointed {room_type} room.",
+        "is_available": True,
+        "maintenance_status": "Clean & Ready"
+    }
+    rooms.append(new_r)
+    save_data()
+    return True, f"Suite {r_num} added to inventory.", new_r
+
+
+def update_room_details(room_number: str, room_type: str, price: float, capacity: int, bed_type: str, size: str, description: str = "", amenities_str: str = "") -> tuple[bool, str, dict]:
+    r = get_room(room_number)
+    if not r:
+        return False, f"Room '{room_number}' not found.", {}
+    r["type"] = room_type.strip()
+    r["price_per_night"] = float(price)
+    r["capacity"] = int(capacity)
+    r["bed_type"] = bed_type.strip()
+    r["size"] = size.strip()
+    if description.strip():
+        r["description"] = description.strip()
+    if amenities_str.strip():
+        r["amenities"] = [a.strip() for a in amenities_str.split(",") if a.strip()]
+    save_data()
+    return True, f"Suite {room_number} details updated successfully.", r
+
+
+def delete_room_from_inventory(room_number: str) -> tuple[bool, str]:
+    global rooms
+    r = get_room(room_number)
+    if not r:
+        return False, f"Room '{room_number}' not found."
+    for b in bookings:
+        if str(b.get("room_number")) == str(room_number) and b.get("status") in ("Confirmed", "Checked In"):
+            return False, f"Cannot delete Room {room_number} because it has active reservations."
+    rooms = [rm for rm in rooms if str(rm.get("room_number")) != str(room_number)]
+    save_data()
+    return True, f"Suite {room_number} removed from inventory."
+
+
 def get_metrics() -> dict:
     total_rooms = len(rooms)
     today_dt = date.today()
@@ -832,10 +1210,12 @@ def get_metrics() -> dict:
 
     for r in rooms:
         r_num = str(r.get("room_number", "")).strip()
-        r["is_available"] = (r_num not in occupied_today_room_nos)
+        is_maint = (r.get("maintenance_status") in ("Under Maintenance", "Damaged", "Out of Order"))
+        r["is_available"] = (r_num not in occupied_today_room_nos and not is_maint)
 
+    maintenance_count = sum(1 for r in rooms if r.get("maintenance_status") in ("Under Maintenance", "Damaged", "Out of Order"))
     occupied_count = len(occupied_today_room_nos)
-    available_count = total_rooms - occupied_count
+    available_count = sum(1 for r in rooms if r.get("is_available"))
     total_revenue = sum(
         float(b.get("total_cost", 0.0))
         for b in bookings
@@ -847,14 +1227,21 @@ def get_metrics() -> dict:
         1 for b in bookings if b.get("status") not in ("Checked Out", "Cancelled")
     )
 
+    open_tickets = sum(1 for t in maintenance_tickets if t.get("status") != "Completed")
+
     return {
         "total_rooms": total_rooms,
         "available_rooms": available_count,
         "occupied_rooms": occupied_count,
+        "maintenance_rooms": maintenance_count,
         "occupancy_rate": round(occupancy_rate, 1),
         "total_revenue": total_revenue,
         "active_bookings_count": active_bookings_count,
         "total_customers": len(customers),
+        "total_staff": len(staff_accounts),
+        "total_customer_accounts": len(customer_accounts),
+        "open_tickets": open_tickets,
+        "total_tickets": len(maintenance_tickets),
     }
 
 
@@ -866,6 +1253,11 @@ def save_data():
             "bookings": bookings,
             "customers": customers,
             "hotel_settings": hotel_settings,
+            "staff_accounts": staff_accounts,
+            "customer_accounts": customer_accounts,
+            "maintenance_tickets": maintenance_tickets,
+            "notifications": notifications,
+            "payments": payments,
             "transactions": transaction_ledger.get_all(reverse=False),
             "last_updated": datetime.now().isoformat(),
         }
@@ -876,36 +1268,30 @@ def save_data():
 
 
 def reset_system_to_beginning(persist: bool = True):
-    """
-    Resets the hotel reservation system to Day 1:
-      - All 9 suites are Available Clean and ready for check-in
-      - 0 in-house guests / active stays
-      - 0 CRM customer records
-      - ₱0.00 revenue
-      - Empty transaction ledger
-    """
-    global rooms, bookings, customers, transaction_ledger
+    global rooms, bookings, customers, transaction_ledger, maintenance_tickets, notifications, payments, staff_accounts, customer_accounts
     rooms.clear()
     for r in DEFAULT_ROOMS:
         room_dict = dict(r)
         room_dict["is_available"] = True
+        room_dict["maintenance_status"] = "Clean & Ready"
         rooms.append(room_dict)
 
     bookings.clear()
     customers.clear()
     transaction_ledger.clear()
+    maintenance_tickets.clear()
+    notifications.clear()
+    payments.clear()
+    customer_accounts.clear()
+    staff_accounts.clear()
+    staff_accounts.extend([dict(s) for s in DEFAULT_STAFF_ACCOUNTS])
 
     if persist:
         save_data()
 
 
 def load_data():
-    """
-    Called when running the system:
-    Starts fresh at the beginning with zero guests, zero revenue, and all 9 rooms available clean.
-    Preserves custom hotel branding/logo settings if present.
-    """
-    global hotel_settings
+    global hotel_settings, staff_accounts, customer_accounts, maintenance_tickets, notifications, payments
 
     if os.path.exists(DATA_FILE):
         try:
@@ -913,8 +1299,26 @@ def load_data():
                 data = json.load(f)
                 if data.get("hotel_settings"):
                     hotel_settings.update(data["hotel_settings"])
+                if data.get("staff_accounts"):
+                    staff_accounts.clear()
+                    staff_accounts.extend(data["staff_accounts"])
+                if data.get("customer_accounts"):
+                    customer_accounts.clear()
+                    customer_accounts.extend(data["customer_accounts"])
+                if data.get("maintenance_tickets"):
+                    maintenance_tickets.clear()
+                    maintenance_tickets.extend(data["maintenance_tickets"])
+                if data.get("notifications"):
+                    notifications.clear()
+                    notifications.extend(data["notifications"])
+                if data.get("payments"):
+                    payments.clear()
+                    payments.extend(data["payments"])
         except Exception:
             pass
+
+    if not staff_accounts:
+        staff_accounts.extend([dict(s) for s in DEFAULT_STAFF_ACCOUNTS])
 
     reset_system_to_beginning(persist=True)
 
@@ -953,6 +1357,23 @@ def guest_page():
     query = request.args.get("query", "").strip()
     tab = request.args.get("tab", "").strip()
     results = []
+    
+    customer_user = None
+    customer_bookings = []
+    if session.get("customer_logged_in"):
+        c_id = session.get("customer_id")
+        for c in customer_accounts:
+            if c.get("customer_id") == c_id:
+                customer_user = c
+                break
+        if customer_user:
+            c_name = customer_user.get("name", "").lower()
+            c_email = customer_user.get("email", "").lower()
+            customer_bookings = [
+                b for b in bookings
+                if b.get("guest_name", "").lower() == c_name or (b.get("email") and b.get("email").lower() == c_email)
+            ]
+
     if query:
         results = search_customer_reservations(query)
         tab = "lookup"
@@ -970,13 +1391,78 @@ def guest_page():
         rooms=rooms,
         bookings=bookings,
         today_str=today_str,
+        customer_user=customer_user,
+        customer_bookings=customer_bookings,
     )
+
+
+@app.route("/customer/login", methods=["GET", "POST"])
+@app.route("/login/customer", methods=["GET", "POST"])
+def customer_login_page():
+    if request.method == "POST":
+        identifier = request.form.get("identifier", "").strip()
+        password = request.form.get("password", "").strip()
+        if not identifier or not password:
+            flash("Please enter your email/username and password.", "danger")
+            return redirect(url_for("customer_login_page"))
+        ok, msg, acc = authenticate_customer_account(identifier, password)
+        if ok:
+            session["customer_logged_in"] = True
+            session["customer_id"] = acc.get("customer_id")
+            session["customer_name"] = acc.get("name")
+            session["customer_email"] = acc.get("email")
+            flash(f"Welcome back, {acc.get('name')}!", "success")
+            return redirect(url_for("guest_page"))
+        else:
+            flash(msg, "danger")
+            return redirect(url_for("customer_login_page"))
+    return render_template("login_customer.html", mode="login")
+
+
+@app.route("/customer/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
+def customer_register_page():
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        phone = request.form.get("phone", "").strip()
+        password = request.form.get("password", "").strip()
+        
+        ok, msg, acc = register_customer_account(name=name, email=email, phone=phone, password=password)
+        if ok:
+            session["customer_logged_in"] = True
+            session["customer_id"] = acc.get("customer_id")
+            session["customer_name"] = acc.get("name")
+            session["customer_email"] = acc.get("email")
+            flash("Registration successful! Welcome to Sugo Grand Palace Hotel.", "success")
+            return redirect(url_for("guest_page"))
+        else:
+            flash(msg, "danger")
+            return redirect(url_for("customer_register_page"))
+    return render_template("login_customer.html", mode="register")
+
+
+@app.route("/customer/logout")
+@app.route("/logout/customer")
+def customer_logout():
+    session.pop("customer_logged_in", None)
+    session.pop("customer_id", None)
+    session.pop("customer_name", None)
+    session.pop("customer_email", None)
+    flash("You have safely signed out of your customer account.", "info")
+    return redirect(url_for("guest_page"))
 
 
 @app.route("/login")
 def login_page():
     if request.args.get("role") == "receptionist":
         return redirect(url_for("receptionist_login_page"))
+    if request.args.get("role") == "admin":
+        return redirect(url_for("admin_login_page"))
+    if request.args.get("role") == "maintenance":
+        return redirect(url_for("maintenance_login_page"))
+    if request.args.get("role") == "customer":
+        return redirect(url_for("customer_login_page"))
     return render_template("login.html")
 
 
@@ -996,7 +1482,13 @@ def receptionist_login_page():
             "frontdesk": "frontdesk2026",
         }
 
-        if username.lower() in AUTHORIZED_STAFF and AUTHORIZED_STAFF[username.lower()] == password:
+        staff = get_staff_account(username)
+        if staff and staff.get("password") == password and staff.get("role") in ("receptionist", "admin"):
+            session["receptionist_logged_in"] = True
+            session["receptionist_user"] = staff.get("username")
+            flash(f"Welcome, {staff.get('name', username)}! Front Desk Console ready.", "success")
+            return redirect(url_for("receptionist_dashboard"))
+        elif username.lower() in AUTHORIZED_STAFF and AUTHORIZED_STAFF[username.lower()] == password:
             session["receptionist_logged_in"] = True
             session["receptionist_user"] = username
             flash(f"Welcome, {username}! Front Desk Console ready.", "success")
@@ -1061,6 +1553,7 @@ def my_booking_page():
     return redirect(url_for("guest_page", tab="lookup"))
 
 
+@app.route("/cancel", methods=["POST"])
 @app.route("/my-booking/cancel", methods=["POST"])
 def cancel_my_booking_route():
     booking_id = request.form.get("booking_id", "").strip()
@@ -1093,6 +1586,7 @@ def receptionist_dashboard():
     all_transactions = transaction_ledger.get_all(reverse=True)
     txn_metrics = transaction_ledger.get_metrics()
     today_str = date.today().strftime("%Y-%m-%d")
+    unread_notifs = get_notifications_for_role("receptionist", unread_only=True)
     return render_template(
         "receptionist.html",
         metrics=metrics,
@@ -1102,7 +1596,312 @@ def receptionist_dashboard():
         transactions=all_transactions,
         txn_metrics=txn_metrics,
         today_str=today_str,
+        notifications=unread_notifs,
+        payments=payments,
     )
+
+
+@app.route("/receptionist/payment/record", methods=["POST"])
+def receptionist_record_payment_route():
+    if not session.get("receptionist_logged_in") and not session.get("admin_logged_in"):
+        flash("Please sign in as authorized staff to record payments.", "danger")
+        return redirect(url_for("receptionist_login_page"))
+    booking_id = request.form.get("booking_id", "").strip()
+    amount = request.form.get("amount", 0.0)
+    method = request.form.get("method", "Cash").strip()
+    status = request.form.get("status", "Paid").strip()
+    notes = request.form.get("notes", "").strip()
+    
+    rec = record_payment_entry(
+        booking_id=booking_id,
+        amount=float(amount or 0.0),
+        method=method,
+        status=status,
+        recorded_by=session.get("receptionist_user", "Receptionist"),
+        notes=notes
+    )
+    flash(f"Payment of ₱{rec['amount']:,.2f} recorded via {method}.", "success")
+    return redirect(request.referrer or url_for("receptionist_dashboard"))
+
+
+@app.route("/receptionist/notification/<notif_id>/dismiss", methods=["POST"])
+def receptionist_dismiss_notification_route(notif_id):
+    dismiss_notification(notif_id)
+    return redirect(request.referrer or url_for("receptionist_dashboard"))
+
+
+@app.route("/admin/login", methods=["GET", "POST"])
+@app.route("/login/admin", methods=["GET", "POST"])
+def admin_login_page():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        if not username or not password:
+            flash("Please enter both username and password.", "danger")
+            return redirect(url_for("admin_login_page"))
+        
+        if username.lower() == "admin" and password == "admin2026":
+            session["admin_logged_in"] = True
+            session["admin_user"] = "admin"
+            flash("Welcome, Administrator! Management Console ready.", "success")
+            return redirect(url_for("admin_dashboard"))
+        
+        ok, msg, staff = authenticate_staff_user(username, password, expected_role="admin")
+        if ok:
+            session["admin_logged_in"] = True
+            session["admin_user"] = staff.get("username")
+            flash(f"Welcome, {staff.get('name')}! Management Console ready.", "success")
+            return redirect(url_for("admin_dashboard"))
+        else:
+            flash("Access Denied: Invalid administrator credentials.", "danger")
+            return redirect(url_for("admin_login_page"))
+    return render_template("login_admin.html")
+
+
+@app.route("/admin/logout")
+@app.route("/logout/admin")
+def admin_logout():
+    session.pop("admin_logged_in", None)
+    session.pop("admin_user", None)
+    flash("You have signed out of the Administrator Console.", "info")
+    return redirect(url_for("admin_login_page"))
+
+
+@app.route("/admin")
+def admin_dashboard():
+    if not session.get("admin_logged_in"):
+        flash("Please sign in as Administrator to access the Management Console.", "danger")
+        return redirect(url_for("admin_login_page"))
+    
+    metrics = get_metrics()
+    today_str = date.today().strftime("%Y-%m-%d")
+    
+    revenue_by_type = {}
+    for b in bookings:
+        if b.get("status") != "Cancelled":
+            rtype = b.get("room_type", "Standard")
+            revenue_by_type[rtype] = revenue_by_type.get(rtype, 0.0) + float(b.get("total_cost", 0.0))
+            
+    return render_template(
+        "admin.html",
+        metrics=metrics,
+        rooms=rooms,
+        bookings=bookings,
+        customers=customers,
+        customer_accounts=customer_accounts,
+        staff_accounts=staff_accounts,
+        maintenance_tickets=maintenance_tickets,
+        payments=payments,
+        transactions=transaction_ledger.get_all(reverse=True),
+        hotel_settings=hotel_settings,
+        revenue_by_type=revenue_by_type,
+        today_str=today_str,
+    )
+
+
+@app.route("/admin/staff/add", methods=["POST"])
+def admin_add_staff_route():
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    username = request.form.get("username", "").strip()
+    password = request.form.get("password", "").strip()
+    role = request.form.get("role", "receptionist").strip()
+    name = request.form.get("name", "").strip()
+    ok, msg, _ = add_or_update_staff_account(username, password, role, name)
+    flash(msg, "success" if ok else "danger")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/staff/delete/<staff_id>", methods=["POST"])
+def admin_delete_staff_route(staff_id):
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    ok, msg = delete_staff_account(staff_id)
+    flash(msg, "success" if ok else "danger")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/room/update", methods=["POST"])
+def admin_update_room_route():
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    room_number = request.form.get("room_number", "").strip()
+    room_type = (request.form.get("room_type") or request.form.get("type", "")).strip()
+    price = request.form.get("price") or request.form.get("price_per_night", 0)
+    capacity = request.form.get("capacity", 2)
+    bed_type = request.form.get("bed_type", "").strip()
+    size = request.form.get("size", "").strip()
+    description = request.form.get("description", "").strip()
+    amenities = request.form.get("amenities", "").strip()
+    
+    ok, msg, _ = update_room_details(room_number, room_type, price, capacity, bed_type, size, description, amenities)
+    flash(msg, "success" if ok else "danger")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/room/add", methods=["POST"])
+def admin_add_room_route():
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    room_number = request.form.get("room_number", "").strip()
+    room_type = (request.form.get("room_type") or request.form.get("type", "")).strip()
+    price = request.form.get("price") or request.form.get("price_per_night", 0)
+    capacity = request.form.get("capacity", 2)
+    bed_type = request.form.get("bed_type", "").strip()
+    size = request.form.get("size", "").strip()
+    description = request.form.get("description", "").strip()
+    amenities = request.form.get("amenities", "").strip()
+    
+    ok, msg, _ = add_new_room(room_number, room_type, price, capacity, bed_type, size, description, amenities)
+    flash(msg, "success" if ok else "danger")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/settings/update", methods=["POST"])
+def admin_update_settings_route():
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    hotel_name = request.form.get("hotel_name", "").strip()
+    phone = request.form.get("phone", "").strip()
+    email = request.form.get("email", "").strip()
+    address = request.form.get("address", "").strip()
+    if hotel_name:
+        hotel_settings["hotel_name"] = hotel_name
+    if phone:
+        hotel_settings["phone"] = phone
+    if email:
+        hotel_settings["email"] = email
+    if address:
+        hotel_settings["address"] = address
+    save_data()
+    flash("Hotel settings updated successfully.", "success")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/reset-system", methods=["POST"])
+def admin_reset_system_route():
+    if not session.get("admin_logged_in"):
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("admin_login_page"))
+    admin_pass = request.form.get("admin_password", "").strip()
+    if admin_pass not in ("admin2026", "frontdesk2026"):
+        flash("Invalid administrator confirmation password.", "danger")
+        return redirect(url_for("admin_dashboard"))
+    reset_system_to_beginning(persist=True)
+    flash("System refreshed to Day 1: 0 guests, ₱0.00 revenue, all suites available clean.", "success")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/maintenance/login", methods=["GET", "POST"])
+@app.route("/login/maintenance", methods=["GET", "POST"])
+def maintenance_login_page():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        if not username or not password:
+            flash("Please enter both username and password.", "danger")
+            return redirect(url_for("maintenance_login_page"))
+            
+        if username.lower() == "maintenance" and password == "clean2026":
+            session["maintenance_logged_in"] = True
+            session["maintenance_user"] = "maintenance"
+            flash("Welcome! Facilities & Maintenance Console ready.", "success")
+            return redirect(url_for("maintenance_dashboard"))
+            
+        ok, msg, staff = authenticate_staff_user(username, password, expected_role="maintenance")
+        if ok:
+            session["maintenance_logged_in"] = True
+            session["maintenance_user"] = staff.get("username")
+            flash(f"Welcome, {staff.get('name')}! Facilities & Maintenance Console ready.", "success")
+            return redirect(url_for("maintenance_dashboard"))
+        else:
+            flash("Access Denied: Invalid maintenance credentials.", "danger")
+            return redirect(url_for("maintenance_login_page"))
+    return render_template("login_maintenance.html")
+
+
+@app.route("/maintenance/logout")
+@app.route("/logout/maintenance")
+def maintenance_logout():
+    session.pop("maintenance_logged_in", None)
+    session.pop("maintenance_user", None)
+    flash("You have signed out of the Facilities & Maintenance Console.", "info")
+    return redirect(url_for("maintenance_login_page"))
+
+
+@app.route("/maintenance")
+def maintenance_dashboard():
+    if not session.get("maintenance_logged_in"):
+        flash("Please sign in to access the Facilities & Maintenance Console.", "danger")
+        return redirect(url_for("maintenance_login_page"))
+    metrics = get_metrics()
+    today_str = date.today().strftime("%Y-%m-%d")
+    return render_template(
+        "maintenance.html",
+        rooms=rooms,
+        metrics=metrics,
+        maintenance_tickets=maintenance_tickets,
+        today_str=today_str,
+    )
+
+
+@app.route("/maintenance/ticket/create", methods=["POST"])
+def maintenance_create_ticket_route():
+    if not session.get("maintenance_logged_in") and not session.get("receptionist_logged_in") and not session.get("admin_logged_in"):
+        flash("Please sign in to report maintenance requests.", "danger")
+        return redirect(url_for("maintenance_login_page"))
+    room_number = request.form.get("room_number", "").strip()
+    issue = request.form.get("issue", "").strip()
+    priority = request.form.get("priority", "Medium").strip()
+    technician = request.form.get("technician", "").strip()
+    cost = request.form.get("cost", 0.0)
+    notes = request.form.get("notes", "").strip()
+    
+    ok, msg, _ = create_maintenance_ticket(
+        room_number=room_number,
+        issue=issue,
+        priority=priority,
+        reported_by=session.get("maintenance_user") or session.get("receptionist_user") or "Staff",
+        technician=technician,
+        cost=float(cost or 0.0),
+        notes=notes
+    )
+    flash(msg, "success" if ok else "danger")
+    return redirect(request.referrer or url_for("maintenance_dashboard"))
+
+
+@app.route("/maintenance/ticket/update", methods=["POST"])
+def maintenance_update_ticket_route():
+    if not session.get("maintenance_logged_in") and not session.get("admin_logged_in"):
+        flash("Unauthorized.", "danger")
+        return redirect(url_for("maintenance_login_page"))
+    ticket_id = request.form.get("ticket_id", "").strip()
+    status = request.form.get("status", "").strip()
+    notes = request.form.get("notes", "").strip()
+    cost = request.form.get("cost")
+    technician = request.form.get("technician", "").strip()
+    mark_ready = str(request.form.get("mark_ready", "")).strip().lower() in ("1", "yes", "on", "true")
+    
+    cost_val = float(cost) if cost else None
+    ok, msg, _ = update_maintenance_ticket(ticket_id, status=status, notes=notes, cost=cost_val, technician=technician, mark_ready=mark_ready)
+    flash(msg, "success" if ok else "danger")
+    return redirect(request.referrer or url_for("maintenance_dashboard"))
+
+
+@app.route("/maintenance/room/mark-ready", methods=["POST"])
+def maintenance_mark_ready_route():
+    if not session.get("maintenance_logged_in") and not session.get("admin_logged_in"):
+        flash("Unauthorized.", "danger")
+        return redirect(url_for("maintenance_login_page"))
+    room_number = request.form.get("room_number", "").strip()
+    ok, msg = set_room_repaired_and_ready(room_number)
+    flash(msg, "success" if ok else "danger")
+    return redirect(request.referrer or url_for("maintenance_dashboard"))
 
 
 @app.route("/receptionist/reset-system", methods=["POST"])

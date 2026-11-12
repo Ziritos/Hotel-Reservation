@@ -450,8 +450,14 @@
       </div>
 
       <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="/login" class="staff-switch-link" style="color: #64748B;">Portal Login</a>
-        <a href="/login/receptionist" class="staff-switch-link">Reception Desk Login</a>
+        {% if session.get('customer_logged_in') %}
+          <span style="font-size: 13px; color: #475569;">Welcome, <strong style="color: #0F172A;">{{ session.get('customer_name') }}</strong></span>
+          <a href="/customer/logout" class="staff-switch-link" style="color: #DC2626; border-color: #FECACA;">Sign Out</a>
+        {% else %}
+          <a href="/customer/login" class="staff-switch-link" style="color: #D97706; border-color: #FCD34D;">Guest Sign In</a>
+        {% endif %}
+        <a href="/login" class="staff-switch-link" style="color: #64748B;">Portal Hub</a>
+        <a href="/login/receptionist" class="staff-switch-link">Front Desk</a>
       </div>
     </div>
   </nav>
@@ -703,6 +709,67 @@
         </div>
       {% endif %}
 
+    {% elif customer_bookings %}
+      <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 18px; color: #0F172A;">Your Booking History ({{ customer_bookings|length }})</h3>
+        <span style="font-size: 13px; color: #64748B;">Registered Guest: {{ session.get('customer_name') }}</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        {% for b in customer_bookings %}
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; color: #64748B; font-weight: 700; letter-spacing: 0.5px;">CONFIRMATION CODE</span>
+              <div style="font-size: 20px; font-weight: 800; color: #B45309; font-family: monospace;">{{ b.booking_id }}</div>
+            </div>
+            <span class="badge badge-success" style="padding: 6px 14px; border-radius: 9999px; font-weight: 700; font-size: 12px;">
+              {{ b.status }}
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; font-size: 13px;">
+            <div>
+              <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Registered Guest</span>
+              <div style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 2px;">{{ b.guest_name }}</div>
+              <div style="color: #64748B; margin-top: 4px;">{{ b.phone|default('No phone') }} &bull; {{ b.email|default('No email') }}</div>
+            </div>
+
+            <div>
+              <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Reserved Suite</span>
+              <div style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 2px;">Suite {{ b.room_number }}</div>
+              <div style="color: #64748B; margin-top: 4px;">{{ b.room_type }}</div>
+            </div>
+
+            <div>
+              <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Dates &amp; Duration</span>
+              <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-top: 2px;">{{ b.check_in }} &rarr; {{ b.check_out }}</div>
+              <div style="color: #64748B; margin-top: 4px;">{{ b.nights }} Night(s)</div>
+            </div>
+
+            <div>
+              <span style="color: #64748B; font-size: 11px; text-transform: uppercase; font-weight: 600;">Total Cost</span>
+              <div style="font-size: 18px; font-weight: 800; color: #B45309; margin-top: 2px;">₱{{ "{:,.2f}".format(b.total_cost) }}</div>
+              <div style="color: #059669; font-size: 11px; font-weight: 700; margin-top: 4px;">{{ b.payment_status|default('Paid') }}</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-outline btn-sm"
+                    onclick="showGuestVoucher('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}', '{{ b.room_type }}', {{ b.nights }}, '{{ b.check_in }}', '{{ b.check_out }}', {{ b.total_cost }}, {{ b.price_per_night }}, '{{ b.phone }}', '{{ b.email }}', '{{ b.created_at }}')">
+              Print Confirmation Voucher
+            </button>
+            {% if b.status == 'Confirmed' %}
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                    onclick="openGuestCancel('{{ b.booking_id }}', '{{ b.guest_name }}', '{{ b.room_number }}')">
+              Cancel Reservation
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
     {% else %}
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; text-align: center;">
@@ -755,6 +822,7 @@
           <div class="form-group mb-3">
             <label class="form-label">Guest Full Name <span class="required">*</span></label>
             <input type="text" name="guest_name" id="resGuestName" class="form-control" 
+                   value="{{ session.get('customer_name', '') }}"
                    placeholder="e.g. Maria Clara Santos" required 
                    oninput="checkGuestNameLettersOnly(this)">
             <div class="validation-feedback-text" id="guestNameFeedback">
@@ -765,11 +833,11 @@
           <div class="form-row">
             <div class="form-group col-6">
               <label class="form-label">Contact Phone</label>
-              <input type="text" name="phone" class="form-control" placeholder="0917-555-0199">
+              <input type="text" name="phone" class="form-control" value="{{ session.get('customer_phone', '') }}" placeholder="0917-555-0199">
             </div>
             <div class="form-group col-6">
               <label class="form-label">Email Address</label>
-              <input type="email" name="email" class="form-control" placeholder="guest@example.ph">
+              <input type="email" name="email" class="form-control" value="{{ session.get('customer_email', '') }}" placeholder="guest@example.ph">
             </div>
           </div>
 

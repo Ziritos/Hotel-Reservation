@@ -16,7 +16,8 @@
         "Flat-screen TV",
         "Work Desk"
       ],
-      "description": "Cozy and comfortable private room perfect for solo travelers, business trips, or students."
+      "description": "Cozy and comfortable private room perfect for solo travelers, business trips, or students.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "102",
@@ -34,7 +35,8 @@
         "Flat-screen TV",
         "Work Desk"
       ],
-      "description": "Quiet inner-wing single room designed for maximum relaxation, privacy, and restful sleep."
+      "description": "Quiet inner-wing single room designed for maximum relaxation, privacy, and restful sleep.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "103",
@@ -53,7 +55,8 @@
         "Work Desk",
         "Window View"
       ],
-      "description": "Bright single room with natural sunlight, ergonomic desk, and fast optical internet."
+      "description": "Bright single room with natural sunlight, ergonomic desk, and fast optical internet.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "201",
@@ -72,7 +75,8 @@
         "Mini Refrigerator",
         "City View"
       ],
-      "description": "Spacious double bedroom featuring premium orthopedic mattress, city panorama, and mini fridge."
+      "description": "Spacious double bedroom featuring premium orthopedic mattress, city panorama, and mini fridge.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "202",
@@ -91,7 +95,8 @@
         "Mini Refrigerator",
         "Coffee Maker"
       ],
-      "description": "Modern twin bed setup ideal for companions, colleagues, or siblings visiting the city."
+      "description": "Modern twin bed setup ideal for companions, colleagues, or siblings visiting the city.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "203",
@@ -110,7 +115,8 @@
         "Mini Refrigerator",
         "Corner View"
       ],
-      "description": "Premium corner double room with dual windows, ambient warm lighting, and seating area."
+      "description": "Premium corner double room with dual windows, ambient warm lighting, and seating area.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "301",
@@ -129,7 +135,8 @@
         "Complimentary Breakfast",
         "Bathtub"
       ],
-      "description": "Luxurious executive suite with separated living room, deep soaking bathtub, and skyline balcony."
+      "description": "Luxurious executive suite with separated living room, deep soaking bathtub, and skyline balcony.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "302",
@@ -148,7 +155,8 @@
         "Complimentary Breakfast",
         "Bathtub"
       ],
-      "description": "Grand family suite with dining corner, premium streaming entertainment, and complimentary breakfast."
+      "description": "Grand family suite with dining corner, premium streaming entertainment, and complimentary breakfast.",
+      "maintenance_status": "Clean & Ready"
     },
     {
       "room_number": "401",
@@ -167,15 +175,52 @@
         "Complimentary Gourmet Breakfast",
         "Private Bar & Lounge"
       ],
-      "description": "The pinnacle of luxury: penthouse floor, full jacuzzi spa bath, 360-degree city view, and VIP concierge."
+      "description": "The pinnacle of luxury: penthouse floor, full jacuzzi spa bath, 360-degree city view, and VIP concierge.",
+      "maintenance_status": "Clean & Ready"
     }
   ],
   "bookings": [],
   "customers": [],
   "hotel_settings": {
     "hotel_name": "Sugo Grand Palace Hotel",
-    "logo_url": "/assets/logo.png"
+    "logo_url": "/assets/logo.png",
+    "phone": "+63 (088) 888-7846",
+    "email": "frontdesk@sugograndpalace.ph",
+    "address": "Cagayan De Oro City, Philippines"
   },
+  "staff_accounts": [
+    {
+      "id": "STF-101",
+      "staff_id": "STF-101",
+      "username": "receptionist",
+      "password": "frontdesk2026",
+      "role": "receptionist",
+      "name": "Front Desk Receptionist",
+      "created_at": "2026-11-01 08:00:00"
+    },
+    {
+      "id": "STF-102",
+      "staff_id": "STF-102",
+      "username": "admin",
+      "password": "admin2026",
+      "role": "admin",
+      "name": "System Administrator",
+      "created_at": "2026-11-01 08:00:00"
+    },
+    {
+      "id": "STF-103",
+      "staff_id": "STF-103",
+      "username": "maintenance",
+      "password": "clean2026",
+      "role": "maintenance",
+      "name": "Facilities & Maintenance Lead",
+      "created_at": "2026-11-01 08:00:00"
+    }
+  ],
+  "customer_accounts": [],
+  "maintenance_tickets": [],
+  "notifications": [],
+  "payments": [],
   "transactions": [],
-  "last_updated": "2026-11-11T11:44:57.396970"
+  "last_updated": "2026-11-12T22:26:43.069620"
 }

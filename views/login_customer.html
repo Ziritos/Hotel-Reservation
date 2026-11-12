@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Account Portal | Sugo Grand Palace Hotel</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #0F172A;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .customer-hero-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.84) 0%, rgba(30, 41, 59, 0.90) 100%),
+                  url('/assets/login-bg.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      z-index: 1;
+    }
+    .customer-login-wrapper {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .customer-card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(217, 119, 6, 0.35);
+      border-radius: 22px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), 0 0 30px rgba(217, 119, 6, 0.12);
+      padding: 38px 34px;
+      animation: cardEnter 0.4s ease-out;
+    }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .brand-logo-img {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 12px;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(217, 119, 6, 0.45));
+      border-radius: 12px;
+    }
+    .hotel-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #FEF3C7;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .hotel-subtitle {
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+    .tab-pills {
+      display: flex;
+      background: rgba(30, 41, 59, 0.7);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #D97706, #B45309);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+    .form-group-item {
+      margin-bottom: 16px;
+    }
+    .input-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #CBD5E1;
+      margin-bottom: 6px;
+      display: block;
+      letter-spacing: 0.3px;
+    }
+    .portal-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .portal-input:focus {
+      border-color: #D97706;
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25);
+      background: rgba(30, 41, 59, 0.98);
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #D97706, #B45309);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
+      margin-top: 20px;
+    }
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #B45309, #92400E);
+      transform: translateY(-1px);
+    }
+    .portal-back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #94A3B8;
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .portal-back-link:hover {
+      color: #FEF3C7;
+    }
+    .alert-flash {
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+    }
+    .alert-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6EE7B7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="customer-hero-bg"></div>
+
+  <div class="customer-login-wrapper">
+    <div class="customer-card">
+      <div class="brand-header">
+        <img src="/assets/logo.png" alt="Sugo Crest" class="brand-logo-img"
+             onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+        <h1 class="hotel-title">SUGO GRAND PALACE</h1>
+        <div class="hotel-subtitle">Guest Accommodations Portal</div>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert-flash alert-{{ category if category != 'error' else 'danger' }}">
+              <span>{{ '⚠️' if category == 'danger' or category == 'error' else '✓' }}</span>
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="tab-pills">
+        <button type="button" class="tab-btn active" id="tabLoginBtn" onclick="switchTab('login')">Sign In</button>
+        <button type="button" class="tab-btn" id="tabRegisterBtn" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <form id="loginForm" action="/customer/login" method="POST">
+        <div class="form-group-item">
+          <label class="input-label">Email Address or Username</label>
+          <input type="text" name="identifier" class="portal-input" placeholder="e.g. maria@gmail.com" required autofocus>
+        </div>
+
+        <div class="form-group-item">
+          <label class="input-label">Password</label>
+          <input type="password" name="password" class="portal-input" placeholder="Enter your password..." required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <span>Sign In to Account</span>
+        </button>
+      </form>
+
+      <form id="registerForm" action="/customer/register" method="POST" style="display: none;">
+        <div class="form-group-item">
+          <label class="input-label">Full Name</label>
+          <input type="text" name="name" class="portal-input" placeholder="e.g. Maria Santos" required>
+        </div>
+
+        <div class="form-group-item">
+          <label class="input-label">Email Address</label>
+          <input type="email" name="email" class="portal-input" placeholder="e.g. maria@gmail.com" required>
+        </div>
+
+        <div class="form-group-item">
+          <label class="input-label">Mobile Number</label>
+          <input type="tel" name="phone" class="portal-input" placeholder="e.g. 0917-123-4567" required>
+        </div>
+
+        <div class="form-group-item">
+          <label class="input-label">Create Password</label>
+          <input type="password" name="password" class="portal-input" placeholder="Choose a secure password..." required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <span>Complete Registration</span>
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+        <a href="/guest" class="portal-back-link" style="margin-top: 0;">
+          &larr; Browse Suites
+        </a>
+        <a href="/login" class="portal-back-link" style="margin-top: 0;">
+          Portal Directory &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+      if (tab === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        tabLoginBtn.classList.add('active');
+        tabRegisterBtn.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        tabRegisterBtn.classList.add('active');
+        tabLoginBtn.classList.remove('active');
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maintenance &amp; Engineering Login | Sugo Grand Palace Hotel</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #0B1120;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .staff-hero-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(11, 17, 32, 0.90) 0%, rgba(15, 23, 42, 0.96) 100%),
+                  url('/assets/login-bg.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      z-index: 1;
+    }
+    .staff-login-wrapper {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .staff-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(14, 165, 233, 0.45);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(14, 165, 233, 0.15);
+      padding: 40px 36px;
+      animation: staffCardEnter 0.4s ease-out;
+    }
+    @keyframes staffCardEnter {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .staff-brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .staff-crest-img {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 12px;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(14, 165, 233, 0.45));
+      border-radius: 12px;
+    }
+    .staff-hotel-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #E0F2FE;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .staff-subtitle {
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .staff-security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      padding: 8px 14px;
+      border-radius: 9999px;
+      margin-bottom: 22px;
+      font-size: 12px;
+      color: #BAE6FD;
+      font-weight: 600;
+    }
+    .staff-duty-dot {
+      width: 8px;
+      height: 8px;
+      background: #0284C7;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #0284C7;
+    }
+    .form-group-item {
+      margin-bottom: 18px;
+    }
+    .staff-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #CBD5E1;
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .staff-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .staff-input:focus {
+      border-color: #0284C7;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+      background: rgba(30, 41, 59, 0.98);
+    }
+    .btn-staff-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
+      margin-top: 24px;
+    }
+    .btn-staff-submit:hover {
+      background: linear-gradient(135deg, #0369A1, #075985);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(14, 165, 233, 0.45);
+    }
+    .demo-hint-box {
+      margin-top: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #94A3B8;
+      text-align: center;
+    }
+    .demo-hint-box code {
+      color: #7DD3FC;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .staff-back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #94A3B8;
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .staff-back-link:hover {
+      color: #BAE6FD;
+    }
+    .alert-flash {
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+    }
+    .alert-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6EE7B7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="staff-hero-bg"></div>
+
+  <div class="staff-login-wrapper">
+    <div class="staff-card">
+      <div class="staff-brand-header">
+        <img src="/assets/logo.png" alt="Sugo Crest" class="staff-crest-img"
+             onerror="this.src='/assets/logo_transparent.png'; this.onerror=function(){this.src='/assets/logo.svg'}">
+        <h1 class="staff-hotel-title">SUGO GRAND PALACE</h1>
+        <div class="staff-subtitle">Maintenance &amp; Engineering</div>
+      </div>
+
+      <div class="staff-security-badge">
+        <span class="staff-duty-dot"></span>
+        <span>Maintenance Staff Only</span>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert-flash alert-{{ category if category != 'error' else 'danger' }}">
+              <span>{{ '⚠️' if category == 'danger' or category == 'error' else '✓' }}</span>
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form action="/login/maintenance" method="POST">
+        <div class="form-group-item">
+          <label class="staff-label">Username</label>
+          <input type="text" name="username" class="staff-input" value="maintenance" placeholder="Enter maintenance username..." required autofocus>
+        </div>
+
+        <div class="form-group-item">
+          <label class="staff-label">Password</label>
+          <input type="password" name="password" class="staff-input" value="clean2026" placeholder="Enter maintenance password..." required>
+        </div>
+
+        <button type="submit" class="btn-staff-submit">
+          <span>Sign In to Maintenance Portal</span>
+        </button>
+
+        <div class="demo-hint-box">
+          Default Account: Username <code>maintenance</code> &bull; Password <code>clean2026</code>
+        </div>
+      </form>
+
+      <a href="/login" class="staff-back-link">
+        &larr; Return to Portal Directory
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>
